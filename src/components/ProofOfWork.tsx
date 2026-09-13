@@ -35,7 +35,7 @@ interface ImpressionsResponse {
   error?: string;
 }
 
-const SAMPLE_HANDLES = ['RialoHQ', 'yournahian', 'VitalikButerin'];
+const SAMPLE_HANDLES = ['RialoHQ', 'PanteraCapital', 'yournahian'];
 
 export const ProofOfWork: React.FC = () => {
   const [handleInput, setHandleInput] = useState('');
@@ -306,6 +306,24 @@ export const ProofOfWork: React.FC = () => {
             </div>
 
             {renderSparkline()}
+
+            {data.total_impressions === 0 && (
+              <div style={{
+                margin: '16px 0',
+                padding: '16px',
+                background: 'rgba(169, 221, 211, 0.05)',
+                border: '1px dashed rgba(169, 221, 211, 0.3)',
+                borderRadius: '12px',
+                textAlign: 'center'
+              }}>
+                <div style={{ fontSize: '13px', fontWeight: '600', color: 'var(--rialo-accent)', marginBottom: '4px' }}>
+                  No Rialo contributions indexed yet
+                </div>
+                <div style={{ fontSize: '12px', color: 'var(--rialo-text-muted)', lineHeight: '1.4' }}>
+                  Tweet mentioning <strong style={{ color: 'var(--rialo-text)' }}>@RialoHQ</strong> or <strong style={{ color: 'var(--rialo-text)' }}>#rialo</strong> on X to start earning indexed Proof of Work!
+                </div>
+              </div>
+            )}
 
             <div className="proof-date-footer">
               <span>
