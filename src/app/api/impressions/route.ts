@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
         },
         body: JSON.stringify({
           username: cleanUsername,
-          project: 'rialo',
+          project: 'RialoHQ',
         }),
         next: { revalidate: 60 },
       });
@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
           return NextResponse.json({
             ok: true,
             username: xerperData.username || cleanUsername,
-            project: 'rialo',
+            project: 'RialoHQ',
             profile: {
               name: xerperData.profile?.name || cleanUsername,
               screen_name: xerperData.profile?.screen_name || cleanUsername,
@@ -82,7 +82,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({
       ok: true,
       username: cleanUsername,
-      project: 'rialo',
+      project: 'RialoHQ',
       profile: {
         name: cleanUsername,
         screen_name: cleanUsername,

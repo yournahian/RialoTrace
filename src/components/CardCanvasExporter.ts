@@ -161,7 +161,7 @@ export async function generateProofOfWorkPNG(data: CardExportData): Promise<Blob
 
   ctx.fillStyle = '#536471';
   ctx.font = '500 18px "Inter", sans-serif';
-  ctx.fillText('Impressions generated for rialo', cardPadX + 46, statY + 30);
+  ctx.fillText('Impressions generated for RialoHQ', cardPadX + 46, statY + 30);
 
   // Chart
   if (data.series && data.series.length > 1) {

@@ -292,7 +292,7 @@ export const ProofOfWork: React.FC = () => {
               </div>
 
               <div className="rialo-target-tag">
-                <span>rialo</span>
+                <span>RialoHQ</span>
               </div>
             </div>
 
@@ -301,7 +301,7 @@ export const ProofOfWork: React.FC = () => {
                 {data.total_impressions.toLocaleString()}
               </div>
               <div className="impressions-caption">
-                Impressions generated for rialo
+                Impressions generated for RialoHQ
               </div>
             </div>
 
