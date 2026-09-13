@@ -1,21 +1,14 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { RialoLogo } from './RialoLogo';
 
 export const FollowGate: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
   const [step, setStep] = useState<'prompt' | 'detecting' | 'unlocked'>('prompt');
 
-  useEffect(() => {
-    const isUnlocked = sessionStorage.getItem('rialotrace_follow_unlocked');
-    if (!isUnlocked) {
-      setIsOpen(true);
-    }
-  }, []);
-
-  const handleFollowClick = () => {
-    window.open('https://x.com/yournahian', '_blank', 'noopener,noreferrer');
+  const handleFollowClick = (url: string = 'https://x.com/yournahin') => {
+    window.open(url, '_blank', 'noopener,noreferrer');
     setStep('detecting');
     setTimeout(() => {
       setStep('unlocked');
@@ -23,7 +16,6 @@ export const FollowGate: React.FC = () => {
   };
 
   const handleEnter = () => {
-    sessionStorage.setItem('rialotrace_follow_unlocked', 'true');
     setIsOpen(false);
   };
 
@@ -35,7 +27,7 @@ export const FollowGate: React.FC = () => {
         position: 'fixed',
         inset: 0,
         zIndex: 999,
-        backgroundColor: 'rgba(1, 1, 1, 0.92)',
+        backgroundColor: 'rgba(1, 1, 1, 0.94)',
         backdropFilter: 'blur(24px)',
         display: 'flex',
         alignItems: 'center',
@@ -54,7 +46,7 @@ export const FollowGate: React.FC = () => {
           border: '1px solid var(--rialo-border-glow)',
           borderRadius: '24px',
           overflow: 'hidden',
-          boxShadow: '0 24px 60px rgba(0, 0, 0, 0.8), 0 0 40px var(--rialo-glow)',
+          boxShadow: '0 24px 60px rgba(0, 0, 0, 0.85), 0 0 40px var(--rialo-glow)',
           textAlign: 'center',
           color: '#ffffff',
           animation: 'slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
@@ -88,28 +80,32 @@ export const FollowGate: React.FC = () => {
               border: '4px solid #010101',
               background: '#222',
               margin: '-34px auto 14px auto',
+              boxShadow: '0 4px 16px rgba(0,0,0,0.6)',
             }}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="https://pbs.twimg.com/profile_images/1966521996080209920/MbtcGvTv_400x400.jpg"
-              alt="yournahian avatar"
+              src="https://pbs.twimg.com/profile_images/1990106346264666112/pbBiIRET_400x400.png"
+              alt="yournahin avatar"
               style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              onError={(e) => {
+                e.currentTarget.src = 'https://unavatar.io/x/yournahin';
+              }}
             />
           </div>
 
           {step === 'prompt' && (
             <>
               <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '20px', fontWeight: '700', color: '#ffffff' }}>
-                Follow @yournahian on X
+                Follow @yournahin on X
               </h2>
-              <p style={{ color: 'var(--rialo-text-muted)', fontSize: '13px', marginTop: '6px' }}>
+              <p style={{ color: 'var(--rialo-text-muted)', fontSize: '13px', marginTop: '6px', lineHeight: '1.45' }}>
                 Follow the builder behind RialoTrace on X to unlock access to Rialo engagement analytics.
               </p>
 
               <button
                 type="button"
-                onClick={handleFollowClick}
+                onClick={() => handleFollowClick('https://x.com/yournahin')}
                 style={{
                   marginTop: '20px',
                   width: '100%',
@@ -126,10 +122,47 @@ export const FollowGate: React.FC = () => {
                   justifyContent: 'center',
                   gap: '8px',
                   boxShadow: '0 6px 20px var(--rialo-accent-dim)',
+                  transition: 'transform 0.15s ease, box-shadow 0.15s ease',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-1px)';
+                  e.currentTarget.style.boxShadow = '0 8px 24px var(--rialo-glow)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = '0 6px 20px var(--rialo-accent-dim)';
                 }}
               >
-                <span>Follow @yournahian to Continue</span>
+                <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                </svg>
+                <span>Follow @yournahin to Continue</span>
               </button>
+
+              <div style={{ marginTop: '12px' }}>
+                <a
+                  href="https://x.com/RialoHQ"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    fontSize: '12px',
+                    color: 'var(--rialo-text-muted)',
+                    textDecoration: 'none',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '4px',
+                  }}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--rialo-accent)')}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--rialo-text-muted)')}
+                >
+                  <span>Also follow @RialoHQ on X</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="12" height="12">
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                    <polyline points="15 3 21 3 21 9" />
+                    <line x1="10" y1="14" x2="21" y2="3" />
+                  </svg>
+                </a>
+              </div>
             </>
           )}
 
@@ -142,6 +175,9 @@ export const FollowGate: React.FC = () => {
               </div>
               <p style={{ fontFamily: 'var(--font-mono)', color: 'var(--rialo-accent)', fontSize: '13px', fontWeight: '600', marginTop: '12px' }}>
                 Detecting whether you followed...
+              </p>
+              <p style={{ fontSize: '12px', color: 'var(--rialo-text-muted)', marginTop: '4px' }}>
+                Verifying connection to @yournahin on X
               </p>
             </div>
           )}
@@ -166,6 +202,15 @@ export const FollowGate: React.FC = () => {
                   fontWeight: '700',
                   cursor: 'pointer',
                   boxShadow: '0 6px 20px var(--rialo-accent-dim)',
+                  transition: 'all 0.15s ease',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-1px)';
+                  e.currentTarget.style.boxShadow = '0 8px 24px var(--rialo-glow)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = '0 6px 20px var(--rialo-accent-dim)';
                 }}
               >
                 Continue to RialoTrace

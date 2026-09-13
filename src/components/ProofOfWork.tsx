@@ -35,7 +35,7 @@ interface ImpressionsResponse {
   error?: string;
 }
 
-const SAMPLE_HANDLES = ['RialoHQ', 'PanteraCapital', 'yournahian'];
+const SAMPLE_HANDLES = ['RialoHQ', 'itachee_x', 'yournahin'];
 
 export const ProofOfWork: React.FC = () => {
   const [handleInput, setHandleInput] = useState('');
