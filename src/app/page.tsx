@@ -1,8 +1,11 @@
-'use client';
+﻿'use client';
 
 import React, { useState } from 'react';
 import { NavigationDock, TabType } from '@/components/NavigationDock';
 import { ProofOfWork } from '@/components/ProofOfWork';
+import { RialoCards } from '@/components/RialoCards';
+import { VersusArena } from '@/components/VersusArena';
+import { MainnetRadar } from '@/components/MainnetRadar';
 import { RialoGems } from '@/components/RialoGems';
 import { TopRialoPosts } from '@/components/TopRialoPosts';
 import { RialoLogo } from '@/components/RialoLogo';
@@ -42,6 +45,9 @@ export default function HomePage() {
 
       <main className="main-stage">
         {activeTab === 'proof' && <ProofOfWork />}
+        {activeTab === 'cards' && <RialoCards />}
+        {activeTab === 'versus' && <VersusArena />}
+        {activeTab === 'radar' && <MainnetRadar />}
         {activeTab === 'terminal' && <RialoGems />}
         {activeTab === 'best_posts' && <TopRialoPosts />}
       </main>
