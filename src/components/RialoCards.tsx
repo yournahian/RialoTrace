@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Download, Share2, Sparkles, RefreshCw, Copy, Check, Palette, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { exportRialoCardPNG } from './RialoCardCanvasExporter';
-import { RialoLogo } from './RialoLogo';
+import { RialoLogo, RialoIcon } from './RialoLogo';
 
 export interface CardArchetype {
   id: string;
@@ -14,7 +14,7 @@ export interface CardArchetype {
   iconBg: string;
 }
 
-// 10 100% Original Arc Network Archetypes with high-res anime cyberpunk illustrations
+// 10 100% Original Rialo Archetypes with high-res anime cyberpunk illustrations
 export const RIALO_ARCHETYPES: Record<string, CardArchetype> = {
   pioneer: {
     id: 'pioneer',
@@ -29,7 +29,7 @@ export const RIALO_ARCHETYPES: Record<string, CardArchetype> = {
   architect: {
     id: 'architect',
     title: 'Economic Architect',
-    lore: 'Deploys composable financial primitives directly to Arc testnet. Sub-second finality is their native language.',
+    lore: 'Deploys composable financial primitives directly to Rialo testnet. Sub-second finality is their native language.',
     rarity: 'LEGENDARY',
     glowColor: '#F59E0B',
     image: '/cards/architect.png',
@@ -59,7 +59,7 @@ export const RIALO_ARCHETYPES: Record<string, CardArchetype> = {
   navigator: {
     id: 'navigator',
     title: 'CCTP Navigator',
-    lore: 'Teleports multi-chain liquidity across Ethereum, Solana, and Arc with zero slippage via native CCTP conduits.',
+    lore: 'Teleports multi-chain liquidity across Ethereum, Solana, and Rialo with zero slippage via native CCTP conduits.',
     rarity: 'EPIC',
     glowColor: '#EC4899',
     image: '/cards/navigator.png',
@@ -79,7 +79,7 @@ export const RIALO_ARCHETYPES: Record<string, CardArchetype> = {
   vanguard: {
     id: 'vanguard',
     title: 'Gasless Vanguard',
-    lore: 'Executes transactions sponsored entirely by paymasters. Never once held gas tokens, floating frictionless on Arc.',
+    lore: 'Executes transactions sponsored entirely by paymasters. Never once held gas tokens, floating frictionless on Rialo.',
     rarity: 'EPIC',
     glowColor: '#F97316',
     image: '/cards/vanguard.png',
@@ -99,7 +99,7 @@ export const RIALO_ARCHETYPES: Record<string, CardArchetype> = {
   arbitrageur: {
     id: 'arbitrageur',
     title: 'Quantum Arbitrageur',
-    lore: 'Extracts zero-risk multi-chain spread between Arc and external L1s before mempools even serialize.',
+    lore: 'Extracts zero-risk multi-chain spread between Rialo and external L1s before mempools even serialize.',
     rarity: 'LEGENDARY',
     glowColor: '#06B6D4',
     image: '/cards/arbitrageur.png',
@@ -109,7 +109,7 @@ export const RIALO_ARCHETYPES: Record<string, CardArchetype> = {
   devourer: {
     id: 'devourer',
     title: 'Testnet Devourer',
-    lore: 'Claimed every faucet drop, broke 14 testnet nodes, and stress-tested Arc to 40,000 TPS just for fun.',
+    lore: 'Claimed every faucet drop, broke 14 testnet nodes, and stress-tested Rialo to 40,000 TPS just for fun.',
     rarity: 'RARE',
     glowColor: '#84CC16',
     image: '/cards/devourer.png',
@@ -328,7 +328,7 @@ export const RialoCards: React.FC = () => {
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `${handleToUse}-arc-card.png`;
+        a.download = `${handleToUse}-rialo-card.png`;
         a.click();
         URL.revokeObjectURL(url);
       }
@@ -342,7 +342,7 @@ export const RialoCards: React.FC = () => {
   const handleShareX = () => {
     const handleToUse = userData?.user?.handle || (inputVal.trim() ? inputVal.trim() : 'creator');
     const text = encodeURIComponent(
-      `I forged my official @RialoHQ Collectible Card: ${archetype.badgeEmoji} ${archetype.title} (${archetype.rarity})!\n\n⚡ Total Rialo Impressions: ${(userData?.totalImpressions || 0).toLocaleString()}\n🌊 Wave 1 Genesis\n\nForge your Arc Card on @RialoTrace:`
+      `I forged my official @RialoHQ Collectible Card: ${archetype.badgeEmoji} ${archetype.title} (${archetype.rarity})!\n\n⚡ Total Rialo Impressions: ${(userData?.totalImpressions || 0).toLocaleString()}\n🌊 Wave 1 Genesis\n\nForge your Rialo Card on @RialoTrace:`
     );
     const url = encodeURIComponent(window.location.href);
     window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
@@ -539,9 +539,9 @@ export const RialoCards: React.FC = () => {
 
                 <div className="monad-back-center-logo">
                   <div className="monad-back-emblem">
-                    <RialoLogo size={42} />
+                    <RialoIcon size={52} color="#A9DDD3" />
                   </div>
-                  <div className="monad-back-title">RIALO NETWORK</div>
+                  <div className="monad-back-title">rialo.io</div>
                   <div className="monad-back-subtitle">GENESIS WAVE 1</div>
                 </div>
 
@@ -694,7 +694,7 @@ export const RialoCards: React.FC = () => {
             <div className="carousel-header">
               <h2 className="carousel-title">CHOOSE YOURS</h2>
               <div className="carousel-subtitle">
-                3D ARCHETYPE CAROUSEL // 10 GENESIS ARC WARRIORS
+                3D ARCHETYPE CAROUSEL // 10 GENESIS RIALO WARRIORS
               </div>
             </div>
 

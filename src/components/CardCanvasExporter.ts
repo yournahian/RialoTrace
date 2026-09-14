@@ -227,7 +227,7 @@ export async function generateProofOfWorkPNG(data: CardExportData): Promise<Blob
   ctx.textAlign = 'left';
   const startStr = formatDateMonthYear(data.series[0]?.t || '');
   const endStr = formatDateMonthYear(data.series[data.series.length - 1]?.t || '');
-  ctx.fillText(data.series.length > 0 ? `${startStr} - ${endStr}` : 'Rialo Network', cardPadX + 46, footerY);
+  ctx.fillText(data.series.length > 0 ? `${startStr} - ${endStr}` : 'rialo.io', cardPadX + 46, footerY);
 
   ctx.textAlign = 'right';
   ctx.fillText('RialoTrace • rialo.io', cardPadX + cardW - 46, footerY);

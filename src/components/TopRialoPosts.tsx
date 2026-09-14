@@ -82,7 +82,7 @@ export const TopRialoPosts: React.FC = () => {
           🌟 Best Posts About Rialo
         </h2>
         <p style={{ color: 'var(--rialo-text-muted)', fontSize: '14px', marginTop: '4px' }}>
-          Discover the highest-impact tweets and community discussions for Rialo Network.
+          Discover the highest-impact tweets and community discussions for rialo.io.
         </p>
       </div>
 

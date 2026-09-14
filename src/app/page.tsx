@@ -23,7 +23,7 @@ export default function HomePage() {
           <div className="brand-badge">
             <RialoLogo size={20} />
             <span className="brand-name" style={{ marginLeft: '4px' }}>Trace</span>
-            <span className="brand-pill">Network</span>
+            <span className="brand-pill">rialo.io</span>
           </div>
         </div>
 
@@ -33,7 +33,7 @@ export default function HomePage() {
             target="_blank"
             rel="noopener noreferrer"
             className="rialo-status-chip"
-            title="Rialo Network Official"
+            title="rialo.io Official"
           >
             <span className="pulse-dot" />
             <span>rialo.io</span>

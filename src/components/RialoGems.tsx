@@ -44,7 +44,7 @@ export const RialoGems: React.FC = () => {
           💎 Rialo Gems
         </h2>
         <p style={{ color: 'var(--rialo-text-muted)', fontSize: '13px', marginTop: '4px' }}>
-          Top ecosystem voices, builders, and researchers on Rialo Network.
+          Top ecosystem voices, builders, and researchers on rialo.io.
         </p>
       </div>
 

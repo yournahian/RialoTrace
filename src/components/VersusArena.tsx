@@ -220,7 +220,7 @@ export const VersusArena: React.FC = () => {
           : winner === 2
           ? `👑 Winner: @${user2Data.user.handle}`
           : '🤝 Tied Battle'
-      }\n\nCheck real-time Arc creator head-to-head on @RialoTrace:`
+      }\n\nCheck real-time Rialo creator head-to-head on @RialoTrace:`
     );
     const url = encodeURIComponent(window.location.href);
     window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
@@ -245,7 +245,7 @@ export const VersusArena: React.FC = () => {
           <span>Live Creator Showdown • Sub-Second Finality</span>
         </div>
         <h2 className="feature-title">
-          Arc <span className="gradient-text-amber">Versus</span> Arena
+          Rialo <span className="gradient-text-amber">Versus</span> Arena
         </h2>
         <p className="feature-desc">
           Compare any two Twitter creators or ecosystem leads side-by-side. Enter any usernames below

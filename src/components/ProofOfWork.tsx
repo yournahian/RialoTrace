@@ -111,7 +111,7 @@ export const ProofOfWork: React.FC = () => {
 
   const shareText = data
     ? encodeURIComponent(
-        `I generated ${data.total_impressions.toLocaleString()} impressions contributing to @RialoHQ Network! ⚡️\n\nVerify your Rialo Proof-of-Work: #RialoNetwork #BuildOnRialo`
+        `I generated ${data.total_impressions.toLocaleString()} impressions contributing to @RialoHQ (rialo.io)! ⚡️\n\nVerify your Rialo Proof-of-Work: #RialoNetwork #BuildOnRialo`
       )
     : '';
 
@@ -186,7 +186,7 @@ export const ProofOfWork: React.FC = () => {
               Rialo Proof of Work
             </h1>
             <p style={{ color: 'var(--rialo-text-muted)', fontSize: '14px', marginTop: '6px' }}>
-              Measure and showcase your social contributions to Rialo Network.
+              Measure and showcase your social contributions to rialo.io.
             </p>
           </div>
 
@@ -258,7 +258,7 @@ export const ProofOfWork: React.FC = () => {
             <span className="dot" />
           </div>
           <p style={{ fontSize: '14px', fontWeight: '500', color: 'var(--rialo-text-muted)', marginTop: '12px', fontFamily: 'var(--font-mono)' }}>
-            Auditing Rialo Network onchain & social proof...
+            Auditing rialo.io onchain & social proof...
           </p>
         </div>
       )}
