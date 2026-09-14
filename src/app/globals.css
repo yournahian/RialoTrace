@@ -2804,7 +2804,7 @@ body {
 /* Rialo Mainnet Roadmap & Playground Styles */
 .roadmap-stages-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 12px;
   margin: 24px 0 20px 0;
 }

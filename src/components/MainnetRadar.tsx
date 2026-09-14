@@ -124,7 +124,7 @@ export const MainnetRadar: React.FC = () => {
         {/* Pulsing Status Pill */}
         <div className="feature-pill-badge" style={{ borderColor: 'rgba(169, 221, 211, 0.4)', color: '#A9DDD3' }}>
           <span className="card-wave-dot" style={{ background: '#10B981', boxShadow: '0 0 10px #10B981' }} />
-          <span>CURRENT PHASE: ACTIVE PLAYGROUND MODE (playground.rialo.io)</span>
+          <span>CURRENT PHASE: ACTIVE PLAYGROUND TESTNET (playground.rialo.io)</span>
         </div>
 
         <h2 className="feature-title">
@@ -132,10 +132,10 @@ export const MainnetRadar: React.FC = () => {
         </h2>
         <p className="feature-desc">
           Rialo is the high-throughput network with configurable privacy built for real-world finance and intelligent systems.
-          Mainnet launch date has not yet been published — the network is currently live in active developer playground mode.
+          Mainnet launch date has not yet been published — the network is currently live in active developer playground testnet.
         </p>
 
-        {/* Roadmap Stages Bar (Replaces fake countdown) */}
+        {/* Roadmap Stages Bar (Playground itself is Testnet) */}
         <div className="roadmap-stages-grid">
           {[
             {
@@ -148,7 +148,7 @@ export const MainnetRadar: React.FC = () => {
             },
             {
               stage: 'PHASE 02',
-              title: 'Playground Mode',
+              title: 'Playground Testnet',
               status: 'Live Now (Online)',
               color: '#A9DDD3',
               active: true,
@@ -156,14 +156,6 @@ export const MainnetRadar: React.FC = () => {
             },
             {
               stage: 'PHASE 03',
-              title: 'Incentivized Testnet',
-              status: 'Upcoming',
-              color: '#F59E0B',
-              active: false,
-              icon: '🟡',
-            },
-            {
-              stage: 'PHASE 04',
               title: 'Public Mainnet',
               status: 'Coming Soon',
               color: '#60A5FA',
