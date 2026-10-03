@@ -270,7 +270,7 @@ export const DailyMissions: React.FC<DailyMissionsProps> = ({
 
   const handleClaimPack = async () => {
     if (user?.lastClaimDate === todayDate) {
-      alert('You have already claimed today\'s 3-card pack! New missions and packs unlock daily at 00:00 UTC.');
+      alert('You have already claimed today\'s 3-card pack! New tasks and packs unlock daily at 00:00 UTC.');
       return;
     }
 
@@ -279,25 +279,29 @@ export const DailyMissions: React.FC<DailyMissionsProps> = ({
       const res = await fetch('/api/pack/open', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username }),
+        body: JSON.stringify({ username, packCount: 3, date: todayDate }),
       });
       const data = await res.json();
-      if (data.success && data.cards) {
+      const cardsList = data.cards || data.pulledCards;
+      if (data.success && Array.isArray(cardsList) && cardsList.length > 0) {
         // Play energetic pack-opening audio chime!
         playPackOpenSound();
 
-        setUser(data.user);
-        if (onUserDataUpdate) onUserDataUpdate(data.user);
+        if (data.user) {
+          setUser(data.user);
+          if (onUserDataUpdate) onUserDataUpdate(data.user);
+        }
 
         // Directly navigate to RIALO CARDS to reveal the cards with 3D animation and sound!
         if (onOpenPackInRialoCards) {
-          onOpenPackInRialoCards(data.cards);
+          onOpenPackInRialoCards(cardsList);
         }
       } else {
         alert(data.error || 'Failed to claim pack');
       }
     } catch (err) {
       console.error('Failed to claim pack:', err);
+      alert('Network error while claiming pack. Please try again.');
     } finally {
       setClaiming(false);
     }

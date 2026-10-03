@@ -70,6 +70,26 @@ export default function AdminPage() {
     }
   };
 
+  const handleResetUserClaimLock = async (uname: string) => {
+    try {
+      const keyToUse = passkey || 'rialo-admin-2026';
+      const res = await fetch('/api/admin/reset-claim', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: uname, passkey: keyToUse, adminKey: keyToUse }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        alert(`Successfully reset daily claim lock for @${uname}! Player can now claim today's 3-card pack.`);
+        fetchGiftData();
+      } else {
+        alert(data.error || 'Failed to reset claim lock');
+      }
+    } catch (e: any) {
+      alert(e.message || 'Network error');
+    }
+  };
+
   const handleSendGift = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!giftRecipient.trim()) {
@@ -3266,14 +3286,34 @@ const handleCreateMission = async (e: React.FormEvent) => {
                       return (
                         <div style={{
                           marginTop: '8px',
-                          padding: '6px 12px',
+                          padding: '8px 12px',
                           background: 'rgba(16, 185, 129, 0.1)',
                           border: '1px solid rgba(16, 185, 129, 0.25)',
                           borderRadius: '8px',
                           fontSize: '11px',
                           color: '#A9DDD3',
                         }}>
-                          👤 <strong>@{found.username}</strong> currently has <strong>{cardCopies}x</strong> copies of this card ({found.totalCardsCount} total cards • {found.lifetimePoints} pts).
+                          <div>
+                            👤 <strong>@{found.username}</strong> currently has <strong>{cardCopies}x</strong> copies of this card ({found.totalCardsCount} total cards • {found.lifetimePoints} pts).
+                          </div>
+                          <div style={{ marginTop: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <button
+                              type="button"
+                              onClick={() => handleResetUserClaimLock(found.username)}
+                              style={{
+                                padding: '4px 10px',
+                                borderRadius: '6px',
+                                fontSize: '11px',
+                                fontWeight: 700,
+                                background: 'rgba(239, 68, 68, 0.15)',
+                                color: '#F87171',
+                                border: '1px solid rgba(239, 68, 68, 0.3)',
+                                cursor: 'pointer',
+                              }}
+                            >
+                              🔓 Reset Daily Claim Lock (Allow 3-Card Pack Claim)
+                            </button>
+                          </div>
                         </div>
                       );
                     } else if (clean) {

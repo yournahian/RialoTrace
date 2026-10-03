@@ -258,9 +258,9 @@ export async function getAllUsersSummary() {
   }));
 }
 
-export async function updateUserInventory(username: string, newCardIds: string[]): Promise<UserProfile> {
+export async function updateUserInventory(username: string, newCardIds: string[], claimDate?: string): Promise<UserProfile> {
   const user = await getOrCreateUser(username);
-  const today = getTodayDateStr();
+  const today = claimDate || getTodayDateStr();
 
   for (const cid of newCardIds) {
     user.inventory[cid] = (user.inventory[cid] || 0) + 1;
@@ -275,6 +275,14 @@ export async function updateUserInventory(username: string, newCardIds: string[]
     user.lifetimePoints += 2500;
   }
 
+  user.updatedAt = new Date().toISOString();
+  return saveUser(user);
+}
+
+
+export async function resetUserClaimDate(username: string): Promise<UserProfile> {
+  const user = await getOrCreateUser(username);
+  user.lastClaimDate = undefined;
   user.updatedAt = new Date().toISOString();
   return saveUser(user);
 }
