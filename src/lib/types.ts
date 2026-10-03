@@ -144,3 +144,13 @@ export interface GiftCardLog {
   claimed?: boolean;
   claimedAt?: string;
 }
+
+export interface ChatMessage {
+  id: string;
+  sender: string;
+  avatar?: string;
+  text: string;
+  time: string;
+  isSystem?: boolean;
+  createdAt?: string;
+}

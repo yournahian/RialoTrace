@@ -1,18 +1,9 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { MessageSquare, Send, CloudRain, X, Sparkles, Zap, Heart } from 'lucide-react';
+import { MessageSquare, Send, CloudRain, X, Sparkles, Zap, Heart, Radio } from 'lucide-react';
 import { sound } from '@/lib/soundFx';
-import { UserProfile } from '@/lib/types';
-
-interface ChatMessage {
-  id: string;
-  sender: string;
-  avatar?: string;
-  text: string;
-  time: string;
-  isSystem?: boolean;
-}
+import { UserProfile, ChatMessage } from '@/lib/types';
 
 interface FallingShard {
   id: number;
@@ -43,6 +34,7 @@ export const TrollboxChat: React.FC<{ user: UserProfile | null; onUserUpdate?: (
   ]);
 
   const [input, setInput] = useState('');
+  const [isSending, setIsSending] = useState(false);
   const [fallingShards, setFallingShards] = useState<FallingShard[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -50,32 +42,78 @@ export const TrollboxChat: React.FC<{ user: UserProfile | null; onUserUpdate?: (
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  // Sync messages globally from /api/trollbox
+  const fetchGlobalMessages = async () => {
+    try {
+      const res = await fetch('/api/trollbox');
+      const data = await res.json();
+      if (data.success && Array.isArray(data.messages) && data.messages.length > 0) {
+        setMessages(data.messages);
+      }
+    } catch (err) {
+      console.error('Failed to sync global trollbox:', err);
+    }
+  };
+
+  useEffect(() => {
+    fetchGlobalMessages();
+    const intervalTime = isOpen ? 2500 : 6000;
+    const interval = setInterval(fetchGlobalMessages, intervalTime);
+    return () => clearInterval(interval);
+  }, [isOpen]);
+
   useEffect(() => {
     if (isOpen) scrollToBottom();
   }, [messages, isOpen]);
 
-  const handleSendMessage = (e: React.FormEvent) => {
+  const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!input.trim() || !user?.username) return;
+    if (!input.trim() || !user?.username || isSending) return;
 
+    const trimmedText = input.trim();
+    setInput('');
     sound.playTap();
-    // Track sent message count for mission verification
+
+    // Track sent message count for mission verification & profile achievements
     if (typeof window !== 'undefined' && user?.username) {
       const cleanUser = user.username.replace('@', '').toLowerCase();
       const currentSent = parseInt(localStorage.getItem(`rialo_trollbox_sent_${cleanUser}`) || '0') + 1;
       localStorage.setItem(`rialo_trollbox_sent_${cleanUser}`, String(currentSent));
       window.dispatchEvent(new CustomEvent('rialo_trollbox_msg_sent', { detail: { count: currentSent } }));
     }
-    const newMsg: ChatMessage = {
-      id: String(Date.now()),
+
+    const tempId = 'temp-' + Date.now();
+    const tempMsg: ChatMessage = {
+      id: tempId,
       sender: user.username,
-      avatar: 'https://pbs.twimg.com/profile_images/1990106346264666112/pbBiIRET_400x400.png',
-      text: input.trim(),
+      avatar: `https://unavatar.io/x/${user.username}`,
+      text: trimmedText,
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     };
 
-    setMessages((prev) => [...prev, newMsg]);
-    setInput('');
+    // Optimistic UI update
+    setMessages((prev) => [...prev, tempMsg]);
+
+    try {
+      setIsSending(true);
+      const res = await fetch('/api/trollbox', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sender: user.username,
+          text: trimmedText,
+          avatar: `https://unavatar.io/x/${user.username}`,
+        }),
+      });
+      const data = await res.json();
+      if (data.success && data.message) {
+        setMessages((prev) => prev.map((m) => (m.id === tempId ? data.message : m)));
+      }
+    } catch (err) {
+      console.error('Failed to broadcast global message:', err);
+    } finally {
+      setIsSending(false);
+    }
   };
 
   const triggerShardRain = async () => {
@@ -100,6 +138,18 @@ export const TrollboxChat: React.FC<{ user: UserProfile | null; onUserUpdate?: (
     } catch (e) {
       console.error(e);
     }
+
+    // Broadcast Shard Rain globally to Trollbox so everyone sees it!
+    fetch('/api/trollbox', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        sender: 'SHARD RAIN 🌧️',
+        avatar: 'https://pbs.twimg.com/profile_images/1950265537784926208/qbjSWMDP_400x400.jpg',
+        text: `🌊 @${user.username} made it rain! Free shards are falling on screen! Click them to catch!`,
+        isSystem: true,
+      }),
+    }).catch(() => {});
 
     // Spawn 14 falling shards on screen
     const newShards = Array.from({ length: 14 }).map((_, i) => ({
@@ -145,36 +195,36 @@ export const TrollboxChat: React.FC<{ user: UserProfile | null; onUserUpdate?: (
 
   return (
     <>
-      {/* Falling Rain Shards Animation */}
+      {/* Falling Shards Overlay when Rain is triggered */}
       {fallingShards.map((s) => (
         <div
           key={s.id}
           onClick={() => handleCatchShard(s.id)}
           style={{
             position: 'fixed',
-            top: '-50px',
+            top: 0,
             left: `${s.x}px`,
             zIndex: 999999,
             cursor: 'pointer',
             fontSize: '28px',
-            animation: `fall ${6 / s.speed}s linear forwards`,
-            filter: 'drop-shadow(0 0 12px #A9DDD3)',
+            animation: `shardFall 4s linear infinite`,
+            userSelect: 'none',
+            filter: 'drop-shadow(0 0 10px #A9DDD3)',
           }}
-          title="Click to Catch +5 Free Shards!"
         >
           💎
         </div>
       ))}
 
-      <style>{`
-        @keyframes fall {
-          0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-          100% { transform: translateY(105vh) rotate(360deg); opacity: 0.9; }
-        }
-      `}</style>
-
-      {/* Floating Toggle Pill Button on Bottom-Right */}
-      <div style={{ position: 'fixed', bottom: '24px', right: '24px', zIndex: 90 }}>
+      {/* Floating Trollbox Launcher Bar */}
+      <div
+        style={{
+          position: 'fixed',
+          bottom: '24px',
+          right: '24px',
+          zIndex: 99999,
+        }}
+      >
         {!isOpen && (
           <button
             type="button"
@@ -182,96 +232,152 @@ export const TrollboxChat: React.FC<{ user: UserProfile | null; onUserUpdate?: (
               sound.playTap();
               setIsOpen(true);
             }}
+            title="Open Community Live Trollbox"
             style={{
-              padding: '12px 20px',
-              borderRadius: '9999px',
-              background: 'linear-gradient(135deg, rgba(8, 16, 14, 0.95) 0%, rgba(4, 8, 7, 0.98) 100%)',
-              border: '1.5px solid #A9DDD3',
-              color: '#FFFFFF',
-              fontWeight: 800,
-              fontSize: '13px',
-              cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
-              gap: '8px',
-              boxShadow: '0 8px 30px rgba(0, 0, 0, 0.8), 0 0 20px rgba(169, 221, 211, 0.3)',
-              transition: 'all 0.2s',
+              gap: '10px',
+              padding: '12px 20px',
+              background: 'linear-gradient(135deg, rgba(14, 22, 20, 0.95) 0%, rgba(6, 12, 10, 0.98) 100%)',
+              border: '1.5px solid #A9DDD3',
+              borderRadius: '9999px',
+              color: '#FFFFFF',
+              cursor: 'pointer',
+              boxShadow: '0 10px 30px rgba(0, 0, 0, 0.8), 0 0 20px rgba(169, 221, 211, 0.35)',
+              backdropFilter: 'blur(16px)',
+              transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'translateY(-3px) scale(1.03)';
+              e.currentTarget.style.boxShadow = '0 16px 40px rgba(0, 0, 0, 0.9), 0 0 30px rgba(169, 221, 211, 0.55)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translateY(0) scale(1)';
+              e.currentTarget.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.8), 0 0 20px rgba(169, 221, 211, 0.35)';
             }}
           >
-            <MessageSquare size={16} color="#A9DDD3" />
-            <span>Live Trollbox</span>
+            <div style={{ position: 'relative' }}>
+              <MessageSquare size={18} color="#A9DDD3" />
+              <span
+                style={{
+                  position: 'absolute',
+                  top: '-3px',
+                  right: '-3px',
+                  width: '7px',
+                  height: '7px',
+                  borderRadius: '50%',
+                  background: '#10B981',
+                  boxShadow: '0 0 8px #10B981',
+                }}
+              />
+            </div>
+            <span style={{ fontSize: '13px', fontWeight: 900, letterSpacing: '0.02em', color: '#E8E3D5' }}>
+              Live Trollbox
+            </span>
             <span
               style={{
-                width: '8px',
-                height: '8px',
-                borderRadius: '50%',
-                background: '#A9DDD3',
-                boxShadow: '0 0 8px #A9DDD3',
+                fontSize: '10px',
+                fontWeight: 900,
+                background: 'rgba(169, 221, 211, 0.15)',
+                color: '#A9DDD3',
+                padding: '2px 8px',
+                borderRadius: '9999px',
+                border: '1px solid rgba(169, 221, 211, 0.4)',
               }}
-            />
+            >
+              GLOBAL
+            </span>
           </button>
         )}
 
-        {/* Chat Drawer Window */}
+        {/* Expanded Trollbox Modal Box */}
         {isOpen && (
           <div
             style={{
               width: '360px',
-              height: '480px',
-              borderRadius: '24px',
-              background: 'linear-gradient(180deg, rgba(10, 16, 14, 0.98) 0%, rgba(4, 7, 6, 0.99) 100%)',
+              height: '520px',
+              background: 'linear-gradient(180deg, rgba(8, 14, 12, 0.98) 0%, rgba(2, 6, 5, 0.99) 100%)',
               border: '1.5px solid rgba(169, 221, 211, 0.4)',
-              boxShadow: '0 20px 60px rgba(0, 0, 0, 0.9), 0 0 30px rgba(169, 221, 211, 0.15)',
+              borderRadius: '24px',
+              boxShadow: '0 24px 70px rgba(0, 0, 0, 0.95), 0 0 40px rgba(169, 221, 211, 0.25)',
+              backdropFilter: 'blur(24px)',
               display: 'flex',
               flexDirection: 'column',
               overflow: 'hidden',
-              animation: 'slideUp 0.25s ease',
+              animation: 'trollboxPop 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards',
             }}
           >
-            {/* Chat Header */}
+            {/* Trollbox Header */}
             <div
               style={{
-                padding: '14px 18px',
-                borderBottom: '1px solid rgba(169, 221, 211, 0.2)',
+                padding: '16px 18px',
+                borderBottom: '1px solid rgba(169, 221, 211, 0.15)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                background: 'rgba(0,0,0,0.4)',
+                background: 'rgba(169, 221, 211, 0.04)',
               }}
             >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <div
                   style={{
-                    width: '8px',
-                    height: '8px',
-                    borderRadius: '50%',
-                    background: '#A9DDD3',
-                    boxShadow: '0 0 8px #A9DDD3',
+                    width: '32px',
+                    height: '32px',
+                    borderRadius: '10px',
+                    background: 'rgba(169, 221, 211, 0.15)',
+                    border: '1px solid rgba(169, 221, 211, 0.4)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
                   }}
-                />
-                <span style={{ fontWeight: 900, fontSize: '14px', color: '#E8E3D5' }}>Community <span className="gradient-text-rialo">Trollbox</span></span>
+                >
+                  <MessageSquare size={16} color="#A9DDD3" />
+                </div>
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <span style={{ fontWeight: 900, fontSize: '14px', color: '#E8E3D5' }}>
+                      Community <span className="gradient-text-rialo">Trollbox</span>
+                    </span>
+                    <span
+                      style={{
+                        width: '6px',
+                        height: '6px',
+                        borderRadius: '50%',
+                        background: '#10B981',
+                        boxShadow: '0 0 8px #10B981',
+                      }}
+                    />
+                  </div>
+                  <div style={{ fontSize: '10px', color: '#8E9B97', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <span>Global Realtime Feed</span>
+                    <span>•</span>
+                    <span style={{ color: '#10B981', fontWeight: 700 }}>Live Sync</span>
+                  </div>
+                </div>
               </div>
 
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                {/* Shard Rain Button */}
                 <button
                   type="button"
                   onClick={triggerShardRain}
-                  title="Make It Rain 🌧️ (Costs 25 Shards)"
+                  title="Make it rain shards for all players! (Costs 25 Shards)"
                   style={{
-                    padding: '4px 10px',
-                    borderRadius: '9999px',
-                    background: 'rgba(169, 221, 211, 0.16)',
-                    border: '1px solid rgba(169, 221, 211, 0.4)',
-                    color: '#A9DDD3',
-                    fontSize: '11px',
-                    fontWeight: 800,
-                    cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '4px',
+                    padding: '5px 10px',
+                    background: 'linear-gradient(135deg, rgba(0, 240, 255, 0.2) 0%, rgba(168, 85, 247, 0.2) 100%)',
+                    border: '1px solid rgba(0, 240, 255, 0.5)',
+                    borderRadius: '9999px',
+                    color: '#00F0FF',
+                    fontSize: '11px',
+                    fontWeight: 800,
+                    cursor: 'pointer',
+                    transition: 'all 0.2s',
                   }}
                 >
-                  <CloudRain size={13} />
+                  <CloudRain size={12} />
                   <span>Rain</span>
                 </button>
 
@@ -286,6 +392,10 @@ export const TrollboxChat: React.FC<{ user: UserProfile | null; onUserUpdate?: (
                     border: 'none',
                     color: '#8E9B97',
                     cursor: 'pointer',
+                    padding: '4px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
                   }}
                 >
                   <X size={18} />
@@ -310,17 +420,52 @@ export const TrollboxChat: React.FC<{ user: UserProfile | null; onUserUpdate?: (
                   style={{
                     background: m.isSystem ? 'rgba(169, 221, 211, 0.08)' : 'rgba(255, 255, 255, 0.03)',
                     border: m.isSystem ? '1px solid rgba(169, 221, 211, 0.3)' : '1px solid rgba(255, 255, 255, 0.06)',
-                    borderRadius: '12px',
+                    borderRadius: '14px',
                     padding: '8px 12px',
                   }}
                 >
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2px' }}>
-                    <span style={{ fontWeight: 800, fontSize: '11px', color: m.isSystem ? '#A9DDD3' : '#E8E3D5' }}>
-                      @{m.sender}
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '4px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      {!m.isSystem && (
+                        <div
+                          style={{
+                            width: '18px',
+                            height: '18px',
+                            borderRadius: '50%',
+                            overflow: 'hidden',
+                            border: '1px solid #A9DDD3',
+                            flexShrink: 0,
+                          }}
+                        >
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={m.avatar || `https://unavatar.io/x/${m.sender}`}
+                            alt={m.sender}
+                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                            onError={(e) => {
+                              (e.currentTarget as HTMLImageElement).src =
+                                'https://pbs.twimg.com/profile_images/1990106346264666112/pbBiIRET_400x400.png';
+                            }}
+                          />
+                        </div>
+                      )}
+                      <span
+                        style={{
+                          fontWeight: 800,
+                          fontSize: '11px',
+                          color: m.isSystem ? '#A9DDD3' : '#E8E3D5',
+                        }}
+                      >
+                        {m.isSystem ? m.sender : `@${m.sender}`}
+                      </span>
+                    </div>
+                    <span style={{ fontSize: '9px', color: '#667773', fontFamily: 'var(--font-mono)' }}>
+                      {m.time}
                     </span>
-                    <span style={{ fontSize: '9px', color: '#667773', fontFamily: 'var(--font-mono)' }}>{m.time}</span>
                   </div>
-                  <p style={{ margin: 0, fontSize: '12px', color: '#D4DDD9', lineHeight: 1.35 }}>{m.text}</p>
+                  <p style={{ margin: 0, fontSize: '12px', color: '#D4DDD9', lineHeight: 1.4, wordBreak: 'break-word' }}>
+                    {m.text}
+                  </p>
                 </div>
               ))}
               <div ref={messagesEndRef} />
@@ -330,24 +475,26 @@ export const TrollboxChat: React.FC<{ user: UserProfile | null; onUserUpdate?: (
             <form
               onSubmit={handleSendMessage}
               style={{
-                padding: '10px 14px',
+                padding: '12px 14px',
                 borderTop: '1px solid rgba(169, 221, 211, 0.15)',
                 display: 'flex',
                 gap: '8px',
-                background: 'rgba(0,0,0,0.5)',
+                background: 'rgba(0,0,0,0.6)',
               }}
             >
               <input
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder="Broadcast to community..."
+                maxLength={300}
+                placeholder={user?.username ? 'Broadcast message to everyone...' : 'Connect X account to chat...'}
+                disabled={!user?.username || isSending}
                 style={{
                   flex: 1,
-                  background: 'rgba(255, 255, 255, 0.04)',
+                  background: 'rgba(255, 255, 255, 0.05)',
                   border: '1px solid rgba(169, 221, 211, 0.25)',
-                  borderRadius: '9999px',
-                  padding: '8px 14px',
+                  borderRadius: '12px',
+                  padding: '9px 12px',
                   color: '#FFFFFF',
                   fontSize: '12px',
                   outline: 'none',
@@ -355,21 +502,23 @@ export const TrollboxChat: React.FC<{ user: UserProfile | null; onUserUpdate?: (
               />
               <button
                 type="submit"
+                disabled={!input.trim() || !user?.username || isSending}
                 style={{
-                  width: '34px',
-                  height: '34px',
-                  borderRadius: '50%',
-                  background: '#A9DDD3',
-                  border: 'none',
+                  background: input.trim() && user?.username && !isSending ? '#A9DDD3' : 'rgba(255, 255, 255, 0.1)',
                   color: '#010101',
+                  border: 'none',
+                  borderRadius: '12px',
+                  width: '36px',
+                  height: '36px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  cursor: 'pointer',
+                  cursor: input.trim() && user?.username && !isSending ? 'pointer' : 'not-allowed',
+                  transition: 'all 0.2s',
                   flexShrink: 0,
                 }}
               >
-                <Send size={14} />
+                <Send size={15} color={input.trim() && user?.username && !isSending ? '#010101' : '#666'} />
               </button>
             </form>
           </div>

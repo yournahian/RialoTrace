@@ -1,5 +1,5 @@
 ﻿import { supabase } from './supabaseClient';
-import { Mission, UserProfile, TradeOffer, Season, BroadcastEvent, GiftCardLog, PendingGiftItem, CardArchetype } from './types';
+import { Mission, UserProfile, TradeOffer, Season, BroadcastEvent, GiftCardLog, PendingGiftItem, CardArchetype, ChatMessage } from './types';
 import { ALL_30_CARDS } from './cardsData';
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -626,3 +626,120 @@ export interface DatabaseStore {
 }
 
 export function getMissionsForDateSync(_dateStr: string): Mission[] { return []; }
+
+
+// ─── TROLLBOX (GLOBAL REALTIME COMMUNITY CHAT) ────────────────────────────────
+
+export async function getGlobalTrollboxMessages(): Promise<ChatMessage[]> {
+  // 1. Try dedicated table first
+  try {
+    const { data, error } = await supabase
+      .from('trollbox_messages')
+      .select('*')
+      .order('created_at', { ascending: true })
+      .limit(60);
+
+    if (!error && data && data.length > 0) {
+      return data.map((r: any) => ({
+        id: r.id,
+        sender: r.sender,
+        avatar: r.avatar || `https://unavatar.io/x/${r.sender}`,
+        text: r.text,
+        time: r.time,
+        isSystem: Boolean(r.is_system),
+        createdAt: r.created_at,
+      }));
+    }
+  } catch (err) {
+    // Fall back to kv_store
+  }
+
+  // 2. Fall back to kv_store cache
+  try {
+    const { data } = await supabase
+      .from('kv_store')
+      .select('value')
+      .eq('key', 'global_trollbox_messages')
+      .single();
+
+    if (data && data.value) {
+      const parsed = JSON.parse(data.value);
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    }
+  } catch (err) {}
+
+  return [
+    {
+      id: 'sys-1',
+      sender: 'Protocol Bot',
+      text: '⚡ Zero-Friction Testnet Wave 1 is active. 30 daily missions loaded.',
+      time: '12:00',
+      isSystem: true,
+    },
+    {
+      id: 'sys-2',
+      sender: 'Community Beacon',
+      text: '💬 Live Trollbox Channel is online. Share alpha, trade offers, and chat with fellow questers.',
+      time: '12:01',
+      isSystem: true,
+    },
+  ];
+}
+
+export async function sendGlobalTrollboxMessage(msg: {
+  sender: string;
+  text: string;
+  avatar?: string;
+  isSystem?: boolean;
+}): Promise<ChatMessage> {
+  const newMsg: ChatMessage = {
+    id: 'msg-' + Date.now() + '-' + Math.random().toString(36).substring(2, 6),
+    sender: msg.sender,
+    avatar: msg.avatar || `https://unavatar.io/x/${msg.sender}`,
+    text: msg.text.trim(),
+    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+    isSystem: Boolean(msg.isSystem),
+    createdAt: new Date().toISOString(),
+  };
+
+  // 1. Try saving to trollbox_messages table
+  try {
+    await supabase.from('trollbox_messages').insert({
+      id: newMsg.id,
+      sender: newMsg.sender,
+      avatar: newMsg.avatar,
+      text: newMsg.text,
+      time: newMsg.time,
+      is_system: newMsg.isSystem,
+      created_at: newMsg.createdAt,
+    });
+  } catch (e) {}
+
+  // 2. Also sync to kv_store for high-speed fallback & instant global replication
+  try {
+    const { data } = await supabase
+      .from('kv_store')
+      .select('value')
+      .eq('key', 'global_trollbox_messages')
+      .single();
+
+    let list: ChatMessage[] = [];
+    if (data && data.value) {
+      try {
+        list = JSON.parse(data.value);
+      } catch (e) {}
+    }
+    list.push(newMsg);
+    if (list.length > 80) list = list.slice(list.length - 80);
+
+    await supabase.from('kv_store').upsert({
+      key: 'global_trollbox_messages',
+      value: JSON.stringify(list),
+      updated_at: new Date().toISOString(),
+    }, { onConflict: 'key' });
+  } catch (e) {
+    console.error('Failed to sync trollbox message to kv_store:', e);
+  }
+
+  return newMsg;
+}

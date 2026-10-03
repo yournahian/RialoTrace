@@ -110,6 +110,20 @@ CREATE TABLE IF NOT EXISTS kv_store (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- 8. TROLLBOX MESSAGES TABLE (Realtime Global Community Chat)
+CREATE TABLE IF NOT EXISTS trollbox_messages (
+    id TEXT PRIMARY KEY,
+    sender TEXT NOT NULL,
+    avatar TEXT,
+    text TEXT NOT NULL,
+    time TEXT NOT NULL,
+    is_system BOOLEAN DEFAULT false,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE trollbox_messages DISABLE ROW LEVEL SECURITY;
+
+
 -- ==============================================================================
 -- DISABLE ROW LEVEL SECURITY (RLS)
 -- Disabling RLS allows the server-side Supabase client (using anon key)
@@ -127,6 +141,7 @@ ALTER TABLE broadcasts DISABLE ROW LEVEL SECURITY;
 ALTER TABLE gift_logs DISABLE ROW LEVEL SECURITY;
 ALTER TABLE seasons DISABLE ROW LEVEL SECURITY;
 ALTER TABLE kv_store DISABLE ROW LEVEL SECURITY;
+ALTER TABLE trollbox_messages DISABLE ROW LEVEL SECURITY;
 
 -- ==============================================================================
 -- INITIAL SEED: SEASON 1
