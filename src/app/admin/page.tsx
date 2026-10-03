@@ -26,8 +26,18 @@ import {
   Square,
 } from 'lucide-react';
 
+function getLocalTodayDate(): string {
+  const d = new Date();
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
 export default function AdminPage() {
   const [passkey, setPasskey] = useState('');
+  const getAdminKey = () => passkey || (typeof window !== 'undefined' ? sessionStorage.getItem('rialo_admin_key') || sessionStorage.getItem('rialo_admin_passkey') || '' : '') || 'rialo-admin-2026';
+  const [autoScheduleStartDate, setAutoScheduleStartDate] = useState<string>(getLocalTodayDate());
   const [authenticating, setAuthenticating] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authError, setAuthError] = useState('');
@@ -181,9 +191,7 @@ export default function AdminPage() {
 
   // Form State for creating a single scheduled mission
   const [dayNumber, setDayNumber] = useState<number>(1);
-  const [scheduledDate, setScheduledDate] = useState<string>(
-    new Date().toISOString().split('T')[0]
-  );
+  const [scheduledDate, setScheduledDate] = useState<string>(getLocalTodayDate());
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [link, setLink] = useState('https://x.com/RialoHQ');
@@ -636,7 +644,7 @@ const handleCreateMission = async (e: React.FormEvent) => {
     showToast('✓ Task deleted.');
 
     try {
-      await fetch(`/api/admin/missions?key=${encodeURIComponent(passkey)}`, {
+      await fetch(`/api/admin/missions?key=${encodeURIComponent(getAdminKey())}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -673,10 +681,10 @@ const handleCreateMission = async (e: React.FormEvent) => {
     // Optimistic UI update
     setMissions((prev) => prev.filter((m) => !toDelete.includes(m.id)));
     setSelectedIds([]);
-    showToast(`✓ Deleted ${toDelete.length} selected missions.`);
+    showToast(`✓ Deleted ${toDelete.length} selected tasks.`);
 
     try {
-      await fetch(`/api/admin/missions?key=${encodeURIComponent(passkey)}`, {
+      await fetch(`/api/admin/missions?key=${encodeURIComponent(getAdminKey())}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -716,7 +724,7 @@ const handleCreateMission = async (e: React.FormEvent) => {
     showToast(`✓ Moved "${moved.title.slice(0, 24)}..." to #${to + 1}`);
 
     try {
-      await fetch(`/api/admin/missions?key=${encodeURIComponent(passkey)}`, {
+      await fetch(`/api/admin/missions?key=${encodeURIComponent(getAdminKey())}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -736,7 +744,7 @@ const handleCreateMission = async (e: React.FormEvent) => {
     );
 
     try {
-      await fetch(`/api/admin/missions?key=${encodeURIComponent(passkey)}`, {
+      await fetch(`/api/admin/missions?key=${encodeURIComponent(getAdminKey())}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -750,10 +758,11 @@ const handleCreateMission = async (e: React.FormEvent) => {
     }
   };
 
-  // Instant Auto Pre-Schedule 30 Days of Tasks of Tasks (Non-blocking & Infallible)
-  const handleBulkPrepopulate30Days = async () => {
+    // Instant Auto Pre-Schedule 30 Days of Tasks starting from that day's date
+  const handleBulkPrepopulate30Days = async (customStartDate?: string) => {
     setIsGenerating(true);
-    const today = new Date();
+    const startStr = customStartDate || autoScheduleStartDate || getLocalTodayDate();
+    const [startYear, startMonth, startDay] = startStr.split('-').map(Number);
     const generated: Mission[] = [];
     const templates: Array<{
       t: string;
@@ -813,9 +822,11 @@ const handleCreateMission = async (e: React.FormEvent) => {
     ];
 
     for (let day = 1; day <= 30; day++) {
-      const d = new Date(today);
-      d.setDate(today.getDate() + (day - 1));
-      const dateStr = d.toISOString().split('T')[0];
+      const d = new Date(startYear, startMonth - 1, startDay + (day - 1));
+      const curYear = d.getFullYear();
+      const curMonth = String(d.getMonth() + 1).padStart(2, '0');
+      const curDay = String(d.getDate()).padStart(2, '0');
+      const dateStr = `${curYear}-${curMonth}-${curDay}`;
       const tmpl = templates[(day - 1) % templates.length];
 
       generated.push({
@@ -839,10 +850,13 @@ const handleCreateMission = async (e: React.FormEvent) => {
 
     setMissions(generated);
     setSelectedIds([]);
-    showToast('✓ Successfully pre-scheduled all 30 days of missions!');
+    const firstDate = generated[0].scheduledDate;
+    const lastDate = generated[generated.length - 1].scheduledDate;
+    showToast(`⏳ Saving 30 daily tasks (Day 1: ${firstDate} ➔ Day 30: ${lastDate}) to database...`);
 
     try {
-      await fetch(`/api/admin/missions?key=${encodeURIComponent(passkey)}`, {
+      const keyToUse = getAdminKey();
+      const res = await fetch(`/api/admin/missions?key=${encodeURIComponent(keyToUse)}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -850,8 +864,16 @@ const handleCreateMission = async (e: React.FormEvent) => {
           missions: generated,
         }),
       });
-    } catch (err) {
+      const data = await res.json();
+      if (data.success) {
+        showToast(`✓ Live in database! 30 daily tasks scheduled from ${firstDate} (Day 1) to ${lastDate} (Day 30).`);
+        await fetchAdminMissions(keyToUse, false);
+      } else {
+        showToast(`⚠️ Server error: ${data.error || 'Failed to save schedule'}`);
+      }
+    } catch (err: any) {
       console.error(err);
+      showToast('⚠️ Network error while saving 30-day schedule');
     } finally {
       setIsGenerating(false);
     }
@@ -975,11 +997,42 @@ const handleCreateMission = async (e: React.FormEvent) => {
               <span>Refresh</span>
             </button>
 
+            {/* START DATE SELECTOR FOR AUTO PRE-SCHEDULE */}
+            <div style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              height: '44px',
+              padding: '0 14px',
+              background: 'rgba(6, 10, 10, 0.85)',
+              border: '1px solid rgba(169, 221, 211, 0.3)',
+              borderRadius: '12px',
+            }}>
+              <Calendar size={15} color="#A9DDD3" />
+              <span style={{ fontSize: '12px', fontWeight: 800, color: '#A9DDD3', whiteSpace: 'nowrap' }}>Start Date:</span>
+              <input
+                type="date"
+                value={autoScheduleStartDate}
+                onChange={(e) => setAutoScheduleStartDate(e.target.value)}
+                style={{
+                  background: 'transparent',
+                  border: 'none',
+                  color: '#FFFFFF',
+                  fontSize: '12px',
+                  fontWeight: 700,
+                  outline: 'none',
+                  fontFamily: 'var(--font-mono)',
+                  cursor: 'pointer',
+                }}
+                title="Start date for Day 1 (Defaults to today)"
+              />
+            </div>
+
             {/* AUTO PRE-SCHEDULE 30 DAYS - WORKING WITHOUT BLOCKING PROMPT */}
             <button
               type="button"
               disabled={isGenerating}
-              onClick={handleBulkPrepopulate30Days}
+              onClick={() => handleBulkPrepopulate30Days(autoScheduleStartDate)}
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -1264,7 +1317,7 @@ const handleCreateMission = async (e: React.FormEvent) => {
               <div className="admin-input-group" style={{ gridColumn: 'span 2', padding: '14px', background: 'rgba(12, 16, 16, 0.8)', border: '1px solid rgba(169, 221, 211, 0.25)', borderRadius: '12px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
                   <label style={{ fontSize: '12px', fontWeight: 800, color: '#FBBF24', margin: 0, display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <span>🃏 Optional Collector Card Reward</span>
+                    <Gift size={14} color="#FBBF24" /> <span>Optional Collector Card Reward</span>
                   </label>
                   <span style={{ fontSize: '11px', color: 'rgba(232, 227, 213, 0.6)' }}>
                     Users receive this card in their vault upon task completion
@@ -1894,7 +1947,7 @@ const handleCreateMission = async (e: React.FormEvent) => {
                 {missions.length === 0 ? (
                   <tr>
                     <td colSpan={7} style={{ padding: '32px 0', textAlign: 'center', color: 'rgba(232, 227, 213, 0.4)' }}>
-                      No missions in database. Click "Auto Pre-Schedule 30 Days" above to initialize.
+                      No tasks in database. Click "Auto Pre-Schedule 30 Days" above to initialize.
                     </td>
                   </tr>
                 ) : (

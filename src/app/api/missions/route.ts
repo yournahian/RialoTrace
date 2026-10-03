@@ -34,7 +34,7 @@ export async function GET(req: NextRequest) {
       completedIds = user.completedMissions || [];
     }
 
-    return NextResponse.json({ success: true, today, missions, completedMissions: completedIds });
+    return NextResponse.json({ success: true, today: targetDate, missions, completedMissions: completedIds });
   } catch (err: any) {
     return NextResponse.json({ success: false, error: err.message }, { status: 500 });
   }
