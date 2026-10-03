@@ -3,15 +3,31 @@
 import { CryoStreakVault } from './CryoStreakVault';
 
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
+import { sound } from '@/lib/soundFx';
 import { Mission, UserProfile, CardArchetype, PendingGiftItem } from '@/lib/types';
 import { ALL_30_CARDS } from '@/lib/cardsData';
 import { Lock, CheckCircle2, Circle, ExternalLink, Gift, Sparkles, Flame, Coins, Calendar, Check, Camera, X, HelpCircle, Upload, Trash2 } from 'lucide-react';
 import { playPackOpenSound, playCardRevealSound } from '@/lib/sounds';
 
+export interface RewardedCardData {
+  id: string;
+  title: string;
+  rarity: string;
+  image: string;
+  badgeEmoji: string;
+  quantity?: number;
+  taskTitle?: string;
+  lore?: string;
+  glowColor?: string;
+  iconBg?: string;
+}
+
 interface DailyMissionsProps {
   username: string;
   onUserDataUpdate?: (user: UserProfile) => void;
   onOpenPackInRialoCards?: (pulledCards: CardArchetype[]) => void;
+  onNavigateToBinder?: () => void;
 }
 
 function getLocalClientDate(): string {
@@ -26,6 +42,7 @@ export const DailyMissions: React.FC<DailyMissionsProps> = ({
   username,
   onUserDataUpdate,
   onOpenPackInRialoCards,
+  onNavigateToBinder,
 }) => {
   const [missions, setMissions] = useState<Mission[]>([]);
   const [completedIds, setCompletedIds] = useState<string[]>([]);
@@ -42,6 +59,20 @@ export const DailyMissions: React.FC<DailyMissionsProps> = ({
   const [uploadingProof, setUploadingProof] = useState<boolean>(false);
   const [todayDate, setTodayDate] = useState('');
   const [claimingGiftId, setClaimingGiftId] = useState<string | null>(null);
+  const [revealedTaskCard, setRevealedTaskCard] = useState<RewardedCardData | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const triggerCardReveal = (rewardedCard: RewardedCardData) => {
+    playPackOpenSound();
+    setTimeout(() => {
+      playCardRevealSound(rewardedCard.rarity);
+    }, 350);
+    setRevealedTaskCard(rewardedCard);
+  };
 
   const handleClaimGift = async (giftItem: PendingGiftItem) => {
     try {
@@ -155,6 +186,9 @@ export const DailyMissions: React.FC<DailyMissionsProps> = ({
         setCompletedIds((prev) => [...prev, m.id]);
         setUser(data.user);
         if (onUserDataUpdate) onUserDataUpdate(data.user);
+        if (data.rewardedCard) {
+          triggerCardReveal(data.rewardedCard);
+        }
       }
     } catch (err) {
       console.error('Failed to complete mission:', err);
@@ -207,6 +241,9 @@ export const DailyMissions: React.FC<DailyMissionsProps> = ({
         if (onUserDataUpdate) onUserDataUpdate(data.user);
         setTimeout(() => {
           setActiveQuizMission(null);
+          if (data.rewardedCard) {
+            triggerCardReveal(data.rewardedCard);
+          }
         }, 1400);
       }
     } catch (err) {
@@ -258,6 +295,9 @@ export const DailyMissions: React.FC<DailyMissionsProps> = ({
         if (onUserDataUpdate) onUserDataUpdate(data.user);
         setActiveProofMission(null);
         setProofImageBase64('');
+        if (data.rewardedCard) {
+          triggerCardReveal(data.rewardedCard);
+        }
       } else {
         alert(data.error || 'Failed to submit proof');
       }
@@ -1054,6 +1094,324 @@ export const DailyMissions: React.FC<DailyMissionsProps> = ({
           </div>
         </div>
       )}
+    
+      {/* ============================================================
+          CELEBRATORY TASK COLLECTOR CARD REVEAL MODAL (PORTAL TO BODY)
+          Reveals with full audio chimes, glowing particle aura, and 3D card presentation
+          ============================================================ */}
+      {mounted && revealedTaskCard && createPortal(
+        <div
+          onClick={() => setRevealedTaskCard(null)}
+          style={{
+            position: 'fixed',
+            inset: 0,
+            width: '100vw',
+            height: '100vh',
+            zIndex: 9999999,
+            background: 'rgba(2, 6, 8, 0.94)',
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '20px',
+          }}
+        >
+          {/* Animated Radial Energy Rays Background */}
+          <div
+            style={{
+              position: 'absolute',
+              width: '600px',
+              height: '600px',
+              borderRadius: '50%',
+              background: `radial-gradient(circle, ${revealedTaskCard.glowColor || '#00F0FF'}35 0%, ${revealedTaskCard.glowColor || '#00F0FF'}08 45%, transparent 70%)`,
+              filter: 'blur(35px)',
+              pointerEvents: 'none',
+              animation: 'spin 12s linear infinite',
+            }}
+          />
+
+          {/* Modal Card Reveal Card */}
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              position: 'relative',
+              width: '100%',
+              maxWidth: '440px',
+              background: 'linear-gradient(180deg, rgba(10, 18, 20, 0.98) 0%, rgba(3, 7, 8, 0.99) 100%)',
+              border: `1.5px solid ${revealedTaskCard.glowColor || '#00F0FF'}80`,
+              borderRadius: '28px',
+              padding: '28px 24px 24px',
+              boxShadow: `0 24px 70px rgba(0, 0, 0, 0.95), 0 0 50px ${revealedTaskCard.glowColor || '#00F0FF'}40`,
+              textAlign: 'center',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+            }}
+          >
+            {/* Close Button Top Right */}
+            <button
+              type="button"
+              onClick={() => {
+                sound.playTap();
+                setRevealedTaskCard(null);
+              }}
+              style={{
+                position: 'absolute',
+                top: '16px',
+                right: '16px',
+                width: '32px',
+                height: '32px',
+                borderRadius: '50%',
+                background: 'rgba(255, 255, 255, 0.08)',
+                border: '1px solid rgba(255, 255, 255, 0.15)',
+                color: '#FFFFFF',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                transition: 'all 0.2s',
+              }}
+            >
+              <X size={16} />
+            </button>
+
+            {/* Glowing Trophy Eyebrow Banner */}
+            <div style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '6px 16px',
+              borderRadius: '9999px',
+              background: `linear-gradient(135deg, ${revealedTaskCard.glowColor || '#00F0FF'}25 0%, rgba(255, 255, 255, 0.05) 100%)`,
+              border: `1px solid ${revealedTaskCard.glowColor || '#00F0FF'}70`,
+              marginBottom: '12px',
+              boxShadow: `0 0 15px ${revealedTaskCard.glowColor || '#00F0FF'}30`,
+            }}>
+              <Sparkles size={14} color={revealedTaskCard.glowColor || '#00F0FF'} />
+              <span style={{
+                fontSize: '11px',
+                fontWeight: 900,
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase',
+                color: revealedTaskCard.glowColor || '#00F0FF',
+              }}>
+                🎉 Task Collector Card Dropped!
+              </span>
+            </div>
+
+            {/* Task Attribution Title */}
+            <div style={{
+              fontSize: '12px',
+              color: 'rgba(232, 227, 213, 0.7)',
+              marginBottom: '18px',
+              lineHeight: 1.4,
+              maxWidth: '320px',
+            }}>
+              Reward for completing: <br />
+              <strong style={{ color: '#FFFFFF', fontSize: '13px' }}>
+                &ldquo;{revealedTaskCard.taskTitle || 'Daily Task'}&rdquo;
+              </strong>
+            </div>
+
+            {/* Holographic 3D Floating Card Frame */}
+            <div
+              style={{
+                position: 'relative',
+                width: '200px',
+                height: '280px',
+                borderRadius: '20px',
+                overflow: 'hidden',
+                border: `2px solid ${revealedTaskCard.glowColor || '#00F0FF'}`,
+                boxShadow: `0 16px 40px rgba(0, 0, 0, 0.8), 0 0 30px ${revealedTaskCard.glowColor || '#00F0FF'}50`,
+                background: '#040706',
+                marginBottom: '18px',
+                transition: 'transform 0.3s ease-out, box-shadow 0.3s ease-out',
+                cursor: 'pointer',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'scale(1.04) translateY(-4px)';
+                e.currentTarget.style.boxShadow = `0 24px 50px rgba(0, 0, 0, 0.9), 0 0 45px ${revealedTaskCard.glowColor || '#00F0FF'}80`;
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'scale(1) translateY(0)';
+                e.currentTarget.style.boxShadow = `0 16px 40px rgba(0, 0, 0, 0.8), 0 0 30px ${revealedTaskCard.glowColor || '#00F0FF'}50`;
+              }}
+            >
+              {/* Card Artwork Image */}
+              <img
+                src={revealedTaskCard.image}
+                alt={revealedTaskCard.title}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  display: 'block',
+                }}
+              />
+
+              {/* Holographic Shimmer Overlay */}
+              <div
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  background: 'linear-gradient(115deg, transparent 20%, rgba(255,255,255,0.25) 45%, rgba(0,240,255,0.2) 50%, transparent 60%)',
+                  pointerEvents: 'none',
+                }}
+              />
+
+              {/* Rarity & Emoji Pill Top Right */}
+              <div
+                style={{
+                  position: 'absolute',
+                  top: '10px',
+                  right: '10px',
+                  background: 'rgba(0, 0, 0, 0.85)',
+                  border: `1px solid ${revealedTaskCard.glowColor || '#00F0FF'}`,
+                  borderRadius: '9999px',
+                  padding: '3px 8px',
+                  fontSize: '10px',
+                  fontWeight: 900,
+                  color: revealedTaskCard.glowColor || '#00F0FF',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  backdropFilter: 'blur(8px)',
+                }}
+              >
+                <span>{revealedTaskCard.badgeEmoji || '🃏'}</span>
+                <span>{revealedTaskCard.rarity}</span>
+              </div>
+
+              {/* Multiplier / Quantity Badge Bottom Left */}
+              <div
+                style={{
+                  position: 'absolute',
+                  bottom: '10px',
+                  left: '10px',
+                  background: 'linear-gradient(135deg, #00F0FF, #A855F7)',
+                  color: '#000000',
+                  borderRadius: '6px',
+                  padding: '2px 8px',
+                  fontSize: '11px',
+                  fontWeight: 900,
+                  boxShadow: '0 2px 10px rgba(0,0,0,0.6)',
+                }}
+              >
+                +{revealedTaskCard.quantity || 1} CARD
+              </div>
+            </div>
+
+            {/* Card Metadata */}
+            <div style={{ marginBottom: '14px', width: '100%' }}>
+              <div style={{
+                fontSize: '20px',
+                fontWeight: 900,
+                color: '#FFFFFF',
+                letterSpacing: '-0.02em',
+                marginBottom: '4px',
+              }}>
+                {revealedTaskCard.title}
+              </div>
+              <div style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                fontSize: '11px',
+                fontWeight: 800,
+                color: revealedTaskCard.glowColor || '#00F0FF',
+                textTransform: 'uppercase',
+                letterSpacing: '0.06em',
+                marginBottom: '8px',
+              }}>
+                <span>{revealedTaskCard.badgeEmoji}</span>
+                <span>{revealedTaskCard.rarity} COLLECTOR TIER</span>
+                <span>•</span>
+                <span>+50 XP</span>
+              </div>
+              {revealedTaskCard.lore && (
+                <p style={{
+                  fontSize: '11px',
+                  color: 'rgba(232, 227, 213, 0.65)',
+                  fontStyle: 'italic',
+                  lineHeight: 1.4,
+                  margin: '0 auto',
+                  maxWidth: '320px',
+                }}>
+                  &ldquo;{revealedTaskCard.lore}&rdquo;
+                </p>
+              )}
+            </div>
+
+            {/* Action Buttons */}
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '10px',
+              width: '100%',
+              marginTop: '8px',
+            }}>
+              <button
+                type="button"
+                onClick={() => {
+                  sound.playTap();
+                  setRevealedTaskCard(null);
+                  if (onNavigateToBinder) {
+                    onNavigateToBinder();
+                  }
+                }}
+                style={{
+                  width: '100%',
+                  padding: '13px 18px',
+                  background: 'linear-gradient(135deg, #00F0FF 0%, #0D9488 100%)',
+                  border: 'none',
+                  borderRadius: '14px',
+                  color: '#010101',
+                  fontSize: '13px',
+                  fontWeight: 900,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px',
+                  boxShadow: '0 0 25px rgba(0, 240, 255, 0.4)',
+                  transition: 'all 0.2s',
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.transform = 'translateY(-2px)')}
+                onMouseLeave={(e) => (e.currentTarget.style.transform = 'translateY(0)')}
+              >
+                <span>🎴 View in 3D Card Binder</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  sound.playSuccess();
+                  setRevealedTaskCard(null);
+                }}
+                style={{
+                  width: '100%',
+                  padding: '11px 18px',
+                  background: 'rgba(255, 255, 255, 0.06)',
+                  border: '1px solid rgba(255, 255, 255, 0.15)',
+                  borderRadius: '14px',
+                  color: '#FFFFFF',
+                  fontSize: '12px',
+                  fontWeight: 800,
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.background = 'rgba(255, 255, 255, 0.12)')}
+                onMouseLeave={(e) => (e.currentTarget.style.background = 'rgba(255, 255, 255, 0.06)')}
+              >
+                <span>Awesome! Claim & Continue ⚡</span>
+              </button>
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
+
     </div>
   );
 };

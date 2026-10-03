@@ -74,14 +74,18 @@ export async function POST(req: NextRequest) {
           user.lifetimePoints += 2500;
         }
 
-        const cardArch = ALL_30_CARDS.find((c) => c.id === mission.rewardCardId);
+                const cardArch = ALL_30_CARDS.find((c) => c.id === mission.rewardCardId);
         rewardedCard = {
           id: mission.rewardCardId,
           title: cardArch?.title || mission.rewardCardId,
           rarity: cardArch?.rarity || 'RARE',
           image: cardArch?.image || `/cards/${mission.rewardCardId}.png`,
-          badgeEmoji: cardArch?.badgeEmoji || '??',
+          badgeEmoji: cardArch?.badgeEmoji || '🃏',
           quantity: cardQty,
+          taskTitle: mission.title,
+          lore: cardArch?.lore || '',
+          glowColor: cardArch?.glowColor || '#00F0FF',
+          iconBg: cardArch?.iconBg || 'rgba(0, 240, 255, 0.15)',
         };
       }
 

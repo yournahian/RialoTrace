@@ -396,6 +396,7 @@ export default function HomePage() {
             username={currentUsername}
             onUserDataUpdate={(u) => setCurrentUser(u)}
             onOpenPackInRialoCards={handleOpenPackInRialoCards}
+            onNavigateToBinder={() => handleSelectTab('binder')}
           />
         )}
         {activeTab === 'binder' && (

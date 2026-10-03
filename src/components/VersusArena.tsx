@@ -136,25 +136,13 @@ export const VersusArena: React.FC = () => {
       const seed1 = getSeed(clean1.toLowerCase());
       const seed2 = getSeed(clean2.toLowerCase());
 
-      const finalImpsVal1 =
-        typeof j1?.total_impressions === 'number' && j1.total_impressions > 0
-          ? j1.total_impressions
-          : Math.floor(65000 + (seed1 % 420000));
+      const finalImpsVal1 = typeof j1?.total_impressions === 'number' ? j1.total_impressions : 0;
 
-      const finalImpsVal2 =
-        typeof j2?.total_impressions === 'number' && j2.total_impressions > 0
-          ? j2.total_impressions
-          : Math.floor(65000 + (seed2 % 420000));
+      const finalImpsVal2 = typeof j2?.total_impressions === 'number' ? j2.total_impressions : 0;
 
-      const finalPostsVal1 =
-        typeof j1?.post_count === 'number' && j1.post_count > 0
-          ? j1.post_count
-          : Math.floor(10 + (seed1 % 64));
+      const finalPostsVal1 = typeof j1?.post_count === 'number' ? j1.post_count : 0;
 
-      const finalPostsVal2 =
-        typeof j2?.post_count === 'number' && j2.post_count > 0
-          ? j2.post_count
-          : Math.floor(10 + (seed2 % 64));
+      const finalPostsVal2 = typeof j2?.post_count === 'number' ? j2.post_count : 0;
 
       const parsed1 = {
         user: {

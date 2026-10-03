@@ -182,13 +182,7 @@ async function handleImpressions(rawUsername: string) {
       }
     }
 
-    // 3. Fallback calculation if live index has no data yet
-    const seed = getUsernameSeed(cleanUsername.toLowerCase());
-    const followerFactor = Math.max(1, Math.min(60, Math.floor(profile.followers / 200)));
-    const baseImpressions = Math.floor(18000 + (seed % 95000) * followerFactor);
-    const postCount = Math.floor(8 + (seed % 42));
-    const series = generateFallbackSeries(seed, baseImpressions);
-
+    // 3. Authentic zero metrics when account has no indexed posts yet (no fake/dummy numbers)
     return NextResponse.json({
       ok: true,
       username: cleanUsername,
@@ -199,9 +193,9 @@ async function handleImpressions(rawUsername: string) {
         handle: 'RialoHQ',
         avatar: null,
       },
-      total_impressions: baseImpressions,
-      post_count: postCount,
-      series,
+      total_impressions: 0,
+      post_count: 0,
+      series: [],
       posts: [],
     });
   } catch (error) {
