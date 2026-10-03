@@ -498,7 +498,7 @@ export default function AdminPage() {
     showToast(`✓ Mission scheduled for Day ${dayNumber}!`);
 
     try {
-      await fetch(`/api/admin/missions?key=${encodeURIComponent(passkey)}`, {
+      const res = await fetch(`/api/admin/missions?key=${encodeURIComponent(passkey)}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -506,9 +506,16 @@ export default function AdminPage() {
           mission: newMission,
         }),
       });
+      const data = await res.json();
+      if (data.success) {
+        showToast(`✓ Mission scheduled and synced on server for Day ${dayNumber}!`);
+      } else {
+        showToast(`⚠️ Server error: ${data.error || 'Failed to save mission'}`);
+      }
       fetchAdminMissions(passkey, true);
     } catch (err) {
       console.error(err);
+      showToast('⚠️ Network error saving mission');
     }
   };
 

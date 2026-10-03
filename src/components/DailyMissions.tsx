@@ -71,7 +71,8 @@ export const DailyMissions: React.FC<DailyMissionsProps> = ({
   const fetchMissions = async () => {
     try {
       setLoading(true);
-      const res = await fetch(`/api/missions?username=${encodeURIComponent(username)}`);
+      const clientDate = new Date().toISOString().split('T')[0];
+      const res = await fetch(`/api/missions?username=${encodeURIComponent(username)}&date=${encodeURIComponent(clientDate)}`);
       const data = await res.json();
       if (data.success) {
         setMissions(data.missions || []);

@@ -3,8 +3,114 @@ import path from 'path';
 import { Mission, UserProfile, TradeOffer, Season, BroadcastEvent, GiftCardLog, PendingGiftItem, CardArchetype } from './types';
 import { ALL_30_CARDS } from './cardsData';
 
-const DATA_DIR = path.join(process.cwd(), 'data');
-const STORE_PATH = path.join(DATA_DIR, 'store.json');
+const IS_SERVERLESS = Boolean(
+  process.env.VERCEL || 
+  process.env.AWS_LAMBDA_FUNCTION_NAME || 
+  process.env.NETLIFY
+);
+
+const LOCAL_DATA_DIR = path.join(process.cwd(), 'data');
+const LOCAL_STORE_PATH = path.join(LOCAL_DATA_DIR, 'store.json');
+
+const TMP_DATA_DIR = path.join('/tmp', 'rialo_data');
+const TMP_STORE_PATH = path.join(TMP_DATA_DIR, 'store.json');
+
+declare global {
+  var __rialo_db_store: DatabaseStore | undefined;
+}
+
+export interface DatabaseStore {
+  activeSeason: Season;
+  seasons: Season[];
+  missions: Mission[];
+  users: Record<string, UserProfile>;
+  trades: TradeOffer[];
+  broadcasts?: BroadcastEvent[];
+  giftLogs?: GiftCardLog[];
+}
+
+function getInitialMissions(): Mission[] {
+  const missions: Mission[] = [];
+  const today = new Date();
+
+  const missionTemplates = [
+    { title: 'Follow @RialoHQ on X', type: 'twitter_follow' as const, link: 'https://x.com/RialoHQ', desc: 'Join the vanguard and follow official Rialo protocol updates.' },
+    { title: 'Retweet Rialo Testnet Announcement', type: 'twitter_retweet' as const, link: 'https://x.com/RialoHQ', desc: 'Amplify the parallelized state revolution to your network.' },
+    { title: 'Daily Oracle Quiz: Finality Time', type: 'quiz' as const, link: '', desc: 'What is Rialo deterministic sub-second finality target?', question: 'What is Rialo finality time?', answer: 'Sub-second' },
+    { title: 'Join Rialo Discord Command Center', type: 'discord_join' as const, link: 'https://discord.gg/rialo', desc: 'Connect with node validators and testnet developers in Discord.' },
+    { title: 'Explore Rialo Docs & Architecture', type: 'custom_url' as const, link: 'https://docs.rialo.io', desc: 'Read the whitepaper on asynchronous state pipeline trees.' },
+    { title: 'Like & Quote the Genesis Card Reveal', type: 'twitter_like' as const, link: 'https://x.com/RialoHQ', desc: 'Spread the word about Season 1: 30 Genesis Warrior cards.' },
+  ];
+
+  for (let day = 1; day <= 30; day++) {
+    const d = new Date(today);
+    d.setDate(today.getDate() + (day - 1));
+    const dateStr = d.toISOString().split('T')[0];
+
+    const tmpl = missionTemplates[(day - 1) % missionTemplates.length];
+    missions.push({
+      id: 'm-day-' + day,
+      dayNumber: day,
+      scheduledDate: dateStr,
+      title: 'Day ' + day + ': ' + tmpl.title,
+      description: tmpl.desc,
+      link: tmpl.link,
+      type: tmpl.type,
+      quizQuestion: tmpl.question,
+      quizAnswer: tmpl.answer,
+      rewardPacks: 1,
+      rewardShards: 25,
+      isActive: true,
+    });
+  }
+
+  return missions;
+}
+
+function getInitialStore(): DatabaseStore {
+  return {
+    activeSeason: {
+      id: 'season-1',
+      name: 'Season 1: Genesis',
+      theme: '30 Genesis Protocol Warriors',
+      startDate: new Date().toISOString().split('T')[0],
+      endDate: new Date(Date.now() + 30 * 86400000).toISOString().split('T')[0],
+      isActive: true,
+    },
+    seasons: [
+      {
+        id: 'season-1',
+        name: 'Season 1: Genesis',
+        theme: '30 Genesis Protocol Warriors',
+        startDate: new Date().toISOString().split('T')[0],
+        endDate: new Date(Date.now() + 30 * 86400000).toISOString().split('T')[0],
+        isActive: true,
+      }
+    ],
+    missions: getInitialMissions(),
+    users: {},
+    trades: [],
+    broadcasts: [],
+    giftLogs: [],t fs from 'fs';
+import path from 'path';
+import { Mission, UserProfile, TradeOffer, Season, BroadcastEvent, GiftCardLog, PendingGiftItem, CardArchetype } from './types';
+import { ALL_30_CARDS } from './cardsData';
+
+const IS_SERVERLESS = Boolean(
+  process.env.VERCEL || 
+  process.env.AWS_LAMBDA_FUNCTION_NAME || 
+  process.env.NETLIFY
+);
+
+const LOCAL_DATA_DIR = path.join(process.cwd(), 'data');
+const LOCAL_STORE_PATH = path.join(LOCAL_DATA_DIR, 'store.json');
+
+const TMP_DATA_DIR = path.join('/tmp', 'rialo_data');
+const TMP_STORE_PATH = path.join(TMP_DATA_DIR, 'store.json');
+
+declare global {
+  var __rialo_db_store: DatabaseStore | undefined;
+}
 
 export interface DatabaseStore {
   activeSeason: Season;
@@ -83,30 +189,77 @@ function getInitialStore(): DatabaseStore {
 }
 
 export function getDb(): DatabaseStore {
-  if (!fs.existsSync(DATA_DIR)) {
-    fs.mkdirSync(DATA_DIR, { recursive: true });
+  // 1. Return in-memory cache if available in current process
+  if (globalThis.__rialo_db_store) {
+    return globalThis.__rialo_db_store;
   }
 
-  if (!fs.existsSync(STORE_PATH)) {
-    const initial = getInitialStore();
-    fs.writeFileSync(STORE_PATH, JSON.stringify(initial, null, 2), 'utf-8');
-    return initial;
+  let store: DatabaseStore | null = null;
+
+  // 2. In serverless environment, check writable /tmp first
+  if (IS_SERVERLESS && fs.existsSync(TMP_STORE_PATH)) {
+    try {
+      const raw = fs.readFileSync(TMP_STORE_PATH, 'utf-8');
+      store = JSON.parse(raw);
+    } catch (_) {}
   }
 
-  try {
-    const raw = fs.readFileSync(STORE_PATH, 'utf-8');
-    return JSON.parse(raw);
-  } catch (err) {
-    console.error('Failed to read db store:', err);
-    return getInitialStore();
+  // 3. Check bundled store file (data/store.json)
+  if (!store && fs.existsSync(LOCAL_STORE_PATH)) {
+    try {
+      const raw = fs.readFileSync(LOCAL_STORE_PATH, 'utf-8');
+      store = JSON.parse(raw);
+    } catch (_) {}
   }
+
+  // 4. Fallback to initial store
+  if (!store) {
+    store = getInitialStore();
+  }
+
+  // Initialize in-memory cache
+  globalThis.__rialo_db_store = store;
+
+  // Ensure /tmp copy exists if running on serverless
+  if (IS_SERVERLESS) {
+    try {
+      if (!fs.existsSync(TMP_DATA_DIR)) {
+        fs.mkdirSync(TMP_DATA_DIR, { recursive: true });
+      }
+      if (!fs.existsSync(TMP_STORE_PATH)) {
+        fs.writeFileSync(TMP_STORE_PATH, JSON.stringify(store, null, 2), 'utf-8');
+      }
+    } catch (_) {}
+  }
+
+  return store;
 }
 
 export function saveDb(data: DatabaseStore): void {
-  if (!fs.existsSync(DATA_DIR)) {
-    fs.mkdirSync(DATA_DIR, { recursive: true });
+  // 1. Update in-memory cache immediately
+  globalThis.__rialo_db_store = data;
+
+  // 2. On serverless (Vercel/AWS Lambda), write to writable /tmp
+  if (IS_SERVERLESS) {
+    try {
+      if (!fs.existsSync(TMP_DATA_DIR)) {
+        fs.mkdirSync(TMP_DATA_DIR, { recursive: true });
+      }
+      fs.writeFileSync(TMP_STORE_PATH, JSON.stringify(data, null, 2), 'utf-8');
+    } catch (err) {
+      console.warn('Could not write to /tmp store:', err);
+    }
   }
-  fs.writeFileSync(STORE_PATH, JSON.stringify(data, null, 2), 'utf-8');
+
+  // 3. Try writing to local project directory (succeeds on localhost, gracefully ignored on read-only Vercel)
+  try {
+    if (!fs.existsSync(LOCAL_DATA_DIR)) {
+      fs.mkdirSync(LOCAL_DATA_DIR, { recursive: true });
+    }
+    fs.writeFileSync(LOCAL_STORE_PATH, JSON.stringify(data, null, 2), 'utf-8');
+  } catch (err) {
+    // EROFS on Vercel is expected and safely handled
+  }
 }
 
 export function getTodayDateStr(): string {

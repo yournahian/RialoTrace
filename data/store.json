@@ -477,6 +477,32 @@
       "rewardPacks": 1,
       "rewardShards": 25,
       "isActive": true
+    },
+    {
+      "id": "m-1791049869137",
+      "dayNumber": 31,
+      "scheduledDate": "2026-11-02",
+      "title": "Follow the Founder",
+      "description": "Genesis Mission 1",
+      "link": "https://x.com/yournahin",
+      "type": "twitter_follow",
+      "actionLabel": "Follow on X",
+      "rewardPacks": 1,
+      "rewardShards": 25,
+      "screenshotRequirement": "none",
+      "isActive": true
+    },
+    {
+      "id": "m-test-vercel-1",
+      "dayNumber": 32,
+      "scheduledDate": "2026-11-03",
+      "title": "Day 1 Test: 30-Day Mission Scheduler Verifier",
+      "description": "Verifying mission appears in Complete Daily Missions seamlessly",
+      "link": "https://x.com/RialoHQ",
+      "type": "twitter_follow",
+      "rewardPacks": 1,
+      "rewardShards": 25,
+      "isActive": true
     }
   ],
   "users": {},

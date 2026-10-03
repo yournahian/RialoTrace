@@ -5,10 +5,23 @@ export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const username = searchParams.get('username') || '';
+    const clientDate = searchParams.get('date') || '';
     const today = getTodayDateStr();
+    const targetDate = clientDate || today;
 
     const db = getDb();
-    const todayMissions = db.missions.filter((m) => m.scheduledDate === today && m.isActive);
+    // Match today's date, client local date, or server UTC date
+    let todayMissions = db.missions.filter(
+      (m) => (m.scheduledDate === targetDate || m.scheduledDate === today || (clientDate && m.scheduledDate === clientDate)) && m.isActive
+    );
+
+    // If no exact date match (e.g. timezone day rollover), fallback to active missions
+    if (todayMissions.length === 0) {
+      const allActive = db.missions.filter((m) => m.isActive);
+      if (allActive.length > 0) {
+        todayMissions = allActive.slice(0, 6);
+      }
+    }
 
     let completedIds: string[] = [];
     if (username) {
