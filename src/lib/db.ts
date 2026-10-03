@@ -1,286 +1,178 @@
-import fs from 'fs';
-import path from 'path';
+﻿import { supabase } from './supabaseClient';
 import { Mission, UserProfile, TradeOffer, Season, BroadcastEvent, GiftCardLog, PendingGiftItem, CardArchetype } from './types';
 import { ALL_30_CARDS } from './cardsData';
 
-const IS_SERVERLESS = Boolean(
-  process.env.VERCEL || 
-  process.env.AWS_LAMBDA_FUNCTION_NAME || 
-  process.env.NETLIFY
-);
-
-const LOCAL_DATA_DIR = path.join(process.cwd(), 'data');
-const LOCAL_STORE_PATH = path.join(LOCAL_DATA_DIR, 'store.json');
-
-const TMP_DATA_DIR = path.join('/tmp', 'rialo_data');
-const TMP_STORE_PATH = path.join(TMP_DATA_DIR, 'store.json');
-
-declare global {
-  var __rialo_db_store: DatabaseStore | undefined;
-}
-
-export interface DatabaseStore {
-  activeSeason: Season;
-  seasons: Season[];
-  missions: Mission[];
-  users: Record<string, UserProfile>;
-  trades: TradeOffer[];
-  broadcasts?: BroadcastEvent[];
-  giftLogs?: GiftCardLog[];
-}
-
-function getInitialMissions(): Mission[] {
-  const missions: Mission[] = [];
-  const today = new Date();
-
-  const missionTemplates = [
-    { title: 'Follow @RialoHQ on X', type: 'twitter_follow' as const, link: 'https://x.com/RialoHQ', desc: 'Join the vanguard and follow official Rialo protocol updates.' },
-    { title: 'Retweet Rialo Testnet Announcement', type: 'twitter_retweet' as const, link: 'https://x.com/RialoHQ', desc: 'Amplify the parallelized state revolution to your network.' },
-    { title: 'Daily Oracle Quiz: Finality Time', type: 'quiz' as const, link: '', desc: 'What is Rialo deterministic sub-second finality target?', question: 'What is Rialo finality time?', answer: 'Sub-second' },
-    { title: 'Join Rialo Discord Command Center', type: 'discord_join' as const, link: 'https://discord.gg/rialo', desc: 'Connect with node validators and testnet developers in Discord.' },
-    { title: 'Explore Rialo Docs & Architecture', type: 'custom_url' as const, link: 'https://docs.rialo.io', desc: 'Read the whitepaper on asynchronous state pipeline trees.' },
-    { title: 'Like & Quote the Genesis Card Reveal', type: 'twitter_like' as const, link: 'https://x.com/RialoHQ', desc: 'Spread the word about Season 1: 30 Genesis Warrior cards.' },
-  ];
-
-  for (let day = 1; day <= 30; day++) {
-    const d = new Date(today);
-    d.setDate(today.getDate() + (day - 1));
-    const dateStr = d.toISOString().split('T')[0];
-
-    const tmpl = missionTemplates[(day - 1) % missionTemplates.length];
-    missions.push({
-      id: 'm-day-' + day,
-      dayNumber: day,
-      scheduledDate: dateStr,
-      title: 'Day ' + day + ': ' + tmpl.title,
-      description: tmpl.desc,
-      link: tmpl.link,
-      type: tmpl.type,
-      quizQuestion: tmpl.question,
-      quizAnswer: tmpl.answer,
-      rewardPacks: 1,
-      rewardShards: 25,
-      isActive: true,
-    });
-  }
-
-  return missions;
-}
-
-function getInitialStore(): DatabaseStore {
-  return {
-    activeSeason: {
-      id: 'season-1',
-      name: 'Season 1: Genesis',
-      theme: '30 Genesis Protocol Warriors',
-      startDate: new Date().toISOString().split('T')[0],
-      endDate: new Date(Date.now() + 30 * 86400000).toISOString().split('T')[0],
-      isActive: true,
-    },
-    seasons: [
-      {
-        id: 'season-1',
-        name: 'Season 1: Genesis',
-        theme: '30 Genesis Protocol Warriors',
-        startDate: new Date().toISOString().split('T')[0],
-        endDate: new Date(Date.now() + 30 * 86400000).toISOString().split('T')[0],
-        isActive: true,
-      }
-    ],
-    missions: getInitialMissions(),
-    users: {},
-    trades: [],
-    broadcasts: [],
-    giftLogs: [],t fs from 'fs';
-import path from 'path';
-import { Mission, UserProfile, TradeOffer, Season, BroadcastEvent, GiftCardLog, PendingGiftItem, CardArchetype } from './types';
-import { ALL_30_CARDS } from './cardsData';
-
-const IS_SERVERLESS = Boolean(
-  process.env.VERCEL || 
-  process.env.AWS_LAMBDA_FUNCTION_NAME || 
-  process.env.NETLIFY
-);
-
-const LOCAL_DATA_DIR = path.join(process.cwd(), 'data');
-const LOCAL_STORE_PATH = path.join(LOCAL_DATA_DIR, 'store.json');
-
-const TMP_DATA_DIR = path.join('/tmp', 'rialo_data');
-const TMP_STORE_PATH = path.join(TMP_DATA_DIR, 'store.json');
-
-declare global {
-  var __rialo_db_store: DatabaseStore | undefined;
-}
-
-export interface DatabaseStore {
-  activeSeason: Season;
-  seasons: Season[];
-  missions: Mission[];
-  users: Record<string, UserProfile>;
-  trades: TradeOffer[];
-  broadcasts?: BroadcastEvent[];
-  giftLogs?: GiftCardLog[];
-}
-
-function getInitialMissions(): Mission[] {
-  const missions: Mission[] = [];
-  const today = new Date();
-
-  const missionTemplates = [
-    { title: 'Follow @RialoHQ on X', type: 'twitter_follow' as const, link: 'https://x.com/RialoHQ', desc: 'Join the vanguard and follow official Rialo protocol updates.' },
-    { title: 'Retweet Rialo Testnet Announcement', type: 'twitter_retweet' as const, link: 'https://x.com/RialoHQ', desc: 'Amplify the parallelized state revolution to your network.' },
-    { title: 'Daily Oracle Quiz: Finality Time', type: 'quiz' as const, link: '', desc: 'What is Rialo deterministic sub-second finality target?', question: 'What is Rialo finality time?', answer: 'Sub-second' },
-    { title: 'Join Rialo Discord Command Center', type: 'discord_join' as const, link: 'https://discord.gg/rialo', desc: 'Connect with node validators and testnet developers in Discord.' },
-    { title: 'Explore Rialo Docs & Architecture', type: 'custom_url' as const, link: 'https://docs.rialo.io', desc: 'Read the whitepaper on asynchronous state pipeline trees.' },
-    { title: 'Like & Quote the Genesis Card Reveal', type: 'twitter_like' as const, link: 'https://x.com/RialoHQ', desc: 'Spread the word about Season 1: 30 Genesis Warrior cards.' },
-  ];
-
-  for (let day = 1; day <= 30; day++) {
-    const d = new Date(today);
-    d.setDate(today.getDate() + (day - 1));
-    const dateStr = d.toISOString().split('T')[0];
-
-    const tmpl = missionTemplates[(day - 1) % missionTemplates.length];
-    missions.push({
-      id: 'm-day-' + day,
-      dayNumber: day,
-      scheduledDate: dateStr,
-      title: 'Day ' + day + ': ' + tmpl.title,
-      description: tmpl.desc,
-      link: tmpl.link,
-      type: tmpl.type,
-      quizQuestion: tmpl.question,
-      quizAnswer: tmpl.answer,
-      rewardPacks: 1,
-      rewardShards: 25,
-      isActive: true,
-    });
-  }
-
-  return missions;
-}
-
-function getInitialStore(): DatabaseStore {
-  return {
-    activeSeason: {
-      id: 'season-1',
-      name: 'Season 1: Genesis',
-      theme: '30 Genesis Protocol Warriors',
-      startDate: new Date().toISOString().split('T')[0],
-      endDate: new Date(Date.now() + 30 * 86400000).toISOString().split('T')[0],
-      isActive: true,
-    },
-    seasons: [
-      {
-        id: 'season-1',
-        name: 'Season 1: Genesis',
-        theme: '30 Genesis Protocol Warriors',
-        startDate: new Date().toISOString().split('T')[0],
-        endDate: new Date(Date.now() + 30 * 86400000).toISOString().split('T')[0],
-        isActive: true,
-      }
-    ],
-    missions: getInitialMissions(),
-    users: {},
-    trades: [],
-    broadcasts: [],
-    giftLogs: [],
-  };
-}
-
-export function getDb(): DatabaseStore {
-  // 1. Return in-memory cache if available in current process
-  if (globalThis.__rialo_db_store) {
-    return globalThis.__rialo_db_store;
-  }
-
-  let store: DatabaseStore | null = null;
-
-  // 2. In serverless environment, check writable /tmp first
-  if (IS_SERVERLESS && fs.existsSync(TMP_STORE_PATH)) {
-    try {
-      const raw = fs.readFileSync(TMP_STORE_PATH, 'utf-8');
-      store = JSON.parse(raw);
-    } catch (_) {}
-  }
-
-  // 3. Check bundled store file (data/store.json)
-  if (!store && fs.existsSync(LOCAL_STORE_PATH)) {
-    try {
-      const raw = fs.readFileSync(LOCAL_STORE_PATH, 'utf-8');
-      store = JSON.parse(raw);
-    } catch (_) {}
-  }
-
-  // 4. Fallback to initial store
-  if (!store) {
-    store = getInitialStore();
-  }
-
-  // Initialize in-memory cache
-  globalThis.__rialo_db_store = store;
-
-  // Ensure /tmp copy exists if running on serverless
-  if (IS_SERVERLESS) {
-    try {
-      if (!fs.existsSync(TMP_DATA_DIR)) {
-        fs.mkdirSync(TMP_DATA_DIR, { recursive: true });
-      }
-      if (!fs.existsSync(TMP_STORE_PATH)) {
-        fs.writeFileSync(TMP_STORE_PATH, JSON.stringify(store, null, 2), 'utf-8');
-      }
-    } catch (_) {}
-  }
-
-  return store;
-}
-
-export function saveDb(data: DatabaseStore): void {
-  // 1. Update in-memory cache immediately
-  globalThis.__rialo_db_store = data;
-
-  // 2. On serverless (Vercel/AWS Lambda), write to writable /tmp
-  if (IS_SERVERLESS) {
-    try {
-      if (!fs.existsSync(TMP_DATA_DIR)) {
-        fs.mkdirSync(TMP_DATA_DIR, { recursive: true });
-      }
-      fs.writeFileSync(TMP_STORE_PATH, JSON.stringify(data, null, 2), 'utf-8');
-    } catch (err) {
-      console.warn('Could not write to /tmp store:', err);
-    }
-  }
-
-  // 3. Try writing to local project directory (succeeds on localhost, gracefully ignored on read-only Vercel)
-  try {
-    if (!fs.existsSync(LOCAL_DATA_DIR)) {
-      fs.mkdirSync(LOCAL_DATA_DIR, { recursive: true });
-    }
-    fs.writeFileSync(LOCAL_STORE_PATH, JSON.stringify(data, null, 2), 'utf-8');
-  } catch (err) {
-    // EROFS on Vercel is expected and safely handled
-  }
-}
+// ─── Helpers ─────────────────────────────────────────────────────────────────
 
 export function getTodayDateStr(): string {
   return new Date().toISOString().split('T')[0];
 }
 
-export function getMissionsForDate(dateStr: string): Mission[] {
-  const db = getDb();
-  return db.missions.filter((m) => m.scheduledDate === dateStr && m.isActive);
+function missionToRow(m: Mission) {
+  return {
+    id: m.id,
+    day_number: m.dayNumber,
+    scheduled_date: m.scheduledDate,
+    title: m.title,
+    description: m.description,
+    link: m.link,
+    type: m.type,
+    action_label: m.actionLabel ?? null,
+    screenshot_requirement: m.screenshotRequirement ?? 'none',
+    quiz_question: m.quizQuestion ?? null,
+    quiz_options: m.quizOptions ?? null,
+    quiz_answer: m.quizAnswer ?? null,
+    quiz_explanation: m.quizExplanation ?? null,
+    quiz_questions: m.quizQuestions ?? null,
+    reward_packs: m.rewardPacks,
+    reward_shards: m.rewardShards,
+    is_active: m.isActive,
+  };
 }
 
-export function getOrCreateUser(username: string): UserProfile {
-  const cleanUsername = username.replace('@', '').trim().toLowerCase();
-  const db = getDb();
+function rowToMission(r: any): Mission {
+  return {
+    id: r.id,
+    dayNumber: r.day_number,
+    scheduledDate: r.scheduled_date,
+    title: r.title,
+    description: r.description,
+    link: r.link,
+    type: r.type,
+    actionLabel: r.action_label ?? undefined,
+    screenshotRequirement: r.screenshot_requirement ?? 'none',
+    quizQuestion: r.quiz_question ?? undefined,
+    quizOptions: r.quiz_options ?? undefined,
+    quizAnswer: r.quiz_answer ?? undefined,
+    quizExplanation: r.quiz_explanation ?? undefined,
+    quizQuestions: r.quiz_questions ?? undefined,
+    rewardPacks: r.reward_packs,
+    rewardShards: r.reward_shards,
+    isActive: r.is_active,
+  };
+}
 
-  if (db.users[cleanUsername]) {
-    return db.users[cleanUsername];
-  }
+function userToRow(u: UserProfile) {
+  return {
+    username: u.username,
+    pin_hash: u.pinHash ?? null,
+    address: u.address ?? null,
+    inventory: u.inventory,
+    unique_cards_count: u.uniqueCardsCount,
+    total_cards_count: u.totalCardsCount,
+    shards: u.shards,
+    lifetime_points: u.lifetimePoints,
+    completed_missions: u.completedMissions,
+    completed_missions_history: u.completedMissionsHistory ?? [],
+    pending_gifts: u.pendingGifts ?? [],
+    streak_days: u.streakDays,
+    last_claim_date: u.lastClaimDate ?? null,
+    favorite_cards: u.favoriteCards ?? [],
+    updated_at: new Date().toISOString(),
+  };
+}
+
+function rowToUser(r: any): UserProfile {
+  return {
+    username: r.username,
+    pinHash: r.pin_hash ?? undefined,
+    address: r.address ?? undefined,
+    inventory: r.inventory ?? {},
+    uniqueCardsCount: r.unique_cards_count ?? 0,
+    totalCardsCount: r.total_cards_count ?? 0,
+    shards: r.shards ?? 100,
+    lifetimePoints: r.lifetime_points ?? 100,
+    completedMissions: r.completed_missions ?? [],
+    completedMissionsHistory: r.completed_missions_history ?? [],
+    pendingGifts: r.pending_gifts ?? [],
+    streakDays: r.streak_days ?? 1,
+    lastClaimDate: r.last_claim_date ?? undefined,
+    favoriteCards: r.favorite_cards ?? [],
+    createdAt: r.created_at ?? new Date().toISOString(),
+    updatedAt: r.updated_at ?? new Date().toISOString(),
+  };
+}
+
+// ─── MISSIONS ────────────────────────────────────────────────────────────────
+
+export async function getMissionsForDate(dateStr: string): Promise<Mission[]> {
+  const { data, error } = await supabase
+    .from('missions')
+    .select('*')
+    .eq('scheduled_date', dateStr)
+    .eq('is_active', true)
+    .order('day_number', { ascending: true });
+  if (error || !data) return [];
+  return data.map(rowToMission);
+}
+
+export async function getAllMissions(): Promise<Mission[]> {
+  const { data, error } = await supabase
+    .from('missions')
+    .select('*')
+    .order('day_number', { ascending: true });
+  if (error || !data) return [];
+  return data.map(rowToMission);
+}
+
+export async function upsertMission(mission: Mission): Promise<Mission> {
+  const { data, error } = await supabase
+    .from('missions')
+    .upsert(missionToRow(mission), { onConflict: 'id' })
+    .select()
+    .single();
+  if (error) throw new Error(error.message);
+  return rowToMission(data);
+}
+
+export async function upsertManyMissions(missions: Mission[]): Promise<void> {
+  const { error } = await supabase
+    .from('missions')
+    .upsert(missions.map(missionToRow), { onConflict: 'id' });
+  if (error) throw new Error(error.message);
+}
+
+export async function deleteMission(id: string): Promise<boolean> {
+  const { error } = await supabase.from('missions').delete().eq('id', id);
+  return !error;
+}
+
+export async function deleteManyMissions(ids: string[]): Promise<boolean> {
+  const { error } = await supabase.from('missions').delete().in('id', ids);
+  return !error;
+}
+
+export async function toggleMissionActive(id: string, isActive: boolean): Promise<Mission | null> {
+  const { data, error } = await supabase
+    .from('missions')
+    .update({ is_active: isActive })
+    .eq('id', id)
+    .select()
+    .single();
+  if (error || !data) return null;
+  return rowToMission(data);
+}
+
+// ─── USERS ───────────────────────────────────────────────────────────────────
+
+export async function getUser(username: string): Promise<UserProfile | null> {
+  const clean = username.replace('@', '').trim().toLowerCase();
+  const { data, error } = await supabase
+    .from('users')
+    .select('*')
+    .eq('username', clean)
+    .single();
+  if (error || !data) return null;
+  return rowToUser(data);
+}
+
+export async function getOrCreateUser(username: string): Promise<UserProfile> {
+  const clean = username.replace('@', '').trim().toLowerCase();
+  const existing = await getUser(clean);
+  if (existing) return existing;
 
   const newUser: UserProfile = {
-    username: cleanUsername,
+    username: clean,
     inventory: {},
     uniqueCardsCount: 0,
     totalCardsCount: 0,
@@ -288,23 +180,49 @@ export function getOrCreateUser(username: string): UserProfile {
     lifetimePoints: 100,
     completedMissions: [],
     completedMissionsHistory: [],
+    pendingGifts: [],
     streakDays: 1,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   };
 
-  db.users[cleanUsername] = newUser;
-  saveDb(db);
-  return newUser;
+  const { data, error } = await supabase
+    .from('users')
+    .insert(userToRow(newUser))
+    .select()
+    .single();
+  if (error) throw new Error(error.message);
+  return rowToUser(data);
 }
 
-export function updateUserInventory(
-  username: string,
-  newCardIds: string[]
-): UserProfile {
-  const user = getOrCreateUser(username);
-  const db = getDb();
-  const today = new Date().toISOString().split('T')[0];
+export async function saveUser(user: UserProfile): Promise<UserProfile> {
+  const { data, error } = await supabase
+    .from('users')
+    .upsert(userToRow(user), { onConflict: 'username' })
+    .select()
+    .single();
+  if (error) throw new Error(error.message);
+  return rowToUser(data);
+}
+
+export async function getAllUsersSummary() {
+  const { data, error } = await supabase
+    .from('users')
+    .select('username, total_cards_count, unique_cards_count, lifetime_points, inventory')
+    .order('lifetime_points', { ascending: false });
+  if (error || !data) return [];
+  return data.map((r: any) => ({
+    username: r.username,
+    totalCardsCount: r.total_cards_count ?? 0,
+    uniqueCardsCount: r.unique_cards_count ?? 0,
+    lifetimePoints: r.lifetime_points ?? 0,
+    inventory: r.inventory ?? {},
+  }));
+}
+
+export async function updateUserInventory(username: string, newCardIds: string[]): Promise<UserProfile> {
+  const user = await getOrCreateUser(username);
+  const today = getTodayDateStr();
 
   for (const cid of newCardIds) {
     user.inventory[cid] = (user.inventory[cid] || 0) + 1;
@@ -313,90 +231,201 @@ export function updateUserInventory(
   }
 
   user.lastClaimDate = today;
-
-  user.uniqueCardsCount = Object.keys(user.inventory).filter(
-    (k) => user.inventory[k] > 0
-  ).length;
+  user.uniqueCardsCount = Object.keys(user.inventory).filter((k) => user.inventory[k] > 0).length;
 
   if (user.uniqueCardsCount === 30) {
     user.lifetimePoints += 2500;
   }
 
   user.updatedAt = new Date().toISOString();
-  db.users[user.username] = user;
-  saveDb(db);
-  return user;
+  return saveUser(user);
 }
 
-export function updateUserFavorites(
-  username: string,
-  favoriteCardIds: string[]
-): UserProfile {
-  const user = getOrCreateUser(username);
-  const db = getDb();
-
-  // Validate that user owns each card
-  const validFavorites = favoriteCardIds
-    .filter((cid) => (user.inventory[cid] || 0) > 0)
-    .slice(0, 3);
-
+export async function updateUserFavorites(username: string, favoriteCardIds: string[]): Promise<UserProfile> {
+  const user = await getOrCreateUser(username);
+  const validFavorites = favoriteCardIds.filter((cid) => (user.inventory[cid] || 0) > 0).slice(0, 3);
   user.favoriteCards = validFavorites;
   user.updatedAt = new Date().toISOString();
-  db.users[user.username] = user;
-  saveDb(db);
-  return user;
+  return saveUser(user);
 }
 
-export function addBroadcastEvent(event: BroadcastEvent): BroadcastEvent {
-  const db = getDb();
-  if (!db.broadcasts) {
-    db.broadcasts = [];
-  }
-  db.broadcasts.unshift(event);
-  if (db.broadcasts.length > 50) {
-    db.broadcasts = db.broadcasts.slice(0, 50);
-  }
-  saveDb(db);
-  return event;
-}
-
-export function getBroadcastEvents(): BroadcastEvent[] {
-  const db = getDb();
-  return db.broadcasts || [];
-}
-
-export function awardUserShards(username: string, amount: number): UserProfile {
-  const user = getOrCreateUser(username);
-  const db = getDb();
+export async function awardUserShards(username: string, amount: number): Promise<UserProfile> {
+  const user = await getOrCreateUser(username);
   user.shards = (user.shards || 0) + amount;
   user.lifetimePoints = (user.lifetimePoints || 0) + amount;
   user.updatedAt = new Date().toISOString();
-  db.users[user.username] = user;
-  saveDb(db);
-  return user;
+  return saveUser(user);
 }
 
-export function deleteBroadcastEvent(id: string): boolean {
-  const db = getDb();
-  if (!db.broadcasts) return false;
-  const initialLen = db.broadcasts.length;
-  db.broadcasts = db.broadcasts.filter((b) => b.id !== id);
-  if (db.broadcasts.length !== initialLen) {
-    saveDb(db);
-    return true;
+// ─── TRADES ──────────────────────────────────────────────────────────────────
+
+export async function getAllTrades(): Promise<TradeOffer[]> {
+  const { data, error } = await supabase
+    .from('trades')
+    .select('*')
+    .order('created_at', { ascending: false });
+  if (error || !data) return [];
+  return data.map((r: any) => ({
+    id: r.id,
+    offeredBy: r.offered_by,
+    offeredCardId: r.offered_card_id,
+    requestedCardId: r.requested_card_id,
+    status: r.status,
+    createdAt: r.created_at,
+  }));
+}
+
+export async function createTrade(trade: TradeOffer): Promise<TradeOffer> {
+  const { data, error } = await supabase
+    .from('trades')
+    .insert({
+      id: trade.id,
+      offered_by: trade.offeredBy,
+      offered_card_id: trade.offeredCardId,
+      requested_card_id: trade.requestedCardId,
+      status: trade.status,
+    })
+    .select()
+    .single();
+  if (error) throw new Error(error.message);
+  return { id: data.id, offeredBy: data.offered_by, offeredCardId: data.offered_card_id, requestedCardId: data.requested_card_id, status: data.status, createdAt: data.created_at };
+}
+
+export async function updateTradeStatus(id: string, status: string): Promise<boolean> {
+  const { error } = await supabase.from('trades').update({ status }).eq('id', id);
+  return !error;
+}
+
+export async function deleteTrade(id: string): Promise<boolean> {
+  const { error } = await supabase.from('trades').delete().eq('id', id);
+  return !error;
+}
+
+// ─── BROADCASTS ──────────────────────────────────────────────────────────────
+
+export async function getBroadcastEvents(): Promise<BroadcastEvent[]> {
+  const { data, error } = await supabase
+    .from('broadcasts')
+    .select('*')
+    .order('created_at', { ascending: false })
+    .limit(50);
+  if (error || !data) return [];
+  return data.map((r: any) => ({
+    id: r.id,
+    broadcastType: r.broadcast_type,
+    noticeSeverity: r.notice_severity,
+    achievementId: r.achievement_id,
+    title: r.title,
+    desc: r.desc,
+    icon: r.icon,
+    tier: r.tier,
+    recipient: r.recipient,
+    shardsReward: r.shards_reward,
+    message: r.message,
+    missionCategory: r.mission_category,
+    targetCount: r.target_count,
+    completedBy: r.completed_by ?? [],
+    createdAt: r.created_at,
+  }));
+}
+
+export async function addBroadcastEvent(event: BroadcastEvent): Promise<BroadcastEvent> {
+  const { error } = await supabase.from('broadcasts').insert({
+    id: event.id,
+    broadcast_type: event.broadcastType ?? null,
+    notice_severity: event.noticeSeverity ?? null,
+    achievement_id: event.achievementId ?? null,
+    title: event.title,
+    desc: event.desc,
+    icon: event.icon,
+    tier: event.tier,
+    recipient: event.recipient,
+    shards_reward: event.shardsReward,
+    message: event.message,
+    mission_category: event.missionCategory ?? null,
+    target_count: event.targetCount ?? null,
+    completed_by: event.completedBy ?? [],
+  });
+  if (error) throw new Error(error.message);
+  return event;
+}
+
+export async function deleteBroadcastEvent(id: string): Promise<boolean> {
+  const { error } = await supabase.from('broadcasts').delete().eq('id', id);
+  return !error;
+}
+
+export async function completeBroadcastMission(
+  username: string,
+  broadcastId: string
+): Promise<{ success: boolean; user?: UserProfile; broadcast?: BroadcastEvent; error?: string }> {
+  const broadcasts = await getBroadcastEvents();
+  const broadcast = broadcasts.find((b) => b.id === broadcastId);
+  if (!broadcast) return { success: false, error: 'Mission not found' };
+
+  const cleanUsername = username.replace('@', '').trim();
+  if (!broadcast.completedBy) broadcast.completedBy = [];
+  if (broadcast.completedBy.includes(cleanUsername)) {
+    return { success: false, error: 'Mission reward already claimed by this user' };
   }
-  return false;
+
+  broadcast.completedBy.push(cleanUsername);
+  await supabase.from('broadcasts').update({ completed_by: broadcast.completedBy }).eq('id', broadcastId);
+
+  const user = await getOrCreateUser(cleanUsername);
+  const shardsReward = broadcast.shardsReward || 0;
+  user.shards = (user.shards || 0) + shardsReward;
+  user.lifetimePoints = (user.lifetimePoints || 0) + shardsReward;
+  if (!user.completedMissions.includes(broadcast.id)) user.completedMissions.push(broadcast.id);
+  if (!user.completedMissionsHistory) user.completedMissionsHistory = [];
+  user.completedMissionsHistory.unshift({
+    id: broadcast.id,
+    title: broadcast.title,
+    desc: broadcast.desc,
+    type: 'broadcast_mission',
+    category: broadcast.missionCategory || 'Protocol Mission',
+    icon: broadcast.icon || '🎯',
+    shardsReward,
+    completedAt: new Date().toISOString(),
+  });
+  user.updatedAt = new Date().toISOString();
+  const savedUser = await saveUser(user);
+
+  return { success: true, user: savedUser, broadcast };
 }
 
-export function giftCardToUser(
+// ─── GIFT LOGS ────────────────────────────────────────────────────────────────
+
+export async function getGiftLogs(): Promise<GiftCardLog[]> {
+  const { data, error } = await supabase
+    .from('gift_logs')
+    .select('*')
+    .order('created_at', { ascending: false })
+    .limit(100);
+  if (error || !data) return [];
+  return data.map((r: any) => ({
+    id: r.id,
+    username: r.username,
+    cardId: r.card_id,
+    cardTitle: r.card_title,
+    cardRarity: r.card_rarity,
+    cardImage: r.card_image,
+    quantity: r.quantity,
+    reason: r.reason,
+    timestamp: r.created_at,
+    claimed: r.claimed,
+    claimedAt: r.claimed_at,
+  }));
+}
+
+export async function giftCardToUser(
   username: string,
   cardId: string,
   quantity: number = 1,
   reason?: string
-): { user: UserProfile; giftLog: GiftCardLog } {
+): Promise<{ user: UserProfile; giftLog: GiftCardLog }> {
   const cleanUsername = username.replace('@', '').trim().toLowerCase();
-  const user = getOrCreateUser(cleanUsername);
-  const db = getDb();
+  const user = await getOrCreateUser(cleanUsername);
 
   const qty = Math.max(1, Math.floor(quantity));
   const card = ALL_30_CARDS.find((c) => c.id === cardId);
@@ -413,13 +442,10 @@ export function giftCardToUser(
     createdAt: new Date().toISOString(),
   };
 
-  if (!user.pendingGifts) {
-    user.pendingGifts = [];
-  }
+  if (!user.pendingGifts) user.pendingGifts = [];
   user.pendingGifts.unshift(pendingItem);
-
   user.updatedAt = new Date().toISOString();
-  db.users[user.username] = user;
+  const savedUser = await saveUser(user);
 
   const log: GiftCardLog = {
     id: giftId,
@@ -434,81 +460,58 @@ export function giftCardToUser(
     claimed: false,
   };
 
-  if (!db.giftLogs) {
-    db.giftLogs = [];
-  }
-  db.giftLogs.unshift(log);
-  if (db.giftLogs.length > 100) {
-    db.giftLogs = db.giftLogs.slice(0, 100);
-  }
+  await supabase.from('gift_logs').insert({
+    id: log.id,
+    username: log.username,
+    card_id: log.cardId,
+    card_title: log.cardTitle,
+    card_rarity: log.cardRarity,
+    card_image: log.cardImage,
+    quantity: log.quantity,
+    reason: log.reason,
+    claimed: false,
+  });
 
-  saveDb(db);
-  return { user, giftLog: log };
+  return { user: savedUser, giftLog: log };
 }
 
-export function claimUserGift(
+export async function claimUserGift(
   username: string,
   giftId?: string
-): { success: boolean; user?: UserProfile; cards?: CardArchetype[]; giftLog?: GiftCardLog; error?: string } {
+): Promise<{ success: boolean; user?: UserProfile; cards?: CardArchetype[]; giftLog?: GiftCardLog; error?: string }> {
   const cleanUsername = username.replace('@', '').trim().toLowerCase();
-  const db = getDb();
-  const user = db.users[cleanUsername];
-  if (!user) {
-    return { success: false, error: 'User not found' };
-  }
-
-  if (!user.pendingGifts || user.pendingGifts.length === 0) {
-    return { success: false, error: 'No pending gifts found for this user' };
-  }
+  const user = await getUser(cleanUsername);
+  if (!user) return { success: false, error: 'User not found' };
+  if (!user.pendingGifts || user.pendingGifts.length === 0) return { success: false, error: 'No pending gifts found' };
 
   let targetGiftIndex = 0;
   if (giftId && giftId !== 'all') {
     targetGiftIndex = user.pendingGifts.findIndex((g) => g.id === giftId);
-    if (targetGiftIndex === -1) {
-      return { success: false, error: 'Gift item not found or already claimed' };
-    }
+    if (targetGiftIndex === -1) return { success: false, error: 'Gift item not found or already claimed' };
   }
 
   const gift = user.pendingGifts[targetGiftIndex];
   const cardArchetype = ALL_30_CARDS.find((c) => c.id === gift.cardId);
-  if (!cardArchetype) {
-    return { success: false, error: 'Card archetype not found' };
-  }
+  if (!cardArchetype) return { success: false, error: 'Card archetype not found' };
 
   const pulledCards: CardArchetype[] = [];
-  for (let i = 0; i < gift.quantity; i++) {
-    pulledCards.push({ ...cardArchetype });
-  }
+  for (let i = 0; i < gift.quantity; i++) pulledCards.push({ ...cardArchetype });
 
-  // Credit into user inventory upon claim & reveal
   user.inventory[gift.cardId] = (user.inventory[gift.cardId] || 0) + gift.quantity;
   user.totalCardsCount = (user.totalCardsCount || 0) + gift.quantity;
-  user.lifetimePoints = (user.lifetimePoints || 0) + (50 * gift.quantity);
-  user.uniqueCardsCount = Object.keys(user.inventory).filter(
-    (k) => user.inventory[k] > 0
-  ).length;
-
-  if (user.uniqueCardsCount === 30) {
-    user.lifetimePoints += 2500;
-  }
-
+  user.lifetimePoints = (user.lifetimePoints || 0) + 50 * gift.quantity;
+  user.uniqueCardsCount = Object.keys(user.inventory).filter((k) => user.inventory[k] > 0).length;
+  if (user.uniqueCardsCount === 30) user.lifetimePoints += 2500;
   user.pendingGifts.splice(targetGiftIndex, 1);
   user.updatedAt = new Date().toISOString();
 
-  if (db.giftLogs) {
-    const log = db.giftLogs.find((l) => l.id === gift.id);
-    if (log) {
-      log.claimed = true;
-      log.claimedAt = new Date().toISOString();
-    }
-  }
+  const savedUser = await saveUser(user);
 
-  db.users[user.username] = user;
-  saveDb(db);
+  await supabase.from('gift_logs').update({ claimed: true, claimed_at: new Date().toISOString() }).eq('id', gift.id);
 
   return {
     success: true,
-    user,
+    user: savedUser,
     cards: pulledCards,
     giftLog: {
       id: gift.id,
@@ -526,96 +529,54 @@ export function claimUserGift(
   };
 }
 
-export function getUserPendingGifts(username: string): PendingGiftItem[] {
-  const cleanUsername = username.replace('@', '').trim().toLowerCase();
-  const db = getDb();
-  const user = db.users[cleanUsername];
-  if (!user) return [];
-  return user.pendingGifts || [];
+export async function deleteGiftLog(id: string): Promise<boolean> {
+  const { error } = await supabase.from('gift_logs').delete().eq('id', id);
+  return !error;
 }
 
-export function getGiftLogs(): GiftCardLog[] {
-  const db = getDb();
-  return db.giftLogs || [];
+export async function getUserPendingGifts(username: string): Promise<PendingGiftItem[]> {
+  const user = await getUser(username);
+  return user?.pendingGifts ?? [];
 }
 
-export function deleteGiftLog(id: string): boolean {
-  const db = getDb();
-  if (!db.giftLogs) return false;
-  const initialLen = db.giftLogs.length;
-  db.giftLogs = db.giftLogs.filter((g) => g.id !== id);
-  if (db.giftLogs.length !== initialLen) {
-    saveDb(db);
-    return true;
-  }
-  return false;
+// ─── SEASONS ──────────────────────────────────────────────────────────────────
+
+export async function getActiveSeason(): Promise<Season | null> {
+  const { data, error } = await supabase
+    .from('seasons')
+    .select('*')
+    .eq('is_active', true)
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .single();
+  if (error || !data) return null;
+  return { id: data.id, name: data.name, theme: data.theme, startDate: data.start_date, endDate: data.end_date, isActive: data.is_active };
 }
 
-export function getAllUsersSummary(): Array<{
-  username: string;
-  totalCardsCount: number;
-  uniqueCardsCount: number;
-  lifetimePoints: number;
-  inventory: Record<string, number>;
-}> {
-  const db = getDb();
-  return Object.values(db.users).map((u) => ({
-    username: u.username,
-    totalCardsCount: u.totalCardsCount || 0,
-    uniqueCardsCount: u.uniqueCardsCount || 0,
-    lifetimePoints: u.lifetimePoints || 0,
-    inventory: u.inventory || {},
-  }));
+// ─── KV STORE (misc state like last_spin, high scores) ───────────────────────
+
+export async function kvGet(key: string): Promise<string | null> {
+  const { data, error } = await supabase.from('kv_store').select('value').eq('key', key).single();
+  if (error || !data) return null;
+  return data.value;
 }
 
-
-export function completeBroadcastMission(username: string, broadcastId: string): { success: boolean; user?: UserProfile; broadcast?: BroadcastEvent; error?: string } {
-  const db = getDb();
-  if (!db.broadcasts) return { success: false, error: 'No broadcasts available' };
-  
-  const broadcast = db.broadcasts.find(b => b.id === broadcastId);
-  if (!broadcast) return { success: false, error: 'Mission not found' };
-  
-  const cleanUsername = username.replace('@', '').trim();
-  const user = getOrCreateUser(cleanUsername);
-  
-  if (!broadcast.completedBy) {
-    broadcast.completedBy = [];
-  }
-  
-  if (broadcast.completedBy.includes(cleanUsername)) {
-    return { success: false, error: 'Mission reward already claimed by this user' };
-  }
-  
-  broadcast.completedBy.push(cleanUsername);
-  
-  // Award shards & points
-  const shardsReward = broadcast.shardsReward || 0;
-  user.shards = (user.shards || 0) + shardsReward;
-  user.lifetimePoints = (user.lifetimePoints || 0) + shardsReward;
-  
-  if (!user.completedMissions) user.completedMissions = [];
-  if (!user.completedMissions.includes(broadcast.id)) {
-    user.completedMissions.push(broadcast.id);
-  }
-  
-  if (!user.completedMissionsHistory) {
-    user.completedMissionsHistory = [];
-  }
-  user.completedMissionsHistory.unshift({
-    id: broadcast.id,
-    title: broadcast.title,
-    desc: broadcast.desc,
-    type: 'broadcast_mission',
-    category: broadcast.missionCategory || 'Protocol Mission',
-    icon: broadcast.icon || '🎯',
-    shardsReward: shardsReward,
-    completedAt: new Date().toISOString(),
-  });
-  
-  user.updatedAt = new Date().toISOString();
-  db.users[user.username] = user;
-  saveDb(db);
-  
-  return { success: true, user, broadcast };
+export async function kvSet(key: string, value: string): Promise<void> {
+  await supabase.from('kv_store').upsert({ key, value, updated_at: new Date().toISOString() }, { onConflict: 'key' });
 }
+
+// ─── Legacy sync helper (used by old routes that still call getDb/saveDb) ─────
+// These provide a backward-compatible shim so we don't break every API route at once.
+// TODO: migrate each API route to use the async functions above directly.
+
+export interface DatabaseStore {
+  activeSeason: Season;
+  seasons: Season[];
+  missions: Mission[];
+  users: Record<string, UserProfile>;
+  trades: TradeOffer[];
+  broadcasts?: BroadcastEvent[];
+  giftLogs?: GiftCardLog[];
+}
+
+export function getMissionsForDateSync(_dateStr: string): Mission[] { return []; }
