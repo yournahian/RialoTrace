@@ -14,9 +14,9 @@ export function getContributorTier(impressions: number): TierInfo {
     return {
       name: 'Rialo Legend',
       badge: '💎',
-      color: '#00E5FF',
-      bg: 'rgba(0, 229, 255, 0.12)',
-      border: 'rgba(0, 229, 255, 0.4)',
+      color: '#A9DDD3',
+      bg: 'rgba(169, 221, 211, 0.15)',
+      border: 'rgba(169, 221, 211, 0.45)',
       rank: 4,
     };
   }

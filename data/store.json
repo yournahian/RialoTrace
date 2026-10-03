@@ -1,0 +1,1048 @@
+{
+  "activeSeason": {
+    "id": "season-1",
+    "name": "Season 1: Genesis",
+    "theme": "30 Genesis Protocol Warriors",
+    "startDate": "2026-09-17",
+    "endDate": "2026-10-17",
+    "isActive": true
+  },
+  "seasons": [
+    {
+      "id": "season-1",
+      "name": "Season 1: Genesis",
+      "theme": "30 Genesis Protocol Warriors",
+      "startDate": "2026-09-17",
+      "endDate": "2026-10-17",
+      "isActive": true
+    }
+  ],
+  "missions": [
+    {
+      "id": "m-day-1",
+      "dayNumber": 1,
+      "scheduledDate": "2026-10-03",
+      "title": "Day 1: Follow @RialoHQ official announcements",
+      "description": "Stay connected with the core engineering updates on X.",
+      "link": "https://x.com/RialoHQ",
+      "type": "twitter_follow",
+      "actionLabel": "Follow on X",
+      "screenshotRequirement": "none",
+      "rewardPacks": 1,
+      "rewardShards": 25,
+      "isActive": true
+    },
+    {
+      "id": "m-day-2",
+      "dayNumber": 2,
+      "scheduledDate": "2026-10-04",
+      "title": "Day 2: Retweet Rialo Parallel Consensus Thread",
+      "description": "Amplify the testnet consensus announcement across the community.",
+      "link": "https://x.com/RialoHQ",
+      "type": "twitter_retweet",
+      "actionLabel": "Retweet Post",
+      "screenshotRequirement": "none",
+      "rewardPacks": 1,
+      "rewardShards": 25,
+      "isActive": true
+    },
+    {
+      "id": "m-day-3",
+      "dayNumber": 3,
+      "scheduledDate": "2026-10-05",
+      "title": "Day 3: Daily Web3 Quiz: Superconductivity & Finality",
+      "description": "Answer today's technical quiz on Rialo's cold-physics architecture.",
+      "link": "",
+      "type": "quiz",
+      "actionLabel": "Take Web3 Quiz",
+      "screenshotRequirement": "none",
+      "quizQuestion": "What core physical phenomenon inspires Rialo's frictionless execution?",
+      "quizOptions": [
+        "Superconductivity & Superfluidity",
+        "Proof of Authority Centralization",
+        "Manual Sharding",
+        "Delayed Finality"
+      ],
+      "quizAnswer": "Superconductivity & Superfluidity",
+      "rewardPacks": 1,
+      "rewardShards": 25,
+      "isActive": true
+    },
+    {
+      "id": "m-day-4",
+      "dayNumber": 4,
+      "scheduledDate": "2026-10-06",
+      "title": "Day 4: Join Rialo Discord Validator Enclave",
+      "description": "Verify your role in the official Rialo discord guild.",
+      "link": "https://discord.gg/RialoProtocol",
+      "type": "discord_join",
+      "actionLabel": "Join Discord",
+      "screenshotRequirement": "none",
+      "rewardPacks": 1,
+      "rewardShards": 25,
+      "isActive": true
+    },
+    {
+      "id": "m-day-5",
+      "dayNumber": 5,
+      "scheduledDate": "2026-10-07",
+      "title": "Day 5: Explore Rialo Interactive Developer Docs",
+      "description": "Review smart contract deployment guides on the official docs portal.",
+      "link": "https://docs.rialo.io",
+      "type": "custom_url",
+      "actionLabel": "Read Docs",
+      "screenshotRequirement": "none",
+      "rewardPacks": 1,
+      "rewardShards": 25,
+      "isActive": true
+    },
+    {
+      "id": "m-day-6",
+      "dayNumber": 6,
+      "scheduledDate": "2026-10-08",
+      "title": "Day 6: Like the Genesis 30-Card Archetype Reveal",
+      "description": "Support the digital collector card series unveiling on X.",
+      "link": "https://x.com/RialoHQ",
+      "type": "twitter_like",
+      "actionLabel": "Like Tweet",
+      "screenshotRequirement": "none",
+      "rewardPacks": 1,
+      "rewardShards": 25,
+      "isActive": true
+    },
+    {
+      "id": "m-day-7",
+      "dayNumber": 7,
+      "scheduledDate": "2026-10-09",
+      "title": "Day 7: Follow @RialoHQ official announcements",
+      "description": "Stay connected with the core engineering updates on X.",
+      "link": "https://x.com/RialoHQ",
+      "type": "twitter_follow",
+      "actionLabel": "Follow on X",
+      "screenshotRequirement": "none",
+      "rewardPacks": 1,
+      "rewardShards": 25,
+      "isActive": true
+    },
+    {
+      "id": "m-day-8",
+      "dayNumber": 8,
+      "scheduledDate": "2026-10-10",
+      "title": "Day 8: Retweet Rialo Parallel Consensus Thread",
+      "description": "Amplify the testnet consensus announcement across the community.",
+      "link": "https://x.com/RialoHQ",
+      "type": "twitter_retweet",
+      "actionLabel": "Retweet Post",
+      "screenshotRequirement": "none",
+      "rewardPacks": 1,
+      "rewardShards": 25,
+      "isActive": true
+    },
+    {
+      "id": "m-day-9",
+      "dayNumber": 9,
+      "scheduledDate": "2026-10-11",
+      "title": "Day 9: Daily Web3 Quiz: Superconductivity & Finality",
+      "description": "Answer today's technical quiz on Rialo's cold-physics architecture.",
+      "link": "",
+      "type": "quiz",
+      "actionLabel": "Take Web3 Quiz",
+      "screenshotRequirement": "none",
+      "quizQuestion": "What core physical phenomenon inspires Rialo's frictionless execution?",
+      "quizOptions": [
+        "Superconductivity & Superfluidity",
+        "Proof of Authority Centralization",
+        "Manual Sharding",
+        "Delayed Finality"
+      ],
+      "quizAnswer": "Superconductivity & Superfluidity",
+      "rewardPacks": 1,
+      "rewardShards": 25,
+      "isActive": true
+    },
+    {
+      "id": "m-day-10",
+      "dayNumber": 10,
+      "scheduledDate": "2026-10-12",
+      "title": "Day 10: Join Rialo Discord Validator Enclave",
+      "description": "Verify your role in the official Rialo discord guild.",
+      "link": "https://discord.gg/RialoProtocol",
+      "type": "discord_join",
+      "actionLabel": "Join Discord",
+      "screenshotRequirement": "none",
+      "rewardPacks": 1,
+      "rewardShards": 25,
+      "isActive": true
+    },
+    {
+      "id": "m-day-11",
+      "dayNumber": 11,
+      "scheduledDate": "2026-10-13",
+      "title": "Day 11: Explore Rialo Interactive Developer Docs",
+      "description": "Review smart contract deployment guides on the official docs portal.",
+      "link": "https://docs.rialo.io",
+      "type": "custom_url",
+      "actionLabel": "Read Docs",
+      "screenshotRequirement": "none",
+      "rewardPacks": 1,
+      "rewardShards": 25,
+      "isActive": true
+    },
+    {
+      "id": "m-day-12",
+      "dayNumber": 12,
+      "scheduledDate": "2026-10-14",
+      "title": "Day 12: Like the Genesis 30-Card Archetype Reveal",
+      "description": "Support the digital collector card series unveiling on X.",
+      "link": "https://x.com/RialoHQ",
+      "type": "twitter_like",
+      "actionLabel": "Like Tweet",
+      "screenshotRequirement": "none",
+      "rewardPacks": 1,
+      "rewardShards": 25,
+      "isActive": true
+    },
+    {
+      "id": "m-day-13",
+      "dayNumber": 13,
+      "scheduledDate": "2026-10-15",
+      "title": "Day 13: Follow @RialoHQ official announcements",
+      "description": "Stay connected with the core engineering updates on X.",
+      "link": "https://x.com/RialoHQ",
+      "type": "twitter_follow",
+      "actionLabel": "Follow on X",
+      "screenshotRequirement": "none",
+      "rewardPacks": 1,
+      "rewardShards": 25,
+      "isActive": true
+    },
+    {
+      "id": "m-day-14",
+      "dayNumber": 14,
+      "scheduledDate": "2026-10-16",
+      "title": "Day 14: Retweet Rialo Parallel Consensus Thread",
+      "description": "Amplify the testnet consensus announcement across the community.",
+      "link": "https://x.com/RialoHQ",
+      "type": "twitter_retweet",
+      "actionLabel": "Retweet Post",
+      "screenshotRequirement": "none",
+      "rewardPacks": 1,
+      "rewardShards": 25,
+      "isActive": true
+    },
+    {
+      "id": "m-day-15",
+      "dayNumber": 15,
+      "scheduledDate": "2026-10-17",
+      "title": "Day 15: Daily Web3 Quiz: Superconductivity & Finality",
+      "description": "Answer today's technical quiz on Rialo's cold-physics architecture.",
+      "link": "",
+      "type": "quiz",
+      "actionLabel": "Take Web3 Quiz",
+      "screenshotRequirement": "none",
+      "quizQuestion": "What core physical phenomenon inspires Rialo's frictionless execution?",
+      "quizOptions": [
+        "Superconductivity & Superfluidity",
+        "Proof of Authority Centralization",
+        "Manual Sharding",
+        "Delayed Finality"
+      ],
+      "quizAnswer": "Superconductivity & Superfluidity",
+      "rewardPacks": 1,
+      "rewardShards": 25,
+      "isActive": true
+    },
+    {
+      "id": "m-day-16",
+      "dayNumber": 16,
+      "scheduledDate": "2026-10-18",
+      "title": "Day 16: Join Rialo Discord Validator Enclave",
+      "description": "Verify your role in the official Rialo discord guild.",
+      "link": "https://discord.gg/RialoProtocol",
+      "type": "discord_join",
+      "actionLabel": "Join Discord",
+      "screenshotRequirement": "none",
+      "rewardPacks": 1,
+      "rewardShards": 25,
+      "isActive": true
+    },
+    {
+      "id": "m-day-17",
+      "dayNumber": 17,
+      "scheduledDate": "2026-10-19",
+      "title": "Day 17: Explore Rialo Interactive Developer Docs",
+      "description": "Review smart contract deployment guides on the official docs portal.",
+      "link": "https://docs.rialo.io",
+      "type": "custom_url",
+      "actionLabel": "Read Docs",
+      "screenshotRequirement": "none",
+      "rewardPacks": 1,
+      "rewardShards": 25,
+      "isActive": true
+    },
+    {
+      "id": "m-day-18",
+      "dayNumber": 18,
+      "scheduledDate": "2026-10-20",
+      "title": "Day 18: Like the Genesis 30-Card Archetype Reveal",
+      "description": "Support the digital collector card series unveiling on X.",
+      "link": "https://x.com/RialoHQ",
+      "type": "twitter_like",
+      "actionLabel": "Like Tweet",
+      "screenshotRequirement": "none",
+      "rewardPacks": 1,
+      "rewardShards": 25,
+      "isActive": true
+    },
+    {
+      "id": "m-day-19",
+      "dayNumber": 19,
+      "scheduledDate": "2026-10-21",
+      "title": "Day 19: Follow @RialoHQ official announcements",
+      "description": "Stay connected with the core engineering updates on X.",
+      "link": "https://x.com/RialoHQ",
+      "type": "twitter_follow",
+      "actionLabel": "Follow on X",
+      "screenshotRequirement": "none",
+      "rewardPacks": 1,
+      "rewardShards": 25,
+      "isActive": true
+    },
+    {
+      "id": "m-day-20",
+      "dayNumber": 20,
+      "scheduledDate": "2026-10-22",
+      "title": "Day 20: Retweet Rialo Parallel Consensus Thread",
+      "description": "Amplify the testnet consensus announcement across the community.",
+      "link": "https://x.com/RialoHQ",
+      "type": "twitter_retweet",
+      "actionLabel": "Retweet Post",
+      "screenshotRequirement": "none",
+      "rewardPacks": 1,
+      "rewardShards": 25,
+      "isActive": true
+    },
+    {
+      "id": "m-day-21",
+      "dayNumber": 21,
+      "scheduledDate": "2026-10-23",
+      "title": "Day 21: Daily Web3 Quiz: Superconductivity & Finality",
+      "description": "Answer today's technical quiz on Rialo's cold-physics architecture.",
+      "link": "",
+      "type": "quiz",
+      "actionLabel": "Take Web3 Quiz",
+      "screenshotRequirement": "none",
+      "quizQuestion": "What core physical phenomenon inspires Rialo's frictionless execution?",
+      "quizOptions": [
+        "Superconductivity & Superfluidity",
+        "Proof of Authority Centralization",
+        "Manual Sharding",
+        "Delayed Finality"
+      ],
+      "quizAnswer": "Superconductivity & Superfluidity",
+      "rewardPacks": 1,
+      "rewardShards": 25,
+      "isActive": true
+    },
+    {
+      "id": "m-day-22",
+      "dayNumber": 22,
+      "scheduledDate": "2026-10-24",
+      "title": "Day 22: Join Rialo Discord Validator Enclave",
+      "description": "Verify your role in the official Rialo discord guild.",
+      "link": "https://discord.gg/RialoProtocol",
+      "type": "discord_join",
+      "actionLabel": "Join Discord",
+      "screenshotRequirement": "none",
+      "rewardPacks": 1,
+      "rewardShards": 25,
+      "isActive": true
+    },
+    {
+      "id": "m-day-23",
+      "dayNumber": 23,
+      "scheduledDate": "2026-10-25",
+      "title": "Day 23: Explore Rialo Interactive Developer Docs",
+      "description": "Review smart contract deployment guides on the official docs portal.",
+      "link": "https://docs.rialo.io",
+      "type": "custom_url",
+      "actionLabel": "Read Docs",
+      "screenshotRequirement": "none",
+      "rewardPacks": 1,
+      "rewardShards": 25,
+      "isActive": true
+    },
+    {
+      "id": "m-day-24",
+      "dayNumber": 24,
+      "scheduledDate": "2026-10-26",
+      "title": "Day 24: Like the Genesis 30-Card Archetype Reveal",
+      "description": "Support the digital collector card series unveiling on X.",
+      "link": "https://x.com/RialoHQ",
+      "type": "twitter_like",
+      "actionLabel": "Like Tweet",
+      "screenshotRequirement": "none",
+      "rewardPacks": 1,
+      "rewardShards": 25,
+      "isActive": true
+    },
+    {
+      "id": "m-day-25",
+      "dayNumber": 25,
+      "scheduledDate": "2026-10-27",
+      "title": "Day 25: Follow @RialoHQ official announcements",
+      "description": "Stay connected with the core engineering updates on X.",
+      "link": "https://x.com/RialoHQ",
+      "type": "twitter_follow",
+      "actionLabel": "Follow on X",
+      "screenshotRequirement": "none",
+      "rewardPacks": 1,
+      "rewardShards": 25,
+      "isActive": true
+    },
+    {
+      "id": "m-day-26",
+      "dayNumber": 26,
+      "scheduledDate": "2026-10-28",
+      "title": "Day 26: Retweet Rialo Parallel Consensus Thread",
+      "description": "Amplify the testnet consensus announcement across the community.",
+      "link": "https://x.com/RialoHQ",
+      "type": "twitter_retweet",
+      "actionLabel": "Retweet Post",
+      "screenshotRequirement": "none",
+      "rewardPacks": 1,
+      "rewardShards": 25,
+      "isActive": true
+    },
+    {
+      "id": "m-day-27",
+      "dayNumber": 27,
+      "scheduledDate": "2026-10-29",
+      "title": "Day 27: Daily Web3 Quiz: Superconductivity & Finality",
+      "description": "Answer today's technical quiz on Rialo's cold-physics architecture.",
+      "link": "",
+      "type": "quiz",
+      "actionLabel": "Take Web3 Quiz",
+      "screenshotRequirement": "none",
+      "quizQuestion": "What core physical phenomenon inspires Rialo's frictionless execution?",
+      "quizOptions": [
+        "Superconductivity & Superfluidity",
+        "Proof of Authority Centralization",
+        "Manual Sharding",
+        "Delayed Finality"
+      ],
+      "quizAnswer": "Superconductivity & Superfluidity",
+      "rewardPacks": 1,
+      "rewardShards": 25,
+      "isActive": true
+    },
+    {
+      "id": "m-day-28",
+      "dayNumber": 28,
+      "scheduledDate": "2026-10-30",
+      "title": "Day 28: Join Rialo Discord Validator Enclave",
+      "description": "Verify your role in the official Rialo discord guild.",
+      "link": "https://discord.gg/RialoProtocol",
+      "type": "discord_join",
+      "actionLabel": "Join Discord",
+      "screenshotRequirement": "none",
+      "rewardPacks": 1,
+      "rewardShards": 25,
+      "isActive": true
+    },
+    {
+      "id": "m-day-29",
+      "dayNumber": 29,
+      "scheduledDate": "2026-10-31",
+      "title": "Day 29: Explore Rialo Interactive Developer Docs",
+      "description": "Review smart contract deployment guides on the official docs portal.",
+      "link": "https://docs.rialo.io",
+      "type": "custom_url",
+      "actionLabel": "Read Docs",
+      "screenshotRequirement": "none",
+      "rewardPacks": 1,
+      "rewardShards": 25,
+      "isActive": true
+    },
+    {
+      "id": "m-day-30",
+      "dayNumber": 30,
+      "scheduledDate": "2026-11-01",
+      "title": "Day 30: Like the Genesis 30-Card Archetype Reveal",
+      "description": "Support the digital collector card series unveiling on X.",
+      "link": "https://x.com/RialoHQ",
+      "type": "twitter_like",
+      "actionLabel": "Like Tweet",
+      "screenshotRequirement": "none",
+      "rewardPacks": 1,
+      "rewardShards": 25,
+      "isActive": true
+    }
+  ],
+  "users": {
+    "9": {
+      "username": "9",
+      "inventory": {},
+      "uniqueCardsCount": 0,
+      "totalCardsCount": 0,
+      "shards": 100,
+      "lifetimePoints": 100,
+      "completedMissions": [],
+      "streakDays": 1,
+      "createdAt": "2026-09-17T20:02:26.529Z",
+      "updatedAt": "2026-09-17T20:02:26.529Z"
+    },
+    "98": {
+      "username": "98",
+      "inventory": {},
+      "uniqueCardsCount": 0,
+      "totalCardsCount": 0,
+      "shards": 100,
+      "lifetimePoints": 100,
+      "completedMissions": [],
+      "streakDays": 1,
+      "createdAt": "2026-09-17T20:02:26.560Z",
+      "updatedAt": "2026-09-17T20:02:26.560Z"
+    },
+    "984": {
+      "username": "984",
+      "inventory": {},
+      "uniqueCardsCount": 0,
+      "totalCardsCount": 0,
+      "shards": 100,
+      "lifetimePoints": 100,
+      "completedMissions": [],
+      "streakDays": 1,
+      "createdAt": "2026-09-17T20:02:26.598Z",
+      "updatedAt": "2026-09-17T20:02:26.598Z"
+    },
+    "9849": {
+      "username": "9849",
+      "inventory": {},
+      "uniqueCardsCount": 0,
+      "totalCardsCount": 0,
+      "shards": 100,
+      "lifetimePoints": 100,
+      "completedMissions": [],
+      "streakDays": 1,
+      "createdAt": "2026-09-17T20:02:26.648Z",
+      "updatedAt": "2026-09-17T20:02:26.648Z"
+    },
+    "98498": {
+      "username": "98498",
+      "inventory": {
+        "pioneer": 1,
+        "usdc_titan": 1,
+        "solaris_priest": 1
+      },
+      "uniqueCardsCount": 3,
+      "totalCardsCount": 3,
+      "shards": 125,
+      "lifetimePoints": 280,
+      "completedMissions": [
+        "m-day-1"
+      ],
+      "streakDays": 1,
+      "createdAt": "2026-09-17T20:02:26.684Z",
+      "updatedAt": "2026-09-17T20:02:33.405Z",
+      "lastClaimDate": "2026-09-17"
+    },
+    "yournahian": {
+      "username": "yournahian",
+      "inventory": {
+        "aether_weaver": 1,
+        "consensus_warden": 1,
+        "ephemeral_runner": 1,
+        "pioneer": 0,
+        "celestial_envoy": 1,
+        "devourer": 2
+      },
+      "uniqueCardsCount": 5,
+      "totalCardsCount": 6,
+      "shards": 524,
+      "lifetimePoints": 2069,
+      "completedMissions": [
+        "m-day-1",
+        "m-day-15",
+        "m-1791037759133",
+        "bcast-1791043516104-s53q0"
+      ],
+      "streakDays": 1,
+      "createdAt": "2026-09-17T17:27:18.866Z",
+      "updatedAt": "2026-10-03T17:14:36.276Z",
+      "lastClaimDate": "2026-10-03",
+      "pinHash": "22f25b63d5658174a15a90974cb9c1c6dfd497cb90546a6f4a9987aa5d1c3b11",
+      "completedMissionsHistory": [
+        {
+          "id": "bcast-1791043516104-s53q0",
+          "title": "Send 10 message in Trollbox",
+          "desc": "Open Trollbox and Send 10 Message",
+          "type": "broadcast_mission",
+          "category": "trollbox",
+          "icon": "💬",
+          "shardsReward": 250,
+          "completedAt": "2026-10-03T16:05:16.689Z"
+        }
+      ],
+      "pendingGifts": []
+    },
+    "yournahia": {
+      "username": "yournahia",
+      "inventory": {
+        "pioneer": 1
+      },
+      "uniqueCardsCount": 1,
+      "totalCardsCount": 1,
+      "shards": 100,
+      "lifetimePoints": 150,
+      "completedMissions": [],
+      "streakDays": 1,
+      "createdAt": "2026-09-17T19:17:32.387Z",
+      "updatedAt": "2026-10-03T15:00:48.618Z"
+    },
+    "yournahi": {
+      "username": "yournahi",
+      "inventory": {},
+      "uniqueCardsCount": 0,
+      "totalCardsCount": 0,
+      "shards": 100,
+      "lifetimePoints": 100,
+      "completedMissions": [],
+      "streakDays": 1,
+      "createdAt": "2026-09-17T19:17:32.553Z",
+      "updatedAt": "2026-09-17T19:17:32.553Z"
+    },
+    "yournahin": {
+      "username": "yournahin",
+      "inventory": {
+        "mev_slayer": 1,
+        "navigator": 1,
+        "consensus_warden": 1,
+        "plasma_reaper": 1,
+        "valkyrie": 1,
+        "pioneer": 1
+      },
+      "uniqueCardsCount": 6,
+      "totalCardsCount": 6,
+      "shards": 180,
+      "lifetimePoints": 1075,
+      "completedMissions": [
+        "m-day-1",
+        "m-1791037759133"
+      ],
+      "streakDays": 1,
+      "createdAt": "2026-09-17T19:17:33.362Z",
+      "updatedAt": "2026-10-03T15:01:39.011Z",
+      "lastClaimDate": "2026-10-03",
+      "pinHash": "1b9cdb6870a34b4c162c844b4dfe23657f3d52662d425059cf3286740920c33d"
+    },
+    "yournah": {
+      "username": "yournah",
+      "inventory": {},
+      "uniqueCardsCount": 0,
+      "totalCardsCount": 0,
+      "shards": 100,
+      "lifetimePoints": 100,
+      "completedMissions": [],
+      "streakDays": 1,
+      "createdAt": "2026-09-17T19:19:05.278Z",
+      "updatedAt": "2026-09-17T19:19:05.278Z"
+    },
+    "yourna": {
+      "username": "yourna",
+      "inventory": {},
+      "uniqueCardsCount": 0,
+      "totalCardsCount": 0,
+      "shards": 100,
+      "lifetimePoints": 100,
+      "completedMissions": [],
+      "streakDays": 1,
+      "createdAt": "2026-09-17T19:19:05.425Z",
+      "updatedAt": "2026-09-17T19:19:05.426Z"
+    },
+    "yourn": {
+      "username": "yourn",
+      "inventory": {
+        "pioneer": 2,
+        "navigator": 1
+      },
+      "uniqueCardsCount": 2,
+      "totalCardsCount": 3,
+      "shards": 125,
+      "lifetimePoints": 280,
+      "completedMissions": [
+        "m-day-1"
+      ],
+      "streakDays": 1,
+      "createdAt": "2026-09-17T19:19:05.607Z",
+      "updatedAt": "2026-09-17T19:19:11.772Z",
+      "lastClaimDate": "2026-09-17"
+    },
+    "your": {
+      "username": "your",
+      "inventory": {
+        "nebula_miner": 1,
+        "architect": 1,
+        "usdc_titan": 1
+      },
+      "uniqueCardsCount": 3,
+      "totalCardsCount": 3,
+      "shards": 125,
+      "lifetimePoints": 280,
+      "completedMissions": [
+        "m-day-1"
+      ],
+      "streakDays": 1,
+      "createdAt": "2026-09-17T19:19:17.539Z",
+      "updatedAt": "2026-09-17T19:29:45.950Z",
+      "lastClaimDate": "2026-09-17"
+    },
+    "you": {
+      "username": "you",
+      "inventory": {
+        "pioneer": 1,
+        "navigator": 1,
+        "sentinel": 1
+      },
+      "uniqueCardsCount": 3,
+      "totalCardsCount": 3,
+      "shards": 125,
+      "lifetimePoints": 280,
+      "completedMissions": [
+        "m-day-1"
+      ],
+      "streakDays": 1,
+      "createdAt": "2026-09-17T19:31:12.638Z",
+      "updatedAt": "2026-09-17T19:31:20.941Z",
+      "lastClaimDate": "2026-09-17"
+    },
+    "yo": {
+      "username": "yo",
+      "inventory": {
+        "navigator": 1,
+        "pioneer": 1,
+        "cipher_blade": 1
+      },
+      "uniqueCardsCount": 3,
+      "totalCardsCount": 3,
+      "shards": 125,
+      "lifetimePoints": 280,
+      "completedMissions": [
+        "m-day-1"
+      ],
+      "streakDays": 1,
+      "createdAt": "2026-09-17T19:32:11.808Z",
+      "updatedAt": "2026-09-17T19:32:52.866Z",
+      "lastClaimDate": "2026-09-17"
+    },
+    "yo2": {
+      "username": "yo2",
+      "inventory": {},
+      "uniqueCardsCount": 0,
+      "totalCardsCount": 0,
+      "shards": 100,
+      "lifetimePoints": 100,
+      "completedMissions": [],
+      "streakDays": 1,
+      "createdAt": "2026-09-17T19:43:51.421Z",
+      "updatedAt": "2026-09-17T19:43:51.421Z"
+    },
+    "yo26": {
+      "username": "yo26",
+      "inventory": {
+        "navigator": 1,
+        "arbitrageur": 1,
+        "cyber_ronin": 1
+      },
+      "uniqueCardsCount": 3,
+      "totalCardsCount": 3,
+      "shards": 125,
+      "lifetimePoints": 280,
+      "completedMissions": [
+        "m-day-1"
+      ],
+      "streakDays": 1,
+      "createdAt": "2026-09-17T19:43:51.552Z",
+      "updatedAt": "2026-09-17T19:43:57.160Z",
+      "lastClaimDate": "2026-09-17"
+    },
+    "test_user": {
+      "username": "test_user",
+      "inventory": {},
+      "uniqueCardsCount": 0,
+      "totalCardsCount": 0,
+      "shards": 135,
+      "lifetimePoints": 130,
+      "completedMissions": [
+        "test-ss-mandatory-1"
+      ],
+      "streakDays": 1,
+      "createdAt": "2026-10-01T17:31:23.493Z",
+      "updatedAt": "2026-10-01T17:31:23.494Z"
+    },
+    "test_cadet_99": {
+      "username": "test_cadet_99",
+      "inventory": {},
+      "uniqueCardsCount": 0,
+      "totalCardsCount": 0,
+      "shards": 100,
+      "lifetimePoints": 100,
+      "completedMissions": [],
+      "streakDays": 1,
+      "createdAt": "2026-10-03T14:05:22.992Z",
+      "updatedAt": "2026-10-03T14:05:22.995Z",
+      "pinHash": "314977389457119734ba67c374f984c919164f7d62b9c913d00de2a3161e28d9"
+    },
+    "sarah_eth": {
+      "username": "sarah_eth",
+      "inventory": {},
+      "uniqueCardsCount": 0,
+      "totalCardsCount": 0,
+      "shards": 100,
+      "lifetimePoints": 100,
+      "completedMissions": [],
+      "streakDays": 1,
+      "createdAt": "2026-10-03T14:45:05.105Z",
+      "updatedAt": "2026-10-03T14:45:05.105Z"
+    },
+    "cryptowhale": {
+      "username": "cryptowhale",
+      "inventory": {},
+      "uniqueCardsCount": 0,
+      "totalCardsCount": 0,
+      "shards": 100,
+      "lifetimePoints": 100,
+      "completedMissions": [],
+      "streakDays": 1,
+      "createdAt": "2026-10-03T14:45:05.128Z",
+      "updatedAt": "2026-10-03T14:45:05.128Z"
+    },
+    "test_airdrop_collector": {
+      "username": "test_airdrop_collector",
+      "inventory": {
+        "vanguard": 2
+      },
+      "uniqueCardsCount": 1,
+      "totalCardsCount": 2,
+      "shards": 100,
+      "lifetimePoints": 200,
+      "completedMissions": [],
+      "completedMissionsHistory": [],
+      "streakDays": 1,
+      "createdAt": "2026-10-03T16:50:19.187Z",
+      "updatedAt": "2026-10-03T16:50:19.548Z",
+      "pendingGifts": []
+    },
+    "test_airdrop_collector_2": {
+      "username": "test_airdrop_collector_2",
+      "inventory": {
+        "devourer": 1
+      },
+      "uniqueCardsCount": 1,
+      "totalCardsCount": 1,
+      "shards": 100,
+      "lifetimePoints": 150,
+      "completedMissions": [],
+      "completedMissionsHistory": [],
+      "streakDays": 1,
+      "createdAt": "2026-10-03T16:50:28.214Z",
+      "updatedAt": "2026-10-03T16:50:28.314Z",
+      "pendingGifts": []
+    }
+  },
+  "trades": [
+    {
+      "id": "trade-1791039735367-014d",
+      "offeredBy": "yournahin",
+      "offeredCardId": "navigator",
+      "requestedCardId": "pioneer",
+      "status": "COMPLETED",
+      "createdAt": "2026-10-03T15:02:15.367Z"
+    },
+    {
+      "id": "trade-1791039618310-k77n",
+      "offeredBy": "yournahian",
+      "offeredCardId": "navigator",
+      "requestedCardId": "pioneer",
+      "status": "COMPLETED",
+      "createdAt": "2026-10-03T15:00:18.310Z"
+    },
+    {
+      "id": "trade-1791038925901-8k1i",
+      "offeredBy": "yournahian",
+      "offeredCardId": "navigator",
+      "requestedCardId": "usdc_titan",
+      "status": "CANCELLED",
+      "createdAt": "2026-10-03T14:48:45.901Z"
+    },
+    {
+      "id": "trade-1791037988702-oloo",
+      "offeredBy": "yournahian",
+      "offeredCardId": "vanguard",
+      "requestedCardId": "navigator",
+      "status": "COMPLETED",
+      "createdAt": "2026-10-03T14:33:08.702Z"
+    },
+    {
+      "id": "trade-1791037891523-cm65",
+      "offeredBy": "yournahian",
+      "offeredCardId": "sentinel",
+      "requestedCardId": "arbitrageur",
+      "status": "CANCELLED",
+      "createdAt": "2026-10-03T14:31:31.523Z"
+    },
+    {
+      "id": "trade-1791037879294-7jdh",
+      "offeredBy": "yournahian",
+      "offeredCardId": "vanguard",
+      "requestedCardId": "devourer",
+      "status": "OPEN",
+      "createdAt": "2026-10-03T14:31:19.294Z"
+    }
+  ],
+  "last_spin_yournahian": 1791039933774,
+  "glide_highscore_yournahian": 23,
+  "broadcasts": [
+    {
+      "id": "bcast-1791043517053-ijs6g",
+      "broadcastType": "achievement",
+      "achievementId": "custom",
+      "title": "Community MVP Vanguard",
+      "desc": "Special administrative honor awarded for exceptional platform contributions.",
+      "icon": "🌟",
+      "tier": "Mythic",
+      "recipient": "ALL PLAYERS",
+      "shardsReward": 250,
+      "message": "Outstanding season 1 protocol participation!",
+      "missionCategory": "trollbox",
+      "targetCount": 10,
+      "completedBy": [],
+      "createdAt": "2026-10-03T16:05:17.053Z"
+    },
+    {
+      "id": "bcast-1791043516104-s53q0",
+      "broadcastType": "mission",
+      "achievementId": "custom",
+      "title": "Send 10 message in Trollbox",
+      "desc": "Open Trollbox and Send 10 Message",
+      "icon": "💬",
+      "tier": "Silver",
+      "recipient": "ALL PLAYERS",
+      "shardsReward": 250,
+      "message": "Use Trollbox Now!",
+      "missionCategory": "trollbox",
+      "targetCount": 10,
+      "completedBy": [
+        "yournahian"
+      ],
+      "createdAt": "2026-10-03T16:05:16.104Z"
+    },
+    {
+      "id": "bcast-1791043501619-xvq8y",
+      "broadcastType": "mission",
+      "achievementId": "custom",
+      "title": "Send 10 message in Trollbox",
+      "desc": "Open Trollbox and Send 10 Message",
+      "icon": "💬",
+      "tier": "Silver",
+      "recipient": "ALL PLAYERS",
+      "shardsReward": 250,
+      "message": "Use Trollbox Now!",
+      "missionCategory": "trollbox",
+      "targetCount": 10,
+      "completedBy": [],
+      "createdAt": "2026-10-03T16:05:01.619Z"
+    },
+    {
+      "id": "bcast-1791042350007-he0kv",
+      "achievementId": "custom",
+      "title": "Send 10  message in Trollbox",
+      "desc": "Open Trollbox  and Send 10 Message",
+      "icon": "🤝",
+      "tier": "Silver",
+      "recipient": "ALL PLAYERS",
+      "shardsReward": 250,
+      "message": "Use Trollbox Now!",
+      "createdAt": "2026-10-03T15:45:50.007Z"
+    }
+  ],
+  "last_spin_yournahin": 1791038950545,
+  "streak_last_yournahin": 1791039046146,
+  "streak_day_yournahin": 2,
+  "streak_last_yournahian": 1791039139419,
+  "streak_day_yournahian": 2,
+  "giftLogs": [
+    {
+      "id": "gift-1791047478565-cmx5h",
+      "username": "yournahian",
+      "cardId": "devourer",
+      "cardTitle": "Sub-Second Devourer",
+      "cardRarity": "MYTHIC",
+      "cardImage": "/cards/devourer.png",
+      "quantity": 1,
+      "reason": "Top Contributor Community Bounty",
+      "timestamp": "2026-10-03T17:11:18.565Z",
+      "claimed": true,
+      "claimedAt": "2026-10-03T17:14:36.276Z"
+    },
+    {
+      "id": "gift-1791046228250-emjih",
+      "username": "test_airdrop_collector_2",
+      "cardId": "devourer",
+      "cardTitle": "Sub-Second Devourer",
+      "cardRarity": "MYTHIC",
+      "cardImage": "/cards/devourer.png",
+      "quantity": 1,
+      "reason": "Top Contributor Community Bounty",
+      "timestamp": "2026-10-03T16:50:28.250Z",
+      "claimed": true,
+      "claimedAt": "2026-10-03T16:50:28.314Z"
+    },
+    {
+      "id": "gift-1791046219214-ssc2t",
+      "username": "test_airdrop_collector",
+      "cardId": "vanguard",
+      "cardTitle": "Testnet Vanguard",
+      "cardRarity": "RARE",
+      "cardImage": "/cards/vanguard.png",
+      "quantity": 2,
+      "reason": "Testnet Pioneer Contribution",
+      "timestamp": "2026-10-03T16:50:19.214Z",
+      "claimed": true,
+      "claimedAt": "2026-10-03T16:50:19.548Z"
+    },
+    {
+      "id": "gift-1791045782275-r4vqd",
+      "username": "yournahian",
+      "cardId": "devourer",
+      "cardTitle": "Sub-Second Devourer",
+      "cardRarity": "MYTHIC",
+      "cardImage": "/cards/devourer.png",
+      "quantity": 1,
+      "reason": "Community MVP & Alpha Contributor",
+      "timestamp": "2026-10-03T16:43:02.275Z"
+    },
+    {
+      "id": "gift-1791039699011-84ldx",
+      "username": "yournahin",
+      "cardId": "pioneer",
+      "cardTitle": "Ecosystem Pioneer",
+      "cardRarity": "COMMON",
+      "cardImage": "/cards/pioneer.png",
+      "quantity": 1,
+      "reason": "Community MVP & Alpha Contributor",
+      "timestamp": "2026-10-03T15:01:39.011Z"
+    },
+    {
+      "id": "gift-1791039648618-ox5tt",
+      "username": "yournahia",
+      "cardId": "pioneer",
+      "cardTitle": "Ecosystem Pioneer",
+      "cardRarity": "COMMON",
+      "cardImage": "/cards/pioneer.png",
+      "quantity": 1,
+      "reason": "Community MVP & Alpha Contributor",
+      "timestamp": "2026-10-03T15:00:48.618Z"
+    }
+  ]
+}

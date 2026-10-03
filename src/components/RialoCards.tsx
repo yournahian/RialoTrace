@@ -1,855 +1,428 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Download, Share2, Sparkles, RefreshCw, Copy, Check, Palette, ChevronLeft, ChevronRight, X } from 'lucide-react';
-import { exportRialoCardPNG } from './RialoCardCanvasExporter';
-import { RialoLogo, RialoIcon } from './RialoLogo';
+'use client';
 
-export interface CardArchetype {
-  id: string;
-  title: string;
-  lore: string;
-  rarity: 'MYTHIC' | 'LEGENDARY' | 'EPIC' | 'RARE';
-  glowColor: string;
-  image: string;
-  badgeEmoji: string;
-  iconBg: string;
+import React, { useState, useRef, useEffect } from 'react';
+import {
+  Sparkles,
+  ArrowRight,
+  CheckCircle2,
+  Layers,
+  ChevronLeft,
+  ChevronRight,
+} from 'lucide-react';
+import { RialoLogo, RialoIcon } from './RialoLogo';
+import { ALL_30_CARDS } from '@/lib/cardsData';
+import { CardArchetype, UserProfile } from '@/lib/types';
+import { playScratchSound, playCardRevealSound, playPackOpenSound } from '@/lib/sounds';
+
+interface RialoCardsProps {
+  user?: UserProfile | null;
+  newlyPulledCards?: CardArchetype[] | null;
+  onClearNewlyPulledCards?: () => void;
+  onNavigateToBinder?: () => void;
+  onUserUpdate?: (user: UserProfile) => void;
 }
 
-// 10 100% Original Rialo Archetypes with high-res anime cyberpunk illustrations
-export const RIALO_ARCHETYPES: Record<string, CardArchetype> = {
-  pioneer: {
-    id: 'pioneer',
-    title: 'Genesis Pioneer',
-    lore: 'Bridged liquidity on Genesis Block #1 and never bridged back. Holds unshakable conviction in the Economic OS.',
-    rarity: 'MYTHIC',
-    glowColor: '#00E5FF',
-    image: '/cards/pioneer.png',
-    badgeEmoji: '🚀',
-    iconBg: '#00E5FF',
-  },
-  architect: {
-    id: 'architect',
-    title: 'Economic Architect',
-    lore: 'Deploys composable financial primitives directly to Rialo testnet. Sub-second finality is their native language.',
-    rarity: 'LEGENDARY',
-    glowColor: '#F59E0B',
-    image: '/cards/architect.png',
-    badgeEmoji: '⚙️',
-    iconBg: '#F59E0B',
-  },
-  usdc_titan: {
-    id: 'usdc_titan',
-    title: 'USDC Liquidity Titan',
-    lore: 'Trades exclusively on native Circle USDC settlement rails. Zero synthetic wrapped tokens, pure capital efficiency.',
-    rarity: 'MYTHIC',
-    glowColor: '#8B5CF6',
-    image: '/cards/usdc_titan.png',
-    badgeEmoji: '💎',
-    iconBg: '#8B5CF6',
-  },
-  finalizer: {
-    id: 'finalizer',
-    title: 'Sub-Second Finalizer',
-    lore: 'Settles state transitions in under 400ms. Executes opinions before other L1s can even calculate gas fees.',
-    rarity: 'LEGENDARY',
-    glowColor: '#EF4444',
-    image: '/cards/finalizer.png',
-    badgeEmoji: '⚡',
-    iconBg: '#EF4444',
-  },
-  navigator: {
-    id: 'navigator',
-    title: 'CCTP Navigator',
-    lore: 'Teleports multi-chain liquidity across Ethereum, Solana, and Rialo with zero slippage via native CCTP conduits.',
-    rarity: 'EPIC',
-    glowColor: '#EC4899',
-    image: '/cards/navigator.png',
-    badgeEmoji: '🌐',
-    iconBg: '#EC4899',
-  },
-  sentinel: {
-    id: 'sentinel',
-    title: 'Deterministic Sentinel',
-    lore: 'Protects the timeline with verifiable metrics and TPS charts. Believes in fast, sub-second deterministic settlement.',
-    rarity: 'RARE',
-    glowColor: '#10B981',
-    image: '/cards/sentinel.png',
-    badgeEmoji: '🛡️',
-    iconBg: '#10B981',
-  },
-  vanguard: {
-    id: 'vanguard',
-    title: 'Gasless Vanguard',
-    lore: 'Executes transactions sponsored entirely by paymasters. Never once held gas tokens, floating frictionless on Rialo.',
-    rarity: 'EPIC',
-    glowColor: '#F97316',
-    image: '/cards/vanguard.png',
-    badgeEmoji: '🔥',
-    iconBg: '#F97316',
-  },
-  sovereign: {
-    id: 'sovereign',
-    title: 'Consensus Sovereign',
-    lore: 'Validates every epoch with mathematically proven finality. The supreme judge of sub-second state agreement.',
-    rarity: 'MYTHIC',
-    glowColor: '#EAB308',
-    image: '/cards/sovereign.png',
-    badgeEmoji: '👑',
-    iconBg: '#EAB308',
-  },
-  arbitrageur: {
-    id: 'arbitrageur',
-    title: 'Quantum Arbitrageur',
-    lore: 'Extracts zero-risk multi-chain spread between Rialo and external L1s before mempools even serialize.',
-    rarity: 'LEGENDARY',
-    glowColor: '#06B6D4',
-    image: '/cards/arbitrageur.png',
-    badgeEmoji: '🌀',
-    iconBg: '#06B6D4',
-  },
-  devourer: {
-    id: 'devourer',
-    title: 'Testnet Devourer',
-    lore: 'Claimed every faucet drop, broke 14 testnet nodes, and stress-tested Rialo to 40,000 TPS just for fun.',
-    rarity: 'RARE',
-    glowColor: '#84CC16',
-    image: '/cards/devourer.png',
-    badgeEmoji: '🌟',
-    iconBg: '#84CC16',
-  },
-};
-
-const ARCHETYPES_LIST = Object.values(RIALO_ARCHETYPES);
-
-export const RialoCards: React.FC = () => {
-  // Free input field by default: empty string
-  const [inputVal, setInputVal] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [userData, setUserData] = useState<any>(null);
-  const [selectedArchetypeId, setSelectedArchetypeId] = useState<string>('pioneer');
-  // Starts with card back showing (unrevealed pack)
+export const RialoCards: React.FC<RialoCardsProps> = ({
+  user,
+  newlyPulledCards,
+  onClearNewlyPulledCards,
+  onNavigateToBinder,
+}) => {
+  // Card flip & Animation states
   const [isFlipped, setIsFlipped] = useState(false);
-  const [hasRevealed, setHasRevealed] = useState(false);
   const [openingStage, setOpeningStage] = useState<'idle' | 'charging' | 'spinning' | 'revealed'>('idle');
-  const [isFlipping, setIsFlipping] = useState(false);
   const [showFlash, setShowFlash] = useState(false);
-  const [downloading, setDownloading] = useState(false);
-  const [copiedLink, setCopiedLink] = useState(false);
 
-  // 3D Carousel Customizer State
-  const [isCustomizerOpen, setIsCustomizerOpen] = useState(false);
-  const [carouselIndex, setCarouselIndex] = useState(0);
+  // 3-Card Pack Reveal Flow
+  const [packIndex, setPackIndex] = useState(0);
+  const [revealedPulledIds, setRevealedPulledIds] = useState<string[]>([]);
 
   // 3D tilt
   const cardRef = useRef<HTMLDivElement>(null);
   const [tilt, setTilt] = useState({ x: 0, y: 0, glareX: 50, glareY: 50 });
 
-  // Smooth card flip handler
-  const toggleFlip = (e?: React.MouseEvent) => {
-    if (e) e.stopPropagation();
-    if (openingStage === 'charging' || openingStage === 'spinning') return;
-    setIsFlipping(true);
-    setTilt({ x: 0, y: 0, glareX: 50, glareY: 50 });
-    setIsFlipped((prev) => !prev);
-    setTimeout(() => {
-      setIsFlipping(false);
-    }, 700);
-  };
-
-  // Keyboard navigation for 3D carousel
   useEffect(() => {
-    if (!isCustomizerOpen) return;
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowLeft') {
-        setCarouselIndex((prev) => (prev - 1 + ARCHETYPES_LIST.length) % ARCHETYPES_LIST.length);
-      } else if (e.key === 'ArrowRight') {
-        setCarouselIndex((prev) => (prev + 1) % ARCHETYPES_LIST.length);
-      } else if (e.key === 'Escape') {
-        setIsCustomizerOpen(false);
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isCustomizerOpen]);
+    if (newlyPulledCards && newlyPulledCards.length > 0) {
+      setPackIndex(0);
+      setRevealedPulledIds([]);
+      setIsFlipped(false);
+      setOpeningStage('idle');
+      playPackOpenSound();
+    }
+  }, [newlyPulledCards]);
 
-  // Opening / Reveal Animation Trigger
-  const triggerOpeningSequence = (targetArchetypeId?: string) => {
-    if (targetArchetypeId) setSelectedArchetypeId(targetArchetypeId);
+  const packCards = newlyPulledCards && newlyPulledCards.length > 0 ? newlyPulledCards : null;
+  const currentPackCard: CardArchetype | undefined = packCards ? packCards[packIndex] : undefined;
+
+  const isCurrentCardRevealed = currentPackCard
+    ? revealedPulledIds.includes(currentPackCard.id)
+    : false;
+
+  const allPackCardsRevealed = packCards
+    ? packCards.every((c) => revealedPulledIds.includes(c.id))
+    : false;
+
+  // Ultra-Cool Cinematic 3D Card Reveal Sequence
+  const triggerOpeningSequence = () => {
+    if (openingStage === 'charging' || openingStage === 'spinning') return;
+    if (!currentPackCard) return;
+
     setIsFlipped(false);
     setOpeningStage('charging');
+    playScratchSound();
 
-    // Stage 1: Card charges up and vibrates with glowing aura (550ms)
+    // Stage 1: Charging vibration (550ms)
     setTimeout(() => {
       setOpeningStage('spinning');
 
-      // Stage 2: In the middle of 3D rotation, switch face to front and trigger flash
+      // Stage 2: Mid-spin flip to FRONT face + supernova (at 525ms - halfway through 1050ms spin)
       setTimeout(() => {
-        setIsFlipped(true);
+        setIsFlipped(true); // flip to FRONT (revealed)
         setShowFlash(true);
-      }, 450);
+        playCardRevealSound(currentPackCard.rarity);
+      }, 525);
 
-      // Stage 3: Snap into place face-up with bounce
+      // Stage 3: Slam into place
       setTimeout(() => {
         setOpeningStage('revealed');
-        setHasRevealed(true);
+        setRevealedPulledIds((prev) => {
+          if (!prev.includes(currentPackCard.id)) return [...prev, currentPackCard.id];
+          return prev;
+        });
         setTimeout(() => setShowFlash(false), 700);
-
-        // Reset stage to idle after reveal so it completely frees transform and allows smooth 3D flipping!
-        setTimeout(() => {
-          setOpeningStage('idle');
-        }, 600);
-      }, 900);
+        setTimeout(() => setOpeningStage('idle'), 600);
+      }, 1050);
     }, 550);
   };
 
-  const fetchUserCard = async (targetHandle: string) => {
-    const clean = targetHandle.replace('@', '').trim();
-    if (!clean) return;
-
-    setLoading(true);
-    try {
-      const res = await fetch(`/api/impressions?handle=${encodeURIComponent(clean)}`);
-      const json = await res.json();
-      let assignedArchetype = 'navigator';
-
-      if (json && json.ok) {
-        setUserData({
-          user: {
-            handle: json.username || clean,
-            name: json.profile?.name || clean,
-            profile_image_url: json.profile?.avatar || '',
-          },
-          totalImpressions: json.total_impressions || 0,
-          totalPosts: json.post_count || 0,
-          tweets: json.posts || [],
-        });
-
-        // Smart assignment according to engagement metrics
-        const imps = json.total_impressions || 0;
-        if (clean.toLowerCase() === 'yournahian') {
-          assignedArchetype = 'pioneer';
-        } else if (imps > 100000) {
-          assignedArchetype = 'usdc_titan';
-        } else if (imps > 50000) {
-          assignedArchetype = 'sovereign';
-        } else if (imps > 25000) {
-          assignedArchetype = 'architect';
-        } else if (imps > 10000) {
-          assignedArchetype = 'finalizer';
-        } else if (imps > 5000) {
-          assignedArchetype = 'vanguard';
-        } else if (imps > 2000) {
-          assignedArchetype = 'arbitrageur';
-        } else if (imps > 500) {
-          assignedArchetype = 'devourer';
-        } else {
-          const pool = ['navigator', 'sentinel', 'vanguard', 'pioneer'];
-          assignedArchetype = pool[Math.floor(Math.random() * pool.length)];
-        }
-      } else {
-        setUserData({
-          user: { handle: clean, name: clean, profile_image_url: '' },
-          totalImpressions: 0,
-          totalPosts: 0,
-          tweets: [],
-        });
-        const allIds = Object.keys(RIALO_ARCHETYPES);
-        assignedArchetype = allIds[Math.floor(Math.random() * allIds.length)];
-      }
-
-      triggerOpeningSequence(assignedArchetype);
-    } catch (e) {
-      console.error(e);
-      const allIds = Object.keys(RIALO_ARCHETYPES);
-      triggerOpeningSequence(allIds[Math.floor(Math.random() * allIds.length)]);
-    } finally {
-      setLoading(false);
+  const handleNextPackCard = () => {
+    if (!packCards) return;
+    if (packIndex < packCards.length - 1) {
+      const nextIdx = packIndex + 1;
+      setPackIndex(nextIdx);
+      const nextCard = packCards[nextIdx];
+      setIsFlipped(revealedPulledIds.includes(nextCard.id));
+      setTilt({ x: 0, y: 0, glareX: 50, glareY: 50 });
     }
   };
 
-  const archetype = RIALO_ARCHETYPES[selectedArchetypeId] || RIALO_ARCHETYPES.pioneer;
+  const handlePrevPackCard = () => {
+    if (!packCards) return;
+    if (packIndex > 0) {
+      const prevIdx = packIndex - 1;
+      setPackIndex(prevIdx);
+      const prevCard = packCards[prevIdx];
+      setIsFlipped(revealedPulledIds.includes(prevCard.id));
+      setTilt({ x: 0, y: 0, glareX: 50, glareY: 50 });
+    }
+  };
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (openingStage === 'charging' || openingStage === 'spinning') return;
-    if (!cardRef.current) return;
+    if (!cardRef.current || openingStage !== 'idle') return;
     const rect = cardRef.current.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
-
-    const rotateX = ((y - centerY) / centerY) * -12;
-    const rotateY = ((x - centerX) / centerX) * 12;
-
-    setTilt({
-      x: rotateX,
-      y: rotateY,
-      glareX: (x / rect.width) * 100,
-      glareY: (y / rect.height) * 100,
-    });
+    const rotateX = ((y - rect.height / 2) / rect.height) * -14;
+    const rotateY = ((x - rect.width / 2) / rect.width) * 14;
+    setTilt({ x: rotateX, y: rotateY, glareX: (x / rect.width) * 100, glareY: (y / rect.height) * 100 });
   };
 
-  const handleMouseLeave = () => {
-    setTilt({ x: 0, y: 0, glareX: 50, glareY: 50 });
-  };
+  const handleMouseLeave = () => setTilt({ x: 0, y: 0, glareX: 50, glareY: 50 });
 
-  const handleCardClick = () => {
-    if (openingStage === 'charging' || openingStage === 'spinning') return;
-    if (!hasRevealed) {
-      if (!userData) {
-        const allIds = Object.keys(RIALO_ARCHETYPES);
-        const randId = allIds[Math.floor(Math.random() * allIds.length)];
-        triggerOpeningSequence(randId);
-      } else {
-        triggerOpeningSequence();
-      }
-    } else {
-      toggleFlip();
-    }
-  };
-
-  const handleDownload = async () => {
-    const handleToUse = userData?.user?.handle || (inputVal.trim() ? inputVal.trim() : 'creator');
-    setDownloading(true);
-    try {
-      const blob = await exportRialoCardPNG({
-        handle: handleToUse,
-        name: userData?.user?.name || handleToUse,
-        avatar: userData?.user?.profile_image_url || '',
-        cardImage: archetype.image,
-        archetypeId: archetype.id,
-        archetypeTitle: archetype.title,
-        archetypeLore: archetype.lore,
-        rarity: archetype.rarity,
-        impressions: userData?.totalImpressions || 0,
-        wave: 'WAVE 1 • MAINNET',
-        glowColor: archetype.glowColor,
-      });
-      if (blob) {
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `${handleToUse}-rialo-card.png`;
-        a.click();
-        URL.revokeObjectURL(url);
-      }
-    } catch (err) {
-      console.error('Download error:', err);
-    } finally {
-      setDownloading(false);
-    }
-  };
-
-  const handleShareX = () => {
-    const handleToUse = userData?.user?.handle || (inputVal.trim() ? inputVal.trim() : 'creator');
-    const text = encodeURIComponent(
-      `I forged my official @RialoHQ Collectible Card: ${archetype.badgeEmoji} ${archetype.title} (${archetype.rarity})!\n\n⚡ Total Rialo Impressions: ${(userData?.totalImpressions || 0).toLocaleString()}\n🌊 Wave 1 Genesis\n\nForge your Rialo Card on @RialoTrace:`
-    );
-    const url = encodeURIComponent(window.location.href);
-    window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
-  };
-
-  const handleCopyLink = () => {
-    navigator.clipboard.writeText(window.location.href);
-    setCopiedLink(true);
-    setTimeout(() => setCopiedLink(false), 2000);
-  };
-
-  const displayHandle = userData?.user?.handle || (inputVal.trim() ? inputVal.trim() : 'yournahian');
-
-  const getAnimationClass = () => {
+  const getAnimClass = () => {
     if (openingStage === 'charging') return 'card-is-charging';
     if (openingStage === 'spinning') return 'card-is-spinning';
     if (openingStage === 'revealed') return 'card-just-revealed';
-    if (isFlipping) return 'is-flipping-transition';
     return '';
   };
 
-  const handleEquipFromCarousel = (arch: CardArchetype) => {
-    setSelectedArchetypeId(arch.id);
-    setIsCustomizerOpen(false);
-    setShowFlash(true);
-    setTimeout(() => setShowFlash(false), 600);
-  };
+  // No pack available screen
+  if (!packCards || packCards.length === 0) {
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '70vh', padding: '40px 20px' }}>
+        <div style={{ textAlign: 'center', maxWidth: '560px' }}>
+          <div style={{
+            display: 'inline-flex', alignItems: 'center', gap: '8px',
+            padding: '8px 24px', borderRadius: '9999px',
+            background: 'rgba(16, 185, 129, 0.15)', border: '1px solid rgba(16, 185, 129, 0.4)',
+            color: '#10B981', fontSize: '13px', fontWeight: 800, marginBottom: '20px',
+            boxShadow: '0 0 25px rgba(16, 185, 129, 0.25)',
+          }}>
+            <CheckCircle2 size={18} />
+            <span>All Today's 3 Cards Already Claimed & Opened</span>
+          </div>
+          <h2 style={{ fontSize: '30px', fontWeight: 900, color: '#FFFFFF', margin: '0 0 12px 0' }}>
+            Daily Gacha Sequence <span className="gradient-text-rialo">Complete</span>
+          </h2>
+          <p style={{ fontSize: '14px', color: 'var(--rialo-text-muted)', lineHeight: '1.6', margin: '0 0 32px 0' }}>
+            Your next daily 3-card pack unlocks tomorrow at 00:00 UTC. Check your Digital Collector Album to inspect your cards.
+          </p>
+          <button type="button" onClick={() => { if (onNavigateToBinder) onNavigateToBinder(); }}
+            className="monad-claim-button"
+            style={{ padding: '0 32px', height: '52px', fontSize: '15px', boxShadow: '0 0 35px rgba(169, 221, 211, 0.6)', background: 'linear-gradient(135deg, #A9DDD3, #2563EB)', display: 'inline-flex', alignItems: 'center', gap: '10px' }}>
+            <Layers size={18} />
+            <span>Open Digital Collector Album</span>
+            <ArrowRight size={18} />
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  const card = currentPackCard!;
 
   return (
-    <div className="monad-style-stage animate-fade-in">
-      {/* Top Search Bar (Clean, no chips above) */}
-      <div className="monad-search-container">
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            if (inputVal.trim()) fetchUserCard(inputVal.trim());
-          }}
-          className="monad-search-form"
-        >
-          <div className="monad-input-pill">
-            <span className="monad-input-prefix">@</span>
-            <input
-              type="text"
-              value={inputVal}
-              onChange={(e) => setInputVal(e.target.value)}
-              placeholder="Enter your X username to forge card"
-              className="monad-input-field"
-              autoFocus
-            />
-          </div>
-          <button
-            type="submit"
-            disabled={loading || !inputVal.trim()}
-            className="monad-btn-generate"
-          >
-            {loading ? 'Forging...' : '⚡ Forge & Reveal Card'}
-          </button>
-        </form>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '16px 20px 40px', width: '100%' }}>
+      {/* Supernova Shockwave Blast Overlay */}
+      {showFlash && (
+        <div style={{
+          position: 'fixed', inset: 0, zIndex: 9999, pointerEvents: 'none',
+          background: 'radial-gradient(circle, rgba(255,255,255,0.98) 0%, rgba(169, 221, 211,0.85) 35%, rgba(168,85,247,0.6) 65%, transparent 85%)',
+          animation: 'supernovaShockwave 0.8s cubic-bezier(0.1, 0.9, 0.2, 1) forwards',
+        }} />
+      )}
+
+      {/* Step Indicator */}
+      <div style={{ textAlign: 'center', marginBottom: '24px', width: '100%' }}>
+        <div style={{
+          display: 'inline-flex', alignItems: 'center', gap: '10px',
+          padding: '8px 28px', borderRadius: '9999px',
+          background: 'rgba(6, 10, 10, 0.9)', border: '1px solid rgba(169, 221, 211, 0.3)',
+          boxShadow: '0 0 25px rgba(169, 221, 211, 0.2)', marginBottom: '12px',
+        }}>
+          <span style={{ color: 'var(--arc-cyan)', fontSize: '13px', fontWeight: 900, letterSpacing: '0.08em' }}>
+            ⚡ DAILY PACK DROP: CARD {packIndex + 1} OF {packCards.length} ⚡
+          </span>
+        </div>
+
+        {/* Dot Progress */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+          {packCards.map((pc, idx) => {
+            const isDone = revealedPulledIds.includes(pc.id);
+            const isCurrent = idx === packIndex;
+            return (
+              <div key={pc.id} style={{
+                width: isCurrent ? '28px' : '10px', height: '10px', borderRadius: '9999px',
+                background: isDone ? '#10B981' : isCurrent ? 'var(--arc-cyan)' : 'rgba(255,255,255,0.15)',
+                boxShadow: isCurrent ? '0 0 12px var(--arc-cyan)' : 'none',
+                transition: 'all 0.3s ease',
+              }} />
+            );
+          })}
+        </div>
       </div>
 
-      {/* Main 3D Card Stage */}
-      <div className="monad-stage-center">
-        {/* Card and Action Side Buttons Wrapper */}
-        <div className="monad-card-and-actions">
-          {/* Ambient Spotlight Beams (Rialo Mystery Stage) */}
-          <div className={`card-spotlight-backdrop ${openingStage === 'charging' ? 'charging' : ''}`}>
-            <div className="card-beam" />
-            <div className="card-beam" />
-            <div className="card-beam" />
-            <div className="card-beam" />
-            <div className="card-beam" />
-            <div className="card-beam" />
-          </div>
+      {/* Card Stage with Navigation Arrows */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '24px', marginBottom: '28px', position: 'relative' }}>
+        {/* Left Arrow (Prev Revealed Card) */}
+        <button
+          type="button"
+          onClick={handlePrevPackCard}
+          disabled={packIndex === 0}
+          title="Previous card"
+          style={{
+            width: '44px', height: '44px', borderRadius: '50%',
+            background: packIndex === 0 ? 'rgba(255,255,255,0.04)' : 'rgba(169, 221, 211, 0.12)',
+            border: packIndex === 0 ? '1px solid rgba(255,255,255,0.08)' : '1px solid rgba(169, 221, 211, 0.4)',
+            color: packIndex === 0 ? 'rgba(255,255,255,0.2)' : '#A9DDD3',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            cursor: packIndex === 0 ? 'not-allowed' : 'pointer',
+            boxShadow: packIndex === 0 ? 'none' : '0 0 20px rgba(169, 221, 211,0.25)',
+            transition: 'all 0.2s',
+            flexShrink: 0,
+          }}
+        >
+          <ChevronLeft size={22} />
+        </button>
 
-          {/* Flash burst overlay on reveal */}
-          {showFlash && <div className="card-flash-burst" />}
-
-          {/* Card Canvas with 3D Perspective */}
+        {/* 3D Card */}
+        <div className="monad-perspective-wrapper" style={{ flexShrink: 0 }}>
           <div
-            className="monad-perspective-wrapper"
+            ref={cardRef}
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
+            onClick={() => {
+              if (openingStage === 'charging' || openingStage === 'spinning') return;
+              if (!isCurrentCardRevealed) {
+                triggerOpeningSequence();
+              } else {
+                setIsFlipped(prev => !prev);
+              }
+            }}
+            className={`monad-card-3d ${getAnimClass()}`}
+            style={{
+              transform: `rotateX(${tilt.x}deg) rotateY(${tilt.y + (isFlipped ? 0 : 180)}deg)`,  // isFlipped=false→BACK, true→FRONT
+              transition: openingStage === 'idle' ? 'transform 0.15s ease-out' : 'none',
+            }}
           >
-            <div
-              ref={cardRef}
-              onClick={handleCardClick}
-              className={`monad-card-3d ${getAnimationClass()}`}
-              style={{
-                transform: openingStage === 'spinning' || openingStage === 'charging'
-                  ? undefined
-                  : `rotateX(${tilt.x}deg) rotateY(${isFlipped ? tilt.y : 180 - tilt.y}deg)`,
-                boxShadow: isFlipped
-                  ? `0 0 55px ${archetype.glowColor}66, 0 0 110px ${archetype.glowColor}33`
-                  : '0 0 50px rgba(0, 229, 255, 0.5), 0 0 100px rgba(99, 102, 241, 0.3)',
-              }}
-            >
-              {/* CARD FRONT (Original Arc Aesthetics) */}
-              <div
-                className="monad-card-face monad-card-front"
-                style={{
-                  border: `2px solid ${archetype.glowColor}`,
-                }}
-              >
-                {/* Holographic dynamic sheen */}
-                <div
-                  className="monad-holographic-sheen"
-                  style={{
-                    background: `radial-gradient(circle at ${tilt.glareX}% ${tilt.glareY}%, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0) 65%)`,
-                  }}
-                />
+            {/* Holo Glare */}
+            <div style={{
+              position: 'absolute', inset: 0, borderRadius: '28px', zIndex: 10, pointerEvents: 'none',
+              background: `radial-gradient(circle at ${tilt.glareX}% ${tilt.glareY}%, rgba(255,255,255,0.4) 0%, rgba(169, 221, 211,0.15) 40%, transparent 65%)`,
+            }} />
 
-                {/* Top Nameplate Box with User's X Avatar / DP */}
-                <div className="monad-card-nameplate">
-                  <div className="monad-nameplate-user">
-                    {userData?.user?.profile_image_url ? (
-                      <img
-                        src={userData.user.profile_image_url}
-                        alt={displayHandle}
-                        className="monad-user-dp"
-                        onError={(e) => {
-                          (e.currentTarget as HTMLElement).style.display = 'none';
-                        }}
-                      />
-                    ) : (
-                      <div
-                        className="monad-user-dp-placeholder"
-                        style={{
-                          background: `linear-gradient(135deg, ${archetype.glowColor}, #3B82F6)`,
-                        }}
-                      >
-                        {displayHandle.replace('@', '').charAt(0).toUpperCase()}
-                      </div>
-                    )}
-                    <span className="monad-nameplate-text">
-                      @{displayHandle}
-                    </span>
-                  </div>
-                  <div
-                    className="monad-nameplate-star"
-                    style={{ color: archetype.glowColor }}
-                  >
-                    ✦
-                  </div>
+            {/* Flash burst on reveal */}
+            {showFlash && <div className="card-flash-burst" />}
+
+            {/* CARD FRONT */}
+            <div className="monad-card-face monad-card-front">
+              {/* Top nameplate */}
+              <div className="monad-card-nameplate">
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <RialoLogo size={14} />
+                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', fontWeight: 800, color: '#0F172A', letterSpacing: '0.06em' }}>
+                    WAVE 1 • GENESIS
+                  </span>
                 </div>
-
-                {/* Character Artwork Frame */}
-                <div className="monad-art-frame">
-                  <img
-                    src={archetype.image}
-                    alt={archetype.title}
-                    className="monad-art-image"
-                  />
-                </div>
-
-                {/* Trait Box (Original Arc Archetype) */}
-                <div className="monad-trait-card">
-                  <div
-                    className="monad-trait-icon-box"
-                    style={{ background: archetype.iconBg }}
-                  >
-                    <span className="monad-trait-icon">{archetype.badgeEmoji}</span>
-                  </div>
-                  <div className="monad-trait-content">
-                    <div className="monad-trait-title">
-                      {archetype.title}
-                    </div>
-                    <p className="monad-trait-lore">
-                      {archetype.lore}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Bottom Footer: Brand & Wave Stamp */}
-                <div className="monad-card-footer">
-                  <span className="monad-footer-brand">Rialo Cards</span>
-                  <div className="monad-wave-badge">
-                    <span>WAVE 1</span>
-                  </div>
+                <div style={{
+                  padding: '3px 10px', borderRadius: '9999px',
+                  background: card.glowColor + '20', border: `1px solid ${card.glowColor}`,
+                  fontSize: '11px', fontWeight: 800, color: card.glowColor,
+                  display: 'flex', alignItems: 'center', gap: '4px',
+                }}>
+                  {card.badgeEmoji} {card.rarity}
                 </div>
               </div>
 
-              {/* CARD BACK (Unrevealed Official Holographic Back) */}
-              <div
-                className="monad-card-face monad-card-back"
-                style={{
-                  border: '2px solid rgba(0, 229, 255, 0.7)',
-                  boxShadow: '0 0 50px rgba(0, 229, 255, 0.5)',
-                }}
-              >
-                <div className="monad-back-header">
-                  <span>RIALO CARDS</span>
-                  <span>SERIES 1</span>
-                </div>
+              {/* Art */}
+              <div className="monad-art-frame">
+                <img src={card.image} alt={card.title} className="monad-art-image" />
+              </div>
 
-                <div className="monad-back-center-logo">
-                  <div className="monad-back-emblem">
-                    <RialoIcon size={52} color="#A9DDD3" />
-                  </div>
-                  <div className="monad-back-title">rialo.io</div>
-                  <div className="monad-back-subtitle">GENESIS WAVE 1</div>
+              {/* Trait / lore block */}
+              <div className="monad-trait-card">
+                <div style={{
+                  width: '44px', height: '44px', borderRadius: '12px', flexShrink: 0,
+                  background: card.glowColor + '20', border: `1.5px solid ${card.glowColor}60`,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  boxShadow: `0 0 12px ${card.glowColor}40`,
+                }}>
+                  <span style={{ fontSize: '22px' }}>{card.badgeEmoji}</span>
                 </div>
+                <div className="monad-trait-content">
+                  <div className="monad-trait-title">{card.title}</div>
+                  <p className="monad-trait-lore">{card.lore}</p>
+                </div>
+              </div>
 
-                <div className="monad-back-cta">
-                  <Sparkles style={{ width: '16px', height: '16px', color: '#00E5FF' }} />
-                  <span>{openingStage === 'charging' ? 'CHARGING ENERGY...' : 'CLICK TO REVEAL CARD'}</span>
+              {/* Footer */}
+              <div className="monad-card-footer">
+                <span className="monad-footer-brand">rialo.io</span>
+                <div className="monad-wave-badge" style={{ background: card.glowColor, color: '#040814' }}>
+                  CARD {packIndex + 1}/3
                 </div>
               </div>
             </div>
-          </div>
 
-          {/* Floating Action Buttons Beside Card (Utility controls only: Flip, Download, Copy) */}
-          <div className="monad-floating-actions">
-            {/* Flip Card (Front / Back toggle) */}
-            <button
-              type="button"
-              onClick={toggleFlip}
-              title={isFlipped ? 'Flip to Card Back' : 'Flip to Card Front'}
-              className={`monad-action-circle ${!isFlipped ? 'active-flip' : ''}`}
-            >
-              <RefreshCw
-                style={{
-                  width: '18px',
-                  height: '18px',
-                  transform: !isFlipped ? 'rotate(180deg)' : 'none',
-                  transition: 'transform 0.4s ease',
-                }}
-              />
-            </button>
-
-            {/* Download Card PNG */}
-            <button
-              type="button"
-              onClick={handleDownload}
-              disabled={downloading}
-              title="Download Card PNG"
-              className="monad-action-circle"
-            >
-              <Download style={{ width: '18px', height: '18px' }} />
-            </button>
-
-            {/* Copy Card Link */}
-            <button
-              type="button"
-              onClick={handleCopyLink}
-              title="Copy Card Link"
-              className="monad-action-circle"
-            >
-              {copiedLink ? <Check style={{ width: '18px', height: '18px', color: '#10B981' }} /> : <Copy style={{ width: '18px', height: '18px' }} />}
-            </button>
-          </div>
-        </div>
-
-        {/* Big Rialo Cards Title & Footer Banner */}
-        <div className="monad-banner-footer">
-          {!hasRevealed && (
-            <div className="unrevealed-badge">
-              <Sparkles style={{ width: '14px', height: '14px' }} />
-              <span>GENESIS RIALO PACK • UNREVEALED</span>
+            {/* CARD BACK */}
+            <div className="monad-card-face monad-card-back"
+              style={{ border: '2px solid rgba(169, 221, 211,0.7)', boxShadow: '0 0 50px rgba(169, 221, 211,0.5)' }}>
+              <div className="monad-back-header">
+                <span>RIALO CARDS</span>
+                <span>CARD {packIndex + 1} / 3</span>
+              </div>
+              <div className="monad-back-center-logo">
+                <div className="monad-back-emblem"><RialoIcon size={56} color="#A9DDD3" /></div>
+                <div className="monad-back-title">rialo.io</div>
+                <div className="monad-back-subtitle">GENESIS WAVE 1</div>
+              </div>
+              <div className="monad-back-cta">
+                <Sparkles style={{ width: '16px', height: '16px', color: '#A9DDD3' }} />
+                <span>
+                  {openingStage === 'charging' ? '⚡ CHARGING ENERGY...'
+                    : openingStage === 'spinning' ? '🌀 REVEALING WARRIOR...'
+                    : `CLICK TO REVEAL CARD ${packIndex + 1} OF 3`}
+                </span>
+              </div>
             </div>
-          )}
-
-          <h1 className="monad-huge-title">RIALO CARDS</h1>
-          <div className="monad-wave-divider">
-            <span className="divider-line" />
-            <span className="divider-text">WAVE 1 — GENESIS</span>
-            <span className="divider-line" />
-          </div>
-          <p className="monad-quote-text">
-            &ldquo;Forged on sub-second finality for the Rialo Community&rdquo;
-          </p>
-          <div className="monad-signed-in">
-            Forged for <span className="signed-handle">@{displayHandle || 'yournahian'}</span>
-          </div>
-
-          <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'center' }}>
-            {!hasRevealed ? (
-              <button
-                type="button"
-                onClick={() => triggerOpeningSequence()}
-                className="monad-claim-button"
-                style={{
-                  boxShadow: '0 0 35px rgba(0, 229, 255, 0.7)',
-                  background: 'linear-gradient(135deg, #00E5FF, #2563EB)',
-                  color: '#040814',
-                  fontWeight: 900,
-                }}
-              >
-                ⚡ Open & Reveal Card ⚡
-              </button>
-            ) : (
-              <>
-                <button
-                  type="button"
-                  onClick={handleShareX}
-                  className="monad-claim-button"
-                  style={{
-                    boxShadow: `0 0 35px ${archetype.glowColor}88`,
-                    background: `linear-gradient(135deg, ${archetype.glowColor}, #2563EB)`,
-                  }}
-                >
-                  Claim & Share to X
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    const idx = ARCHETYPES_LIST.findIndex((a) => a.id === selectedArchetypeId);
-                    setCarouselIndex(idx >= 0 ? idx : 0);
-                    setIsCustomizerOpen(true);
-                  }}
-                  className="choose-yours-btn"
-                >
-                  <Palette style={{ width: '16px', height: '16px' }} />
-                  <span>Choose Yours</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => triggerOpeningSequence()}
-                  className="replay-reveal-btn"
-                >
-                  <Sparkles style={{ width: '15px', height: '15px', color: '#00E5FF' }} />
-                  <span>Replay Animation</span>
-                </button>
-              </>
-            )}
           </div>
         </div>
-      </div>
 
-      {/* 3D Card Carousel Customizer Modal (Facebook Reel 3D Carousel Inspiration) */}
-      {isCustomizerOpen && (
-        <div
-          className="carousel-modal-overlay"
-          onClick={(e) => {
-            if (e.target === e.currentTarget) setIsCustomizerOpen(false);
+        {/* Right Arrow (Next Revealed Card) */}
+        <button
+          type="button"
+          onClick={handleNextPackCard}
+          disabled={packIndex === packCards.length - 1}
+          title="Next card"
+          style={{
+            width: '44px', height: '44px', borderRadius: '50%',
+            background: packIndex === packCards.length - 1 ? 'rgba(255,255,255,0.04)' : 'rgba(169, 221, 211, 0.12)',
+            border: packIndex === packCards.length - 1 ? '1px solid rgba(255,255,255,0.08)' : '1px solid rgba(169, 221, 211, 0.4)',
+            color: packIndex === packCards.length - 1 ? 'rgba(255,255,255,0.2)' : '#A9DDD3',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            cursor: packIndex === packCards.length - 1 ? 'not-allowed' : 'pointer',
+            boxShadow: packIndex === packCards.length - 1 ? 'none' : '0 0 20px rgba(169, 221, 211,0.25)',
+            transition: 'all 0.2s',
+            flexShrink: 0,
           }}
         >
-          <div className="carousel-modal-container">
-            <button
-              type="button"
-              onClick={() => setIsCustomizerOpen(false)}
-              className="carousel-close-btn"
-              title="Close Customizer"
-            >
-              <X style={{ width: '22px', height: '22px' }} />
-            </button>
+          <ChevronRight size={22} />
+        </button>
+      </div>
 
-            <div className="carousel-header">
-              <h2 className="carousel-title">CHOOSE YOURS</h2>
-              <div className="carousel-subtitle">
-                3D ARCHETYPE CAROUSEL // 10 GENESIS RIALO WARRIORS
-              </div>
-            </div>
-
-            {/* 3D Carousel Stage */}
-            <div className="carousel-3d-stage">
+      {/* Action Buttons */}
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '14px', width: '100%', maxWidth: '480px' }}>
+        {!isCurrentCardRevealed ? (
+          <button
+            type="button"
+            onClick={triggerOpeningSequence}
+            disabled={openingStage !== 'idle'}
+            className="monad-claim-button"
+            style={{
+              background: 'linear-gradient(135deg, #A9DDD3, #2563EB)',
+              boxShadow: '0 0 35px rgba(169, 221, 211, 0.7)',
+              height: '54px', padding: '0 36px', fontSize: '16px',
+              letterSpacing: '0.04em',
+              display: 'inline-flex', alignItems: 'center', gap: '10px',
+              width: '100%', justifyContent: 'center',
+            }}
+          >
+            <Sparkles size={20} />
+            <span>⚡ REVEAL CARD {packIndex + 1} OF {packCards.length} ⚡</span>
+          </button>
+        ) : (
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', justifyContent: 'center', width: '100%' }}>
+            {packIndex < packCards.length - 1 && (
               <button
                 type="button"
-                onClick={() =>
-                  setCarouselIndex((prev) => (prev - 1 + ARCHETYPES_LIST.length) % ARCHETYPES_LIST.length)
-                }
-                className="carousel-nav-btn prev"
-                title="Previous Archetype"
-              >
-                <ChevronLeft style={{ width: '28px', height: '28px' }} />
-              </button>
-
-              <div className="carousel-track">
-                {ARCHETYPES_LIST.map((arch, idx) => {
-                  const offset = idx - carouselIndex;
-                  const absOffset = Math.abs(offset);
-                  const isVisible = absOffset <= 2;
-
-                  if (!isVisible) return null;
-
-                  const translateX = offset * 240;
-                  const translateZ = absOffset === 0 ? 90 : -130 * absOffset;
-                  const rotateY = offset * -28;
-                  const scale = absOffset === 0 ? 1.05 : 0.82;
-                  const opacity = absOffset === 0 ? 1 : Math.max(0.35, 1 - absOffset * 0.35);
-
-                  return (
-                    <div
-                      key={arch.id}
-                      onClick={() => setCarouselIndex(idx)}
-                      className={`carousel-card-item ${absOffset === 0 ? 'active' : ''}`}
-                      style={{
-                        transform: `translateX(${translateX}px) translateZ(${translateZ}px) rotateY(${rotateY}deg) scale(${scale})`,
-                        opacity,
-                        zIndex: 20 - absOffset,
-                        borderColor: absOffset === 0 ? arch.glowColor : 'rgba(255,255,255,0.15)',
-                        boxShadow: absOffset === 0
-                          ? `0 0 50px ${arch.glowColor}88, 0 0 100px ${arch.glowColor}44`
-                          : '0 10px 30px rgba(0,0,0,0.5)',
-                      }}
-                    >
-                      {/* Nameplate */}
-                      <div className="monad-card-nameplate" style={{ height: '36px', padding: '0 12px' }}>
-                        <div className="monad-nameplate-user">
-                          {userData?.user?.profile_image_url ? (
-                            <img
-                              src={userData.user.profile_image_url}
-                              alt={displayHandle}
-                              className="monad-user-dp"
-                              style={{ width: '22px', height: '22px' }}
-                            />
-                          ) : (
-                            <div
-                              className="monad-user-dp-placeholder"
-                              style={{ width: '22px', height: '22px', fontSize: '11px', background: arch.glowColor }}
-                            >
-                              {displayHandle.replace('@', '').charAt(0).toUpperCase()}
-                            </div>
-                          )}
-                          <span className="monad-nameplate-text" style={{ fontSize: '13px' }}>
-                            @{displayHandle}
-                          </span>
-                        </div>
-                        <div className="monad-nameplate-star" style={{ color: arch.glowColor, fontSize: '14px' }}>
-                          ✦
-                        </div>
-                      </div>
-
-                      {/* Art */}
-                      <div className="monad-art-frame" style={{ height: '200px', margin: '4px 0' }}>
-                        <img
-                          src={arch.image}
-                          alt={arch.title}
-                          className="monad-art-image"
-                        />
-                      </div>
-
-                      {/* Trait Box */}
-                      <div className="monad-trait-card" style={{ minHeight: '80px', padding: '8px 10px' }}>
-                        <div
-                          className="monad-trait-icon-box"
-                          style={{ width: '40px', height: '40px', background: arch.iconBg }}
-                        >
-                          <span className="monad-trait-icon" style={{ fontSize: '20px' }}>{arch.badgeEmoji}</span>
-                        </div>
-                        <div className="monad-trait-content">
-                          <div className="monad-trait-title" style={{ fontSize: '13px' }}>
-                            {arch.title}
-                          </div>
-                          <p className="monad-trait-lore" style={{ fontSize: '10px', lineHeight: 1.3 }}>
-                            {arch.lore}
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* Footer */}
-                      <div className="monad-card-footer" style={{ padding: '0 4px' }}>
-                        <span className="monad-footer-brand" style={{ fontSize: '10px' }}>Rialo Cards</span>
-                        <div
-                          className="monad-wave-badge"
-                          style={{ background: arch.glowColor, color: '#040814', fontWeight: 900 }}
-                        >
-                          <span>{arch.rarity}</span>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-
-              <button
-                type="button"
-                onClick={() => setCarouselIndex((prev) => (prev + 1) % ARCHETYPES_LIST.length)}
-                className="carousel-nav-btn next"
-                title="Next Archetype"
-              >
-                <ChevronRight style={{ width: '28px', height: '28px' }} />
-              </button>
-            </div>
-
-            {/* Carousel Bottom Control Bar */}
-            <div className="carousel-bottom-bar">
-              {/* Dots */}
-              <div className="carousel-dots">
-                {ARCHETYPES_LIST.map((_, dotIdx) => (
-                  <div
-                    key={dotIdx}
-                    onClick={() => setCarouselIndex(dotIdx)}
-                    className={`carousel-dot ${dotIdx === carouselIndex ? 'active' : ''}`}
-                  />
-                ))}
-              </div>
-
-              {/* Equip Button */}
-              <button
-                type="button"
-                onClick={() => handleEquipFromCarousel(ARCHETYPES_LIST[carouselIndex])}
-                className="carousel-equip-btn"
+                onClick={handleNextPackCard}
+                className="monad-claim-button"
                 style={{
-                  background: `linear-gradient(135deg, ${ARCHETYPES_LIST[carouselIndex].glowColor}, #3B82F6)`,
-                  boxShadow: `0 0 35px ${ARCHETYPES_LIST[carouselIndex].glowColor}99`,
+                  background: 'linear-gradient(135deg, #10B981, #059669)',
+                  boxShadow: '0 0 30px rgba(16, 185, 129, 0.6)',
+                  height: '48px', padding: '0 28px', fontSize: '14px',
+                  display: 'inline-flex', alignItems: 'center', gap: '8px',
                 }}
               >
-                <span>{ARCHETYPES_LIST[carouselIndex].badgeEmoji}</span>
-                <span>Equip {ARCHETYPES_LIST[carouselIndex].title}</span>
-                <Sparkles style={{ width: '16px', height: '16px' }} />
+                <span>Next Card ({packIndex + 2}/{packCards.length})</span>
+                <ArrowRight size={18} />
               </button>
-            </div>
+            )}
+
+            
+
+            {allPackCardsRevealed && (
+              <button
+                type="button"
+                onClick={() => {
+                  if (onClearNewlyPulledCards) onClearNewlyPulledCards();
+                  if (onNavigateToBinder) onNavigateToBinder();
+                }}
+                className="monad-claim-button"
+                style={{
+                  background: 'linear-gradient(135deg, #A9DDD3, #7C3AED)',
+                  boxShadow: '0 0 35px rgba(124, 58, 237, 0.6)',
+                  height: '48px', padding: '0 28px', fontSize: '14px',
+                  display: 'inline-flex', alignItems: 'center', gap: '8px',
+                }}
+              >
+                <Layers size={18} />
+                <span>Open Digital Collector Album ➔</span>
+              </button>
+            )}
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };

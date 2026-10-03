@@ -3,10 +3,9 @@ import { Swords, Crown, Share2, Sparkles, Zap, ShieldAlert, Award } from 'lucide
 import { TierBadge } from './TierBadge';
 
 const POPULAR_MATCHUPS = [
-  { p1: 'yournahian', p2: 'jerallaire', label: 'yournahian vs jerallaire' },
-  { p1: 'CircleDevs', p2: 'VitalikButerin', label: 'CircleDevs vs Vitalik' },
-  { p1: 'Subzero_Labs', p2: 'itachee_x', label: 'Subzero_Labs vs itachee_x' },
+  { p1: 'yournahian', p2: 'itachee_x', label: 'yournahian vs itachee_x' },
   { p1: 'RialoHQ', p2: 'Subzero_Labs', label: 'RialoHQ vs Subzero_Labs' },
+  { p1: 'itachee_x', p2: 'RialoHQ', label: 'itachee_x vs RialoHQ' },
 ];
 
 const BATTLE_STEPS = [
@@ -266,16 +265,16 @@ export const VersusArena: React.FC = () => {
         <div
           className="feature-pill-badge"
           style={{
-            color: '#F59E0B',
-            borderColor: 'rgba(245,158,11,0.3)',
-            background: 'rgba(245,158,11,0.08)',
+            color: '#A9DDD3',
+            borderColor: 'rgba(169,221,211,0.3)',
+            background: 'rgba(169,221,211,0.08)',
           }}
         >
           <Swords style={{ width: '14px', height: '14px' }} />
           <span>Live Creator Showdown • Sub-Second Finality</span>
         </div>
         <h2 className="feature-title">
-          Rialo <span className="gradient-text-amber">Versus</span> Arena
+          Rialo <span className="gradient-text-rialo">Versus</span> Arena
         </h2>
         <p className="feature-desc">
           Compare any two Twitter creators or ecosystem leads side-by-side. Enter any usernames below
@@ -285,7 +284,7 @@ export const VersusArena: React.FC = () => {
         {/* Dual Input Controls with Enter Submit */}
         <form onSubmit={handleFightSubmit} className="versus-controls-bar">
           <div className="feature-input-wrap">
-            <span className="feature-input-prefix" style={{ color: '#00E5FF' }}>
+            <span className="feature-input-prefix" style={{ color: '#A9DDD3' }}>
               @
             </span>
             <input
@@ -295,7 +294,7 @@ export const VersusArena: React.FC = () => {
               onChange={(e) => setInput1(e.target.value)}
               placeholder="Enter first handle"
               className="feature-text-input"
-              style={{ borderColor: 'rgba(0,229,255,0.35)' }}
+              style={{ borderColor: 'rgba(169, 221, 211,0.35)' }}
             />
           </div>
 
@@ -304,7 +303,7 @@ export const VersusArena: React.FC = () => {
           </div>
 
           <div className="feature-input-wrap">
-            <span className="feature-input-prefix" style={{ color: '#F97316' }}>
+            <span className="feature-input-prefix" style={{ color: '#E8E3D5' }}>
               @
             </span>
             <input
@@ -314,7 +313,7 @@ export const VersusArena: React.FC = () => {
               onChange={(e) => setInput2(e.target.value)}
               placeholder="Enter second handle"
               className="feature-text-input"
-              style={{ borderColor: 'rgba(249,115,22,0.35)' }}
+              style={{ borderColor: 'rgba(232,227,213,0.35)' }}
             />
           </div>
 
@@ -325,19 +324,42 @@ export const VersusArena: React.FC = () => {
             style={{
               background:
                 battleStage === 'battling'
-                  ? 'rgba(245, 158, 11, 0.4)'
+                  ? 'rgba(169, 221, 211, 0.25)'
                   : !input1.trim() || !input2.trim()
-                  ? 'rgba(255, 255, 255, 0.08)'
-                  : 'linear-gradient(135deg, #F59E0B, #F97316)',
+                  ? 'rgba(169, 221, 211, 0.08)'
+                  : 'linear-gradient(135deg, #A9DDD3 0%, #6EBBAE 100%)',
+              color:
+                battleStage === 'battling'
+                  ? '#A9DDD3'
+                  : !input1.trim() || !input2.trim()
+                  ? '#E8E3D5'
+                  : '#010101',
+              border:
+                battleStage === 'battling'
+                  ? '1px solid rgba(169, 221, 211, 0.4)'
+                  : !input1.trim() || !input2.trim()
+                  ? '1px solid rgba(169, 221, 211, 0.35)'
+                  : '1px solid #A9DDD3',
               cursor:
                 battleStage === 'battling' || !input1.trim() || !input2.trim()
                   ? 'not-allowed'
                   : 'pointer',
               minWidth: '160px',
+              height: '46px',
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              borderRadius: '12px',
+              fontFamily: 'var(--font-mono)',
+              fontSize: '13px',
+              fontWeight: 800,
+              letterSpacing: '0.02em',
               boxShadow:
                 battleStage !== 'battling' && input1.trim() && input2.trim()
-                  ? '0 0 25px rgba(245, 158, 11, 0.4)'
-                  : 'none',
+                  ? '0 0 25px rgba(169, 221, 211, 0.5)'
+                  : '0 2px 10px rgba(0, 0, 0, 0.4)',
+              transition: 'all 0.2s ease',
             }}
           >
             {battleStage === 'battling' ? (
@@ -346,11 +368,20 @@ export const VersusArena: React.FC = () => {
                 <span>Battling...</span>
               </span>
             ) : !input1.trim() || !input2.trim() ? (
-              'Enter 2 Handles'
+              <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                <Swords style={{ width: '15px', height: '15px', color: '#A9DDD3', opacity: 0.9 }} />
+                <span>Enter 2 Handles</span>
+              </span>
             ) : battleStage === 'revealed' ? (
-              '⚔️ Rematch Battle!'
+              <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                <Swords style={{ width: '16px', height: '16px' }} />
+                <span>Rematch Battle!</span>
+              </span>
             ) : (
-              '⚔️ Start Battle!'
+              <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                <Swords style={{ width: '16px', height: '16px' }} />
+                <span>Start Battle!</span>
+              </span>
             )}
           </button>
         </form>
@@ -358,7 +389,7 @@ export const VersusArena: React.FC = () => {
         {/* Live Battle Ticker during Battling */}
         {battleStage === 'battling' && (
           <div className="battle-ticker-banner" style={{ marginTop: '12px' }}>
-            <Zap style={{ width: '16px', height: '16px', color: '#F59E0B' }} />
+            <Zap style={{ width: '16px', height: '16px', color: '#A9DDD3' }} />
             <span>{BATTLE_STEPS[battleStepIndex]}</span>
           </div>
         )}
@@ -369,17 +400,17 @@ export const VersusArena: React.FC = () => {
             className="battle-ticker-banner"
             style={{
               marginTop: '12px',
-              borderColor: winner === 1 ? '#00E5FF' : winner === 2 ? '#F97316' : '#F59E0B',
+              borderColor: winner === 1 ? '#A9DDD3' : winner === 2 ? '#E8E3D5' : '#A9DDD3',
               color: '#FFFFFF',
               background:
                 winner === 1
-                  ? 'rgba(0, 229, 255, 0.12)'
+                  ? 'rgba(169, 221, 211, 0.12)'
                   : winner === 2
                   ? 'rgba(249, 115, 22, 0.12)'
                   : 'rgba(245, 158, 11, 0.12)',
             }}
           >
-            <Crown style={{ width: '16px', height: '16px', color: '#F59E0B' }} />
+            <Crown style={{ width: '16px', height: '16px', color: '#A9DDD3' }} />
             <span>
               {winner === 1
                 ? `👑 @${user1Data?.user?.handle} CLAIMS THE RIALO ARENA CROWN!`
@@ -437,9 +468,9 @@ export const VersusArena: React.FC = () => {
             <div
               className="versus-profile-avatar"
               style={{
-                borderColor: 'rgba(0,229,255,0.4)',
-                color: '#00E5FF',
-                boxShadow: battleStage === 'battling' ? '0 0 25px rgba(0,229,255,0.6)' : 'none',
+                borderColor: 'rgba(169, 221, 211,0.4)',
+                color: '#A9DDD3',
+                boxShadow: battleStage === 'battling' ? '0 0 25px rgba(169, 221, 211,0.6)' : 'none',
               }}
             >
               {user1Data?.user?.profile_image_url ? (
@@ -490,7 +521,7 @@ export const VersusArena: React.FC = () => {
               <div
                 className="versus-metric-value cyan"
                 style={{
-                  textShadow: battleStage === 'battling' ? '0 0 15px #00E5FF' : 'none',
+                  textShadow: battleStage === 'battling' ? '0 0 15px #A9DDD3' : 'none',
                 }}
               >
                 {battleStage === 'idle'
@@ -516,8 +547,8 @@ export const VersusArena: React.FC = () => {
           {/* Dominance Bar */}
           <div className="versus-bar-wrap">
             <div className="versus-bar-labels">
-              <span style={{ color: '#00E5FF' }}>Impression Share</span>
-              <span style={{ color: '#00E5FF' }}>
+              <span style={{ color: '#A9DDD3' }}>Impression Share</span>
+              <span style={{ color: '#A9DDD3' }}>
                 {battleStage === 'revealed' ? `${p1Percent}%` : battleStage === 'battling' ? '50%' : '—'}
               </span>
             </div>
@@ -526,8 +557,8 @@ export const VersusArena: React.FC = () => {
                 className="versus-bar-fill"
                 style={{
                   width: battleStage === 'revealed' ? `${p1Percent}%` : '50%',
-                  background: '#00E5FF',
-                  boxShadow: battleStage === 'revealed' && winner === 1 ? '0 0 15px #00E5FF' : 'none',
+                  background: '#A9DDD3',
+                  boxShadow: battleStage === 'revealed' && winner === 1 ? '0 0 15px #A9DDD3' : 'none',
                 }}
               />
             </div>
@@ -538,16 +569,16 @@ export const VersusArena: React.FC = () => {
         <div
           className={`versus-card-shell ${
             battleStage === 'battling'
-              ? 'is-battling-orange'
+              ? 'is-battling-silk'
               : battleStage === 'revealed'
               ? winner === 2
-                ? 'winner-orange victor-celebrate-orange'
+                ? 'winner-silk victor-celebrate-silk'
                 : 'loser-dim'
               : ''
           }`}
         >
           {battleStage === 'revealed' && winner === 2 && (
-            <div className="versus-victor-pill orange">
+            <div className="versus-victor-pill silk">
               <Crown style={{ width: '13px', height: '13px' }} />
               <span>VICTOR • MOST IMPRESSIONS</span>
             </div>
@@ -557,9 +588,9 @@ export const VersusArena: React.FC = () => {
             <div
               className="versus-profile-avatar"
               style={{
-                borderColor: 'rgba(249,115,22,0.4)',
-                color: '#F97316',
-                boxShadow: battleStage === 'battling' ? '0 0 25px rgba(249,115,22,0.6)' : 'none',
+                borderColor: 'rgba(232,227,213,0.4)',
+                color: '#E8E3D5',
+                boxShadow: battleStage === 'battling' ? '0 0 25px rgba(232,227,213,0.6)' : 'none',
               }}
             >
               {user2Data?.user?.profile_image_url ? (
@@ -608,9 +639,9 @@ export const VersusArena: React.FC = () => {
             <div className="versus-metric-box">
               <div className="versus-metric-label">Total Impressions</div>
               <div
-                className="versus-metric-value orange"
+                className="versus-metric-value silk"
                 style={{
-                  textShadow: battleStage === 'battling' ? '0 0 15px #F97316' : 'none',
+                  textShadow: battleStage === 'battling' ? '0 0 15px #E8E3D5' : 'none',
                 }}
               >
                 {battleStage === 'idle'
@@ -636,8 +667,8 @@ export const VersusArena: React.FC = () => {
           {/* Dominance Bar */}
           <div className="versus-bar-wrap">
             <div className="versus-bar-labels">
-              <span style={{ color: '#F97316' }}>Impression Share</span>
-              <span style={{ color: '#F97316' }}>
+              <span style={{ color: '#E8E3D5' }}>Impression Share</span>
+              <span style={{ color: '#E8E3D5' }}>
                 {battleStage === 'revealed' ? `${p2Percent}%` : battleStage === 'battling' ? '50%' : '—'}
               </span>
             </div>
@@ -646,8 +677,8 @@ export const VersusArena: React.FC = () => {
                 className="versus-bar-fill"
                 style={{
                   width: battleStage === 'revealed' ? `${p2Percent}%` : '50%',
-                  background: '#F97316',
-                  boxShadow: battleStage === 'revealed' && winner === 2 ? '0 0 15px #F97316' : 'none',
+                  background: '#E8E3D5',
+                  boxShadow: battleStage === 'revealed' && winner === 2 ? '0 0 15px #E8E3D5' : 'none',
                 }}
               />
             </div>

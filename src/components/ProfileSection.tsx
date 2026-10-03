@@ -1,0 +1,1251 @@
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import { User, Award, Trophy, Sparkles, Shield, Flame, CheckCircle, CheckCircle2, Lock, ExternalLink, ArrowRight, RefreshCw, Radio, Megaphone, Bell, X, Zap, MessageSquare, Send } from 'lucide-react';
+import { UserProfile, BroadcastEvent } from '@/lib/types';
+import { PLATFORM_ACHIEVEMENTS, PlatformAchievement } from '@/lib/achievementsData';
+import { sound } from '@/lib/soundFx';
+
+interface ProfileSectionProps {
+  user: UserProfile | null;
+  onSelectTab: (tab: any) => void;
+  onLogOut?: () => void;
+  onSwitchAccount?: () => void;
+  onUserUpdate?: (u: UserProfile) => void;
+}
+
+interface ComputedAchievement extends PlatformAchievement {
+  isUnlocked: boolean;
+  progressText: string;
+}
+
+export const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onSelectTab, onLogOut, onSwitchAccount, onUserUpdate }) => {
+  const twitterAvatar = `https://unavatar.io/x/${user?.username || 'yournahian'}`;
+  const fallbackAvatar = 'https://pbs.twimg.com/profile_images/1990106346264666112/pbBiIRET_400x400.png';
+
+  const [filterMode, setFilterMode] = useState<'all' | 'unlocked' | 'locked' | 'quests' | 'cards' | 'forge' | 'trading' | 'arcade' | 'prestige'>('all');
+  const [claimedTrophies, setClaimedTrophies] = useState<Record<string, boolean>>({});
+  const [broadcasts, setBroadcasts] = useState<BroadcastEvent[]>([]);
+  const [dismissedBroadcasts, setDismissedBroadcasts] = useState<Record<string, boolean>>({});
+  const [isMissionsHistoryOpen, setIsMissionsHistoryOpen] = useState(false);
+  const [trollboxSentCount, setTrollboxSentCount] = useState<number>(0);
+  const [isVerifyingMission, setIsVerifyingMission] = useState(false);
+  const [missionClaimSuccessMsg, setMissionClaimSuccessMsg] = useState('');
+  const [claimedMissionIds, setClaimedMissionIds] = useState<Record<string, boolean>>({});
+
+  // Sync Trollbox message count from localStorage
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const cleanU = (user?.username || 'yournahian').replace('@', '').toLowerCase();
+      const current = parseInt(localStorage.getItem(`rialo_trollbox_sent_${cleanU}`) || '0');
+      setTrollboxSentCount(current);
+
+      const handleMsgSent = () => {
+        const updated = parseInt(localStorage.getItem(`rialo_trollbox_sent_${cleanU}`) || '0');
+        setTrollboxSentCount(updated);
+      };
+      window.addEventListener('rialo_trollbox_msg_sent', handleMsgSent);
+      return () => window.removeEventListener('rialo_trollbox_msg_sent', handleMsgSent);
+    }
+  }, [user?.username]);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const claimed = localStorage.getItem('rialo_claimed_trophies');
+      if (claimed) {
+        try {
+          setClaimedTrophies(JSON.parse(claimed));
+        } catch {}
+      }
+
+      // Fetch live broadcasts from admin
+      fetch('/api/admin/broadcast')
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success && Array.isArray(data.broadcasts)) {
+            setBroadcasts(data.broadcasts);
+          }
+        })
+        .catch(() => {});
+    }
+  }, []);
+
+  const handleVerifyAndClaimMission = async (broadcast: BroadcastEvent) => {
+    sound.playTap();
+    setIsVerifyingMission(true);
+    try {
+      const username = user?.username || 'yournahian';
+      const res = await fetch('/api/missions/verify-broadcast', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username,
+          broadcastId: broadcast.id,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        sound.playJackpot();
+        setClaimedMissionIds((prev) => ({ ...prev, [broadcast.id]: true }));
+        setMissionClaimSuccessMsg(data.message || `✓ Mission verified! +${broadcast.shardsReward} Shards claimed!`);
+        setTimeout(() => setMissionClaimSuccessMsg(''), 5000);
+        if (data.user && onUserUpdate) {
+          onUserUpdate(data.user);
+        }
+      } else {
+        alert(data.error || 'Failed to verify mission.');
+      }
+    } catch (err) {
+      console.error('Mission verification error:', err);
+      alert('Network error while verifying mission.');
+    } finally {
+      setIsVerifyingMission(false);
+    }
+  };
+
+  const handleClaimReward = (id: string, shards: number) => {
+    sound.playJackpot();
+    const updated = { ...claimedTrophies, [id]: true };
+    setClaimedTrophies(updated);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('rialo_claimed_trophies', JSON.stringify(updated));
+    }
+  };
+
+  const inventoryCount = user?.uniqueCardsCount || 5;
+  const totalCards = user?.totalCardsCount || 6;
+  const shards = user?.shards || 580;
+  const lifetimePoints = user?.lifetimePoints || 580;
+  const streakDays = user?.streakDays || 1;
+  const missionsCount = user?.completedMissions?.length || 2;
+
+  // Check if admin broadcasted any achievement specifically to current user or ALL
+  const userHandle = (user?.username || 'yournahian').toLowerCase().replace('@', '');
+  const broadcastedAchievementIds = new Set(
+    broadcasts
+      .filter((b) => {
+        const rec = b.recipient.toLowerCase().replace('@', '').trim();
+        return rec === 'all' || rec === 'all players' || rec === userHandle;
+      })
+      .map((b) => b.achievementId)
+      .filter(Boolean)
+  );
+
+  // Compute unlock status & dynamic progress for all 30 achievements
+  const ACHIEVEMENTS: ComputedAchievement[] = PLATFORM_ACHIEVEMENTS.map((ach) => {
+    let isUnlocked = false;
+    let progressText = 'Locked';
+
+    switch (ach.id) {
+      case 'genesis_pioneer':
+        isUnlocked = true;
+        progressText = 'Activated';
+        break;
+      case 'first_quest':
+        isUnlocked = missionsCount >= 1;
+        progressText = `${Math.min(missionsCount, 1)}/1 Quest`;
+        break;
+      case 'dedicated_runner':
+        isUnlocked = missionsCount >= 5;
+        progressText = `${Math.min(missionsCount, 5)}/5 Quests`;
+        break;
+      case 'crypto_scholar':
+        isUnlocked = missionsCount >= 2;
+        progressText = `${Math.min(missionsCount, 3)}/3 Quizzes`;
+        break;
+      case 'streak_keeper':
+        isUnlocked = streakDays >= 3;
+        progressText = `${streakDays}/3 Days Streak`;
+        break;
+      case 'relentless_sync':
+        isUnlocked = streakDays >= 7;
+        progressText = `${streakDays}/7 Days Streak`;
+        break;
+      case 'rookie_cardholder':
+        isUnlocked = totalCards >= 1;
+        progressText = `${Math.min(totalCards, 1)}/1 Card in Deck`;
+        break;
+      case 'collector_apprentice':
+        isUnlocked = inventoryCount >= 5;
+        progressText = `${Math.min(inventoryCount, 5)}/5 Unique Cards`;
+        break;
+      case 'deck_master':
+        isUnlocked = inventoryCount >= 12;
+        progressText = `${Math.min(inventoryCount, 12)}/12 Unique Cards`;
+        break;
+      case 'archive_curator':
+        isUnlocked = inventoryCount >= 20;
+        progressText = `${Math.min(inventoryCount, 20)}/20 Unique Cards`;
+        break;
+      case 'holo_mirage':
+        isUnlocked = true;
+        progressText = '1 Sovereign Holo Card Owned';
+        break;
+      case 'omniscient_binder':
+        isUnlocked = inventoryCount >= 30;
+        progressText = `${inventoryCount}/30 Full Collection`;
+        break;
+      case 'apprentice_melter':
+        isUnlocked = totalCards >= 2;
+        progressText = '2 Duplicates Ready for Forge';
+        break;
+      case 'forge_alchemist':
+        isUnlocked = totalCards >= 3;
+        progressText = `${Math.min(totalCards, 3)}/3 Cards Transmuted`;
+        break;
+      case 'fusion_ignition':
+        isUnlocked = totalCards >= 4;
+        progressText = 'Fusion Field Resonance Active';
+        break;
+      case 'zero_resist_forge':
+        isUnlocked = false;
+        progressText = 'Requires Sovereign Blueprint';
+        break;
+      case 'trade_broker':
+        isUnlocked = totalCards >= 2;
+        progressText = '1 Duplicate Available';
+        break;
+      case 'liquidity_facilitator':
+        isUnlocked = true;
+        progressText = '3 Peer Swaps Completed';
+        break;
+      case 'market_arbitrageur':
+        isUnlocked = true;
+        progressText = '1 Arbitrage Offer Settled';
+        break;
+      case 'titan_swapper':
+        isUnlocked = false;
+        progressText = '3/10 Swaps Completed';
+        break;
+      case 'arcade_ace':
+        isUnlocked = true;
+        progressText = 'Magnetic Glide Highscore Logged';
+        break;
+      case 'gravity_defier':
+        isUnlocked = true;
+        progressText = '142 PTS Glide Record';
+        break;
+      case 'sound_maestro':
+        isUnlocked = true;
+        progressText = 'MPC Drum Machine Active';
+        break;
+      case 'frequency_alchemist':
+        isUnlocked = true;
+        progressText = '16-Step Arpeggiator Synthesized';
+        break;
+      case 'trollbox_vanguard':
+        isUnlocked = true;
+        progressText = '5 Protocol Signals Transmitted';
+        break;
+      case 'alpha_hunter':
+        isUnlocked = true;
+        progressText = 'Alpha Curator Standing Verified';
+        break;
+      case 'shard_tycoon':
+        isUnlocked = shards >= 500;
+        progressText = `${shards}/500 Superconducting Shards`;
+        break;
+      case 'millionaire_shards':
+        isUnlocked = lifetimePoints >= 1500;
+        progressText = `${lifetimePoints}/1500 Lifetime Points`;
+        break;
+      case 'whitelist_ascendant':
+        isUnlocked = true;
+        progressText = 'Top 1% Standing Confirmed';
+        break;
+      case 'whitelist_immortal':
+        isUnlocked = true;
+        progressText = 'Rank #1 Secured (Top 0.5%)';
+        break;
+      default:
+        isUnlocked = false;
+        progressText = 'In Progress';
+    }
+
+    // If admin explicitly broadcasted this achievement to this user, override unlock!
+    if (broadcastedAchievementIds.has(ach.id)) {
+      isUnlocked = true;
+      progressText = 'Awarded by Protocol Admin';
+    }
+
+    return {
+      ...ach,
+      isUnlocked,
+      progressText,
+    };
+  });
+
+  // Custom Admin Broadcast Achievements (Dynamically included in Trophy Cabinet)
+  const customBroadcastAchievements: ComputedAchievement[] = broadcasts
+    .filter((b) => {
+      const isAchievement = b.broadcastType === 'achievement' || (b.broadcastType !== 'mission' && b.achievementId);
+      const rec = (b.recipient || '').toLowerCase().replace('@', '').trim();
+      const isForUser = rec === 'all' || rec === 'all players' || rec === userHandle;
+      const isCustom = b.achievementId === 'custom' || !PLATFORM_ACHIEVEMENTS.some((p) => p.id === b.achievementId);
+      return isAchievement && isForUser && isCustom;
+    })
+    .map((b) => ({
+      id: b.id,
+      title: b.title,
+      desc: b.desc,
+      icon: b.icon || '🏆',
+      tier: b.tier || 'Gold',
+      category: 'prestige',
+      shardsReward: b.shardsReward || 0,
+      isUnlocked: true,
+      progressText: 'Awarded by Protocol Admin',
+    }));
+
+  const ALL_DISPLAYED_ACHIEVEMENTS = [...ACHIEVEMENTS, ...customBroadcastAchievements];
+
+  const unlockedCount = ALL_DISPLAYED_ACHIEVEMENTS.filter((a) => a.isUnlocked).length;
+
+  const filteredAchievements = ALL_DISPLAYED_ACHIEVEMENTS.filter((a) => {
+    if (filterMode === 'unlocked') return a.isUnlocked;
+    if (filterMode === 'locked') return !a.isUnlocked;
+    if (filterMode === 'quests') return a.category === 'quests';
+    if (filterMode === 'cards') return a.category === 'cards';
+    if (filterMode === 'forge') return a.category === 'forge';
+    if (filterMode === 'trading') return a.category === 'trading';
+    if (filterMode === 'arcade') return a.category === 'arcade';
+    if (filterMode === 'prestige') return a.category === 'prestige' || a.category === 'community';
+    return true;
+  });
+
+  const getTierBadgeStyle = (tier: string) => {
+    switch (tier) {
+      case 'Mythic':
+        return {
+          background: 'linear-gradient(135deg, rgba(236, 72, 153, 0.25) 0%, rgba(139, 92, 246, 0.25) 100%)',
+          color: '#F472B6',
+          border: '1px solid rgba(236, 72, 153, 0.6)',
+        };
+      case 'Diamond':
+        return {
+          background: 'rgba(96, 165, 250, 0.18)',
+          color: '#60A5FA',
+          border: '1px solid rgba(96, 165, 250, 0.45)',
+        };
+      case 'Platinum':
+        return {
+          background: 'rgba(169, 221, 211, 0.18)',
+          color: '#A9DDD3',
+          border: '1px solid rgba(169, 221, 211, 0.45)',
+        };
+      case 'Gold':
+        return {
+          background: 'rgba(251, 191, 36, 0.18)',
+          color: '#FBBF24',
+          border: '1px solid rgba(251, 191, 36, 0.45)',
+        };
+      case 'Silver':
+        return {
+          background: 'rgba(203, 213, 225, 0.18)',
+          color: '#CBD5E1',
+          border: '1px solid rgba(203, 213, 225, 0.45)',
+        };
+      case 'Bronze':
+      default:
+        return {
+          background: 'rgba(205, 127, 50, 0.18)',
+          color: '#E2A970',
+          border: '1px solid rgba(205, 127, 50, 0.45)',
+        };
+    }
+  };
+
+  // Get active broadcast banner to show if any broadcast exists and not dismissed
+  const activeBroadcast = broadcasts.find((b) => !dismissedBroadcasts[b.id]);
+
+  return (
+    <div style={{ maxWidth: '1120px', margin: '0 auto', padding: '20px 16px 80px' }}>
+      {/* ========================================================
+          USER IDENTITY PROFILE CARD (OFFICIAL BRAND THEME)
+          ======================================================== */}
+      <div style={{
+        background: 'linear-gradient(135deg, rgba(8, 12, 18, 0.95) 0%, rgba(2, 4, 6, 0.98) 100%)',
+        border: '1.5px solid rgba(169, 221, 211, 0.28)',
+        borderRadius: '28px',
+        padding: '32px',
+        boxShadow: '0 20px 50px rgba(0, 0, 0, 0.9), 0 0 30px rgba(169, 221, 211, 0.08)',
+        marginBottom: '28px',
+        position: 'relative',
+        overflow: 'hidden',
+      }}>
+        {/* Subtle Brand Background Glow */}
+        <div style={{
+          position: 'absolute',
+          top: '-80px',
+          right: '-80px',
+          width: '260px',
+          height: '260px',
+          background: 'radial-gradient(circle, rgba(169, 221, 211, 0.15) 0%, transparent 70%)',
+          borderRadius: '50%',
+          pointerEvents: 'none',
+        }} />
+
+        <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '24px' }}>
+          {/* Avatar + Identity Details */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '24px', flexWrap: 'wrap' }}>
+            {/* Interactive Avatar with Halo */}
+            <div style={{ position: 'relative' }}>
+              <div style={{
+                width: '96px',
+                height: '96px',
+                borderRadius: '50%',
+                padding: '3px',
+                background: 'linear-gradient(135deg, #A9DDD3 0%, #76c0b2 50%, #F0827D 100%)',
+                boxShadow: '0 0 25px rgba(169, 221, 211, 0.45)',
+                position: 'relative',
+              }}>
+                <img
+                  src={twitterAvatar}
+                  alt="Twitter Profile DP"
+                  onError={(e) => {
+                    (e.currentTarget as HTMLImageElement).src = fallbackAvatar;
+                  }}
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    borderRadius: '50%',
+                    objectFit: 'cover',
+                    background: '#020406',
+                  }}
+                />
+              </div>
+
+              {/* Online Protocol Indicator */}
+              <div style={{
+                position: 'absolute',
+                bottom: '4px',
+                right: '4px',
+                width: '18px',
+                height: '18px',
+                borderRadius: '50%',
+                background: '#10B981',
+                border: '3px solid #080C12',
+                boxShadow: '0 0 10px #10B981',
+              }} />
+            </div>
+
+            {/* User Meta Information */}
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap', marginBottom: '6px' }}>
+                <h1 style={{ fontSize: '26px', fontWeight: 900, color: '#E8E3D5', margin: 0, letterSpacing: '-0.02em' }}>
+                  @{user?.username || 'yournahian'}
+                </h1>
+                <span style={{
+                  background: 'rgba(169, 221, 211, 0.15)',
+                  border: '1px solid rgba(169, 221, 211, 0.4)',
+                  padding: '3px 8px',
+                  borderRadius: '9999px',
+                  color: '#A9DDD3',
+                  fontSize: '10px',
+                  fontWeight: 900,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                }}>
+                  <CheckCircle size={11} /> VERIFIED
+                </span>
+              </div>
+
+              {/* Standing & Ticket Badge */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+                <span style={{
+                  fontSize: '12px',
+                  fontWeight: 800,
+                  color: '#010101',
+                  background: '#A9DDD3',
+                  padding: '4px 10px',
+                  borderRadius: '8px',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '5px',
+                }}>
+                  👑 Rank #1: Rialo Immortal (Top 0.5%)
+                </span>
+                <span style={{
+                  fontSize: '11px',
+                  fontWeight: 800,
+                  color: '#A9DDD3',
+                  background: 'rgba(169, 221, 211, 0.1)',
+                  border: '1px solid rgba(169, 221, 211, 0.3)',
+                  padding: '4px 12px',
+                  borderRadius: '9999px',
+                  whiteSpace: 'nowrap',
+                }}>
+                  ✨ GTD Free Mint + VIP OG Pass
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Quick Action Shortcuts */}
+          <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
+            {onSwitchAccount && (
+              <button
+                type="button"
+                onClick={() => { sound.playTap(); onSwitchAccount(); }}
+                style={{
+                  padding: '10px 16px',
+                  borderRadius: '12px',
+                  background: 'rgba(169, 221, 211, 0.1)',
+                  border: '1px solid rgba(169, 221, 211, 0.3)',
+                  color: '#A9DDD3',
+                  fontSize: '12px',
+                  fontWeight: 800,
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                }}
+              >
+                <span>🔄 Switch Account</span>
+              </button>
+            )}
+            {onLogOut && (
+              <button
+                type="button"
+                onClick={() => { sound.playTap(); onLogOut(); }}
+                style={{
+                  padding: '10px 16px',
+                  borderRadius: '12px',
+                  background: 'rgba(239, 68, 68, 0.12)',
+                  border: '1px solid rgba(239, 68, 68, 0.35)',
+                  color: '#FCA5A5',
+                  fontSize: '12px',
+                  fontWeight: 800,
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                }}
+              >
+                <span>🚪 Sign Out</span>
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={() => { sound.playTap(); onSelectTab('missions'); }}
+              style={{
+                padding: '10px 18px',
+                background: 'rgba(255, 255, 255, 0.05)',
+                border: '1px solid rgba(169, 221, 211, 0.3)',
+                borderRadius: '12px',
+                color: '#A9DDD3',
+                fontSize: '12px',
+                fontWeight: 800,
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+              }}
+            >
+              Daily Quests <ArrowRight size={14} />
+            </button>
+            <button
+              type="button"
+              onClick={() => { sound.playTap(); onSelectTab('binder'); }}
+              style={{
+                padding: '10px 18px',
+                background: '#A9DDD3',
+                border: 'none',
+                borderRadius: '12px',
+                color: '#010101',
+                fontSize: '12px',
+                fontWeight: 900,
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                boxShadow: '0 0 15px rgba(169, 221, 211, 0.3)',
+              }}
+            >
+              Card Binder (30 Cards) <ArrowRight size={14} />
+            </button>
+
+            <button
+              type="button"
+              onClick={() => { sound.playTap(); setIsMissionsHistoryOpen(true); }}
+              style={{
+                padding: '10px 18px',
+                background: 'rgba(169, 221, 211, 0.12)',
+                border: '1px solid rgba(169, 221, 211, 0.45)',
+                borderRadius: '12px',
+                color: '#A9DDD3',
+                fontSize: '12px',
+                fontWeight: 900,
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                transition: 'all 0.2s',
+              }}
+            >
+              <CheckCircle2 size={14} color="#A9DDD3" />
+              Completed Missions ({user?.completedMissions?.length || (user?.completedMissionsHistory?.length || 0)})
+            </button>
+          </div>
+        </div>
+
+        {/* 4-Stat Overview Bar */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
+          gap: '14px',
+          marginTop: '28px',
+          paddingTop: '20px',
+          borderTop: '1px solid rgba(255, 255, 255, 0.08)',
+        }}>
+          <div style={{ background: 'rgba(255,255,255,0.02)', padding: '12px 16px', borderRadius: '14px', border: '1px solid rgba(255,255,255,0.06)' }}>
+            <div style={{ fontSize: '11px', color: '#8E9B97', fontWeight: 700 }}>ACTIVE SHARDS</div>
+            <div style={{ fontSize: '20px', fontWeight: 900, color: '#A9DDD3', marginTop: '2px' }}>{shards.toLocaleString()} 💎</div>
+          </div>
+          <div style={{ background: 'rgba(255,255,255,0.02)', padding: '12px 16px', borderRadius: '14px', border: '1px solid rgba(255,255,255,0.06)' }}>
+            <div style={{ fontSize: '11px', color: '#8E9B97', fontWeight: 700 }}>LIFETIME POINTS</div>
+            <div style={{ fontSize: '20px', fontWeight: 900, color: '#FFFFFF', marginTop: '2px' }}>{lifetimePoints.toLocaleString()} PTS</div>
+          </div>
+          <div style={{ background: 'rgba(255,255,255,0.02)', padding: '12px 16px', borderRadius: '14px', border: '1px solid rgba(255,255,255,0.06)' }}>
+            <div style={{ fontSize: '11px', color: '#8E9B97', fontWeight: 700 }}>CARDS COLLECTED</div>
+            <div style={{ fontSize: '20px', fontWeight: 900, color: '#A9DDD3', marginTop: '2px' }}>{inventoryCount} / 30 🎴</div>
+          </div>
+          <div style={{ background: 'rgba(255,255,255,0.02)', padding: '12px 16px', borderRadius: '14px', border: '1px solid rgba(255,255,255,0.06)' }}>
+            <div style={{ fontSize: '11px', color: '#8E9B97', fontWeight: 700 }}>ACHIEVEMENTS</div>
+            <div style={{ fontSize: '20px', fontWeight: 900, color: '#E8E3D5', marginTop: '2px' }}>{unlockedCount} / {ALL_DISPLAYED_ACHIEVEMENTS.length} 🏆</div>
+          </div>
+        </div>
+      </div>
+
+      {/* ========================================================
+          LIVE PROTOCOL MISSION & BROADCAST ALERT BANNER
+          ======================================================== */}
+      {activeBroadcast && (
+        <div style={{
+          background: 'linear-gradient(135deg, rgba(169, 221, 211, 0.12) 0%, rgba(6, 12, 16, 0.96) 100%)',
+          border: activeBroadcast.broadcastType === 'system_notice' ? '1.5px solid #FBBF24' : '1.5px solid #A9DDD3',
+          borderRadius: '20px',
+          padding: '20px 24px',
+          marginBottom: '28px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '14px',
+          boxShadow: '0 10px 30px rgba(169, 221, 211, 0.2), 0 0 20px rgba(0, 0, 0, 0.8)',
+          position: 'relative',
+          overflow: 'hidden',
+        }}>
+          {/* Success Claim Toast */}
+          {missionClaimSuccessMsg && (
+            <div style={{
+              background: 'rgba(16, 185, 129, 0.2)',
+              border: '1px solid #10B981',
+              borderRadius: '10px',
+              padding: '8px 14px',
+              color: '#A7F3D0',
+              fontSize: '12px',
+              fontWeight: 800,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+            }}>
+              <CheckCircle2 size={16} color="#10B981" />
+              <span>{missionClaimSuccessMsg}</span>
+            </div>
+          )}
+
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
+              <div style={{
+                width: '48px',
+                height: '48px',
+                borderRadius: '14px',
+                background: 'linear-gradient(135deg, #A9DDD3, #6EBBAE)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '24px',
+                boxShadow: '0 0 15px rgba(169, 221, 211, 0.5)',
+              }}>
+                {activeBroadcast.icon || '🎯'}
+              </div>
+
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', marginBottom: '4px' }}>
+                  <span style={{
+                    fontSize: '10px',
+                    fontWeight: 900,
+                    letterSpacing: '0.08em',
+                    background: '#A9DDD3',
+                    color: '#010101',
+                    padding: '2px 8px',
+                    borderRadius: '6px',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '4px',
+                  }}>
+                    <Radio size={12} className="animate-pulse" /> {activeBroadcast.broadcastType === 'system_notice' ? '⚠️ SYSTEM & PROTOCOL NOTICE' : activeBroadcast.broadcastType === 'achievement' ? 'PROTOCOL ACHIEVEMENT' : 'PROTOCOL MISSION'}
+                  </span>
+
+                  <span style={{
+                    fontSize: '11px',
+                    fontWeight: 800,
+                    color: '#FFFFFF',
+                    background: 'rgba(255, 255, 255, 0.08)',
+                    padding: '2px 8px',
+                    borderRadius: '6px',
+                  }}>
+                    Recipient: {activeBroadcast.recipient}
+                  </span>
+
+                  <span style={{
+                    fontSize: '10px',
+                    fontWeight: 900,
+                    color: '#FBBF24',
+                    background: 'rgba(251, 191, 36, 0.15)',
+                    padding: '2px 8px',
+                    borderRadius: '6px',
+                  }}>
+                    {activeBroadcast.tier || 'Silver'}
+                  </span>
+
+                  {(activeBroadcast.completedBy?.includes(userHandle) || claimedMissionIds[activeBroadcast.id]) && (
+                    <span style={{
+                      fontSize: '10px',
+                      fontWeight: 900,
+                      color: '#010101',
+                      background: '#10B981',
+                      padding: '2px 8px',
+                      borderRadius: '6px',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '4px',
+                      boxShadow: '0 0 10px rgba(16, 185, 129, 0.5)',
+                    }}>
+                      <CheckCircle2 size={12} /> COMPLETED & CLAIMED
+                    </span>
+                  )}
+                </div>
+
+                <div style={{ fontSize: '15px', fontWeight: 900, color: '#E8E3D5' }}>
+                  {activeBroadcast.title}
+                  {activeBroadcast.shardsReward > 0 && (
+                    <span style={{ color: '#A9DDD3', marginLeft: '8px' }}>
+                      (+{activeBroadcast.shardsReward} Shards Drop)
+                    </span>
+                  )}
+                </div>
+
+                {activeBroadcast.desc && (
+                  <div style={{ fontSize: '12px', color: 'rgba(232, 227, 213, 0.65)', marginTop: '2px' }}>
+                    Criteria: {activeBroadcast.desc}
+                  </div>
+                )}
+
+                {activeBroadcast.message && (
+                  <div style={{ fontSize: '12px', color: '#A9DDD3', marginTop: '2px', fontStyle: 'italic' }}>
+                    "{activeBroadcast.message}"
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setDismissedBroadcasts((prev) => ({ ...prev, [activeBroadcast.id]: true }))}
+              style={{
+                background: 'rgba(255, 255, 255, 0.05)',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                color: '#8E9B97',
+                borderRadius: '50%',
+                width: '28px',
+                height: '28px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                flexShrink: 0,
+              }}
+              title="Dismiss banner"
+            >
+              <X size={14} />
+            </button>
+          </div>
+
+          {/* Interactive Mission Verification Bar (Only for Missions) */}
+          {activeBroadcast.broadcastType !== 'achievement' && (
+            <div style={{
+              background: 'rgba(0, 0, 0, 0.35)',
+              border: '1px solid rgba(169, 221, 211, 0.2)',
+              borderRadius: '14px',
+              padding: '12px 16px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: '14px',
+              flexWrap: 'wrap',
+            }}>
+              {/* Progress Tracker */}
+              <div style={{ flex: 1, minWidth: '200px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                  <span style={{ fontSize: '11px', fontWeight: 800, color: '#A9DDD3', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <MessageSquare size={13} />
+                    {activeBroadcast.missionCategory === 'trollbox'
+                      ? `Trollbox Messages: ${trollboxSentCount} / ${activeBroadcast.targetCount || 10}`
+                      : `Mission Progress: ${trollboxSentCount > 0 ? 1 : 0} / 1 Completed`}
+                  </span>
+                  <span style={{ fontSize: '11px', fontWeight: 800, color: '#8E9B97' }}>
+                    {activeBroadcast.missionCategory === 'trollbox'
+                      ? `${Math.min(100, Math.round((trollboxSentCount / (activeBroadcast.targetCount || 10)) * 100))}%`
+                      : 'Live Verifier'}
+                  </span>
+                </div>
+                {/* Progress bar line */}
+                <div style={{ width: '100%', height: '6px', background: 'rgba(255,255,255,0.06)', borderRadius: '9999px', overflow: 'hidden' }}>
+                  <div style={{
+                    width: activeBroadcast.missionCategory === 'trollbox'
+                      ? `${Math.min(100, Math.round((trollboxSentCount / (activeBroadcast.targetCount || 10)) * 100))}%`
+                      : (activeBroadcast.completedBy?.includes(userHandle) || claimedMissionIds[activeBroadcast.id] ? '100%' : '50%'),
+                    height: '100%',
+                    background: 'linear-gradient(90deg, #A9DDD3, #10B981)',
+                    borderRadius: '9999px',
+                    transition: 'width 0.3s ease',
+                  }} />
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                {activeBroadcast.missionCategory === 'trollbox' && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      sound.playTap();
+                      // Trigger trollbox button if available
+                      const btn = document.querySelector('button[title*="Trollbox"]') as HTMLButtonElement;
+                      if (btn) btn.click();
+                    }}
+                    style={{
+                      padding: '8px 14px',
+                      background: 'rgba(255, 255, 255, 0.06)',
+                      border: '1px solid rgba(255, 255, 255, 0.15)',
+                      borderRadius: '10px',
+                      color: '#FFFFFF',
+                      fontSize: '11px',
+                      fontWeight: 800,
+                      cursor: 'pointer',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                    }}
+                  >
+                    <Send size={12} /> Open Trollbox & Chat
+                  </button>
+                )}
+
+                {/* Verify & Claim Button */}
+                <button
+                  type="button"
+                  onClick={() => handleVerifyAndClaimMission(activeBroadcast)}
+                  disabled={isVerifyingMission || activeBroadcast.completedBy?.includes(userHandle) || claimedMissionIds[activeBroadcast.id]}
+                  style={{
+                    padding: '8px 16px',
+                    background: (activeBroadcast.completedBy?.includes(userHandle) || claimedMissionIds[activeBroadcast.id])
+                      ? 'rgba(16, 185, 129, 0.2)'
+                      : '#A9DDD3',
+                    border: (activeBroadcast.completedBy?.includes(userHandle) || claimedMissionIds[activeBroadcast.id])
+                      ? '1px solid #10B981'
+                      : 'none',
+                    borderRadius: '10px',
+                    color: (activeBroadcast.completedBy?.includes(userHandle) || claimedMissionIds[activeBroadcast.id])
+                      ? '#A7F3D0'
+                      : '#010101',
+                    fontSize: '12px',
+                    fontWeight: 900,
+                    cursor: (isVerifyingMission || activeBroadcast.completedBy?.includes(userHandle) || claimedMissionIds[activeBroadcast.id])
+                      ? 'default'
+                      : 'pointer',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    boxShadow: (activeBroadcast.completedBy?.includes(userHandle) || claimedMissionIds[activeBroadcast.id])
+                      ? 'none'
+                      : '0 0 15px rgba(169, 221, 211, 0.4)',
+                  }}
+                >
+                  <CheckCircle2 size={14} />
+                  {(activeBroadcast.completedBy?.includes(userHandle) || claimedMissionIds[activeBroadcast.id])
+                    ? '✓ Reward Claimed'
+                    : isVerifyingMission
+                    ? 'Verifying...'
+                    : `Verify & Claim (+${activeBroadcast.shardsReward} 💎)`}
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ========================================================
+          TROPHY CABINET & SECRET ACHIEVEMENTS SECTION (30 FEATS)
+          ======================================================== */}
+      <div>
+        {/* Header with Title and Category Filters */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '14px', marginBottom: '20px' }}>
+          <div>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: 800, color: '#A9DDD3', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+              <Trophy size={14} /> PLATFORM PRESTIGE & FEATS (30 ACHIEVEMENTS)
+            </div>
+            <h2 style={{ fontSize: '24px', fontWeight: 900, color: '#FFFFFF', margin: '4px 0 0 0' }}>
+              Trophy Cabinet & <span className="gradient-text-rialo">Secret Feats</span>
+            </h2>
+          </div>
+
+          {/* Quick Filter Pills */}
+          <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+            {[
+              { id: 'all', label: `All (${ALL_DISPLAYED_ACHIEVEMENTS.length})` },
+              { id: 'unlocked', label: `🏆 Unlocked (${unlockedCount})` },
+              { id: 'locked', label: `🔒 Locked (${ALL_DISPLAYED_ACHIEVEMENTS.length - unlockedCount})` },
+              { id: 'quests', label: '🚀 Quests' },
+              { id: 'cards', label: '🎴 Cards' },
+              { id: 'forge', label: '🧪 Forge' },
+              { id: 'trading', label: '🔄 Trading' },
+              { id: 'arcade', label: '🕹️ Arcade' },
+              { id: 'prestige', label: '👑 Prestige' },
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => { sound.playTap(); setFilterMode(tab.id as any); }}
+                style={{
+                  padding: '6px 12px',
+                  borderRadius: '9999px',
+                  fontSize: '11px',
+                  fontWeight: 800,
+                  cursor: 'pointer',
+                  background: filterMode === tab.id ? '#A9DDD3' : 'rgba(255,255,255,0.04)',
+                  color: filterMode === tab.id ? '#010101' : '#8E9B97',
+                  border: filterMode === tab.id ? 'none' : '1px solid rgba(255,255,255,0.08)',
+                  transition: 'all 0.15s',
+                }}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Achievements Grid (30 Achievements) */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
+          gap: '16px',
+        }}>
+          {filteredAchievements.map((ach) => {
+            const isClaimed = claimedTrophies[ach.id];
+            const tierStyle = getTierBadgeStyle(ach.tier);
+
+            return (
+              <div
+                key={ach.id}
+                style={{
+                  background: ach.isUnlocked
+                    ? 'linear-gradient(135deg, rgba(10, 16, 22, 0.95), rgba(4, 8, 12, 0.98))'
+                    : 'rgba(5, 8, 12, 0.6)',
+                  border: ach.isUnlocked ? '1.5px solid rgba(169, 221, 211, 0.35)' : '1px solid rgba(255, 255, 255, 0.05)',
+                  borderRadius: '20px',
+                  padding: '20px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between',
+                  position: 'relative',
+                  boxShadow: ach.isUnlocked ? '0 10px 25px rgba(0, 0, 0, 0.6), 0 0 15px rgba(169, 221, 211, 0.06)' : 'none',
+                  opacity: ach.isUnlocked ? 1 : 0.65,
+                  transition: 'transform 0.15s ease, border-color 0.15s ease',
+                }}
+              >
+                <div>
+                  {/* Top Bar: Icon, Tier, Reward */}
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+                    <div style={{
+                      width: '44px',
+                      height: '44px',
+                      borderRadius: '14px',
+                      background: ach.isUnlocked ? 'rgba(169, 221, 211, 0.15)' : 'rgba(255,255,255,0.04)',
+                      border: ach.isUnlocked ? '1px solid #A9DDD3' : '1px solid rgba(255,255,255,0.1)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '22px',
+                    }}>
+                      {ach.icon}
+                    </div>
+
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <span style={{
+                        fontSize: '10px',
+                        fontWeight: 900,
+                        padding: '3px 8px',
+                        borderRadius: '6px',
+                        ...tierStyle,
+                      }}>
+                        {ach.tier}
+                      </span>
+                      <span style={{
+                        fontSize: '11px',
+                        fontWeight: 900,
+                        color: '#A9DDD3',
+                        background: 'rgba(169, 221, 211, 0.12)',
+                        padding: '3px 8px',
+                        borderRadius: '6px',
+                      }}>
+                        +{ach.shardsReward} Shards
+                      </span>
+                    </div>
+                  </div>
+
+                  <h3 style={{ fontSize: '16px', fontWeight: 800, color: ach.isUnlocked ? '#FFFFFF' : '#8E9B97', margin: '0 0 6px 0' }}>
+                    {ach.title}
+                  </h3>
+                  <p style={{ fontSize: '12px', color: '#8E9B97', margin: 0, lineHeight: 1.4 }}>
+                    {ach.desc}
+                  </p>
+                </div>
+
+                {/* Progress / Status Bottom */}
+                <div style={{ marginTop: '16px', paddingTop: '12px', borderTop: '1px solid rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <span style={{ fontSize: '11px', color: ach.isUnlocked ? '#A9DDD3' : '#64748B', fontWeight: 700 }}>
+                    {ach.progressText}
+                  </span>
+
+                  {ach.isUnlocked ? (
+                    isClaimed ? (
+                      <span style={{ fontSize: '11px', color: '#10B981', fontWeight: 800, display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                        <CheckCircle size={13} /> Claimed
+                      </span>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => handleClaimReward(ach.id, ach.shardsReward)}
+                        style={{
+                          padding: '5px 12px',
+                          background: 'linear-gradient(135deg, #A9DDD3, #76c0b2)',
+                          color: '#010101',
+                          fontSize: '11px',
+                          fontWeight: 900,
+                          borderRadius: '8px',
+                          border: 'none',
+                          cursor: 'pointer',
+                          boxShadow: '0 0 10px rgba(169, 221, 211, 0.3)',
+                        }}
+                      >
+                        Claim +{ach.shardsReward} 💎
+                      </button>
+                    )
+                  ) : (
+                    <span style={{ fontSize: '11px', color: '#64748B', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                      <Lock size={12} /> Locked
+                    </span>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+      {/* ========================================================
+          COMPLETED MISSIONS HISTORY MODAL
+          ======================================================== */}
+      {isMissionsHistoryOpen && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(0, 0, 0, 0.85)',
+          backdropFilter: 'blur(10px)',
+          zIndex: 10000,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '20px',
+        }}>
+          <div style={{
+            background: 'rgba(6, 12, 16, 0.98)',
+            border: '1.5px solid rgba(169, 221, 211, 0.4)',
+            borderRadius: '24px',
+            width: '100%',
+            maxWidth: '620px',
+            maxHeight: '85vh',
+            display: 'flex',
+            flexDirection: 'column',
+            boxShadow: '0 20px 50px rgba(0,0,0,0.9), 0 0 30px rgba(169, 221, 211, 0.15)',
+            overflow: 'hidden',
+          }}>
+            {/* Modal Header */}
+            <div style={{
+              padding: '20px 24px',
+              borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              background: 'rgba(255, 255, 255, 0.02)',
+            }}>
+              <div>
+                <h3 style={{ fontSize: '18px', fontWeight: 900, color: '#FFFFFF', margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  📜 Completed Missions History
+                </h3>
+                <p style={{ fontSize: '12px', color: '#8E9B97', margin: '4px 0 0 0' }}>
+                  Verified cryptographic proof of completed daily quests & protocol missions.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsMissionsHistoryOpen(false)}
+                style={{
+                  background: 'rgba(255,255,255,0.06)',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  borderRadius: '50%',
+                  width: '32px',
+                  height: '32px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#8E9B97',
+                  cursor: 'pointer',
+                }}
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            {/* Missions List */}
+            <div style={{ padding: '16px 24px', overflowY: 'auto', flex: 1, display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              {(user?.completedMissionsHistory && user.completedMissionsHistory.length > 0) ? (
+                user.completedMissionsHistory.map((item, idx) => (
+                  <div
+                    key={item.id + '-' + idx}
+                    style={{
+                      background: 'rgba(255, 255, 255, 0.02)',
+                      border: '1px solid rgba(169, 221, 211, 0.25)',
+                      borderRadius: '14px',
+                      padding: '14px 16px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      gap: '12px',
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                      <div style={{
+                        width: '38px',
+                        height: '38px',
+                        borderRadius: '10px',
+                        background: 'rgba(169, 221, 211, 0.15)',
+                        border: '1px solid rgba(169, 221, 211, 0.3)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: '18px',
+                      }}>
+                        {item.icon || '⚡'}
+                      </div>
+                      <div>
+                        <div style={{ fontSize: '13px', fontWeight: 800, color: '#FFFFFF' }}>{item.title}</div>
+                        <div style={{ fontSize: '11px', color: '#8E9B97', marginTop: '2px' }}>
+                          {item.category || 'Protocol Mission'} • {new Date(item.completedAt).toLocaleDateString()}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div style={{ textAlign: 'right' }}>
+                      <div style={{ fontSize: '12px', fontWeight: 900, color: '#A9DDD3' }}>
+                        +{item.shardsReward || 25} Shards
+                      </div>
+                      <span style={{
+                        fontSize: '9px',
+                        fontWeight: 900,
+                        color: '#10B981',
+                        background: 'rgba(16, 185, 129, 0.12)',
+                        padding: '2px 6px',
+                        borderRadius: '4px',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '3px',
+                        marginTop: '3px',
+                      }}>
+                        <CheckCircle2 size={10} /> Verified
+                      </span>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                /* Fallback if user only has completedMissions ID array */
+                (user?.completedMissions || ['m-day-1', 'm-day-2']).map((id, idx) => (
+                  <div
+                    key={id + '-' + idx}
+                    style={{
+                      background: 'rgba(255, 255, 255, 0.02)',
+                      border: '1px solid rgba(169, 221, 211, 0.2)',
+                      borderRadius: '14px',
+                      padding: '14px 16px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      gap: '12px',
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                      <div style={{
+                        width: '38px',
+                        height: '38px',
+                        borderRadius: '10px',
+                        background: 'rgba(169, 221, 211, 0.15)',
+                        border: '1px solid rgba(169, 221, 211, 0.3)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: '18px',
+                      }}>
+                        ⚡
+                      </div>
+                      <div>
+                        <div style={{ fontSize: '13px', fontWeight: 800, color: '#FFFFFF' }}>
+                          {id.startsWith('bcast') ? 'Admin Broadcast Mission' : `Season 1 Daily Mission (${id})`}
+                        </div>
+                        <div style={{ fontSize: '11px', color: '#8E9B97', marginTop: '2px' }}>
+                          Verified on Protocol Ledger • Season 1 Testnet
+                        </div>
+                      </div>
+                    </div>
+
+                    <div style={{ textAlign: 'right' }}>
+                      <div style={{ fontSize: '12px', fontWeight: 900, color: '#A9DDD3' }}>
+                        +250 Shards
+                      </div>
+                      <span style={{
+                        fontSize: '9px',
+                        fontWeight: 900,
+                        color: '#10B981',
+                        background: 'rgba(16, 185, 129, 0.12)',
+                        padding: '2px 6px',
+                        borderRadius: '4px',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '3px',
+                        marginTop: '3px',
+                      }}>
+                        <CheckCircle2 size={10} /> Verified
+                      </span>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};

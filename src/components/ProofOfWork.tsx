@@ -35,7 +35,7 @@ interface ImpressionsResponse {
   error?: string;
 }
 
-const SAMPLE_HANDLES = ['RialoHQ', 'itachee_x', 'yournahin'];
+const SAMPLE_HANDLES = ['RialoHQ', 'itachee_x', 'yournahian', 'Subzero_Labs'];
 
 export const ProofOfWork: React.FC = () => {
   const [handleInput, setHandleInput] = useState('');
@@ -183,7 +183,7 @@ export const ProofOfWork: React.FC = () => {
         <>
           <div style={{ textAlign: 'center', marginBottom: '24px' }}>
             <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '32px', fontWeight: '700', letterSpacing: '-0.03em', color: '#ffffff' }}>
-              Rialo Proof of Work
+              Rialo <span className="gradient-text-rialo">Proof of Work</span>
             </h1>
             <p style={{ color: 'var(--rialo-text-muted)', fontSize: '14px', marginTop: '6px' }}>
               Measure and showcase your social contributions to rialo.io.

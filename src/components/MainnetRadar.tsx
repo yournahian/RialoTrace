@@ -191,7 +191,7 @@ export const MainnetRadar: React.FC = () => {
               alignItems: 'center',
               gap: '8px',
               textDecoration: 'none',
-              background: 'linear-gradient(135deg, #A9DDD3, #2563EB)',
+              background: 'linear-gradient(135deg, #A9DDD3, #6EBBAE)',
               color: '#010101',
               fontWeight: 800,
             }}
@@ -240,7 +240,7 @@ export const MainnetRadar: React.FC = () => {
             title: 'Supermodularity Engine',
             desc: 'Next-generation system welfare integration: maximizing throughput and economic efficiency for decentralized applications.',
             status: 'Gauss Consensus',
-            color: '#00E5FF',
+            color: '#A9DDD3',
           },
           {
             icon: Lock,
