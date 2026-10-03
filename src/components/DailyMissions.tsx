@@ -314,13 +314,13 @@ export const DailyMissions: React.FC<DailyMissionsProps> = ({
       <div className="tcg-header">
         <div>
           <div className="tcg-eyebrow">
-            <Calendar size={14} /> Season 1 Daily Quests • {todayDate || 'Today'}
+            <Calendar size={14} /> Season 1 Daily Tasks • {todayDate || 'Today'}
           </div>
           <h2 className="tcg-title">
             Complete Daily Missions ➔ <span className="gradient-text-rialo">Unlock 3 Cards</span>
           </h2>
           <p className="tcg-subtitle">
-            Missions reset daily at 00:00 UTC. Collect all 30 Season 1 Genesis warriors to secure your Guaranteed Free Mint!
+            Tasks reset daily at 00:00 UTC. Collect all 30 Season 1 Genesis warriors to secure your Guaranteed Free Mint!
           </p>
         </div>
 
@@ -634,10 +634,10 @@ export const DailyMissions: React.FC<DailyMissionsProps> = ({
             </span>
           ) : allCompleted ? (
             <span style={{ color: '#10B981', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
-              <Sparkles size={16} /> All today's quests complete! Ready to forge and scratch your pack.
+              <Sparkles size={16} /> All today's tasks complete! Ready to forge and scratch your pack.
             </span>
           ) : (
-            <span>Complete today's missions above to unlock the daily 3-card gacha pack.</span>
+            <span>Complete today's tasks above to unlock the daily 3-card gacha pack.</span>
           )}
         </div>
 

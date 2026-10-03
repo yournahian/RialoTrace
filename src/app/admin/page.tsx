@@ -720,7 +720,7 @@ const handleCreateMission = async (e: React.FormEvent) => {
     }
   };
 
-  // Instant Auto Pre-Schedule 30 Days (Non-blocking & Infallible)
+  // Instant Auto Pre-Schedule 30 Days of Tasks (Non-blocking & Infallible)
   const handleBulkPrepopulate30Days = async () => {
     setIsGenerating(true);
     const today = new Date();
@@ -1120,7 +1120,7 @@ const handleCreateMission = async (e: React.FormEvent) => {
 
 {activeAdminTab === 'scheduler' && (
           <>
-        {/* Schedule a Specific Daily Mission Form Card */}
+        {/* Schedule a Specific Daily Task Form Card */}
         <div className="admin-card" style={{ background: 'rgba(6, 10, 10, 0.95)', border: '1px solid rgba(169, 221, 211, 0.22)', borderRadius: '20px', padding: '28px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
             <div style={{ padding: '8px', background: 'rgba(169, 221, 211, 0.12)', borderRadius: '10px', color: '#A9DDD3' }}>
@@ -1131,7 +1131,7 @@ const handleCreateMission = async (e: React.FormEvent) => {
                 Schedule a Specific Daily Mission
               </h3>
               <p style={{ fontSize: '12px', color: 'rgba(232, 227, 213, 0.65)', margin: '2px 0 0' }}>
-                Fill in details for any custom drop. For Web3 Quizzes, question and options configure automatically below.
+                Fill in details for any custom task drop. For Web3 Quizzes, question and options configure automatically below.
               </p>
             </div>
           </div>
@@ -1163,7 +1163,7 @@ const handleCreateMission = async (e: React.FormEvent) => {
               </div>
 
               <div className="admin-input-group">
-                <label style={{ fontSize: '12px', fontWeight: 700, color: '#E8E3D5', marginBottom: '6px', display: 'block' }}>Mission Type</label>
+                <label style={{ fontSize: '12px', fontWeight: 700, color: '#E8E3D5', marginBottom: '6px', display: 'block' }}>Task Type</label>
                 <select
                   value={type}
                   onChange={(e) => handleTypeChange(e.target.value as MissionType)}
@@ -1193,7 +1193,7 @@ const handleCreateMission = async (e: React.FormEvent) => {
               </div>
 
               <div className="admin-input-group" style={{ gridColumn: '1 / -1' }}>
-                <label style={{ fontSize: '12px', fontWeight: 700, color: '#E8E3D5', marginBottom: '6px', display: 'block' }}>Mission Title</label>
+                <label style={{ fontSize: '12px', fontWeight: 700, color: '#E8E3D5', marginBottom: '6px', display: 'block' }}>Task Title</label>
                 <input
                   type="text"
                   placeholder="e.g. Follow @RialoHQ on X or Solve Today's Finality Quiz"
@@ -1372,7 +1372,7 @@ const handleCreateMission = async (e: React.FormEvent) => {
               </div>
 
               <div className="admin-input-group" style={{ gridColumn: '1 / -1' }}>
-                <label style={{ fontSize: '12px', fontWeight: 700, color: '#E8E3D5', marginBottom: '6px', display: 'block' }}>Description & Instructions</label>
+                <label style={{ fontSize: '12px', fontWeight: 700, color: '#E8E3D5', marginBottom: '6px', display: 'block' }}>Task Description & Instructions</label>
                 <input
                   type="text"
                   placeholder="e.g. Complete this daily drop to earn shards and secure Season 1 pack unlocks."
@@ -1702,7 +1702,7 @@ const handleCreateMission = async (e: React.FormEvent) => {
                 }}
               >
                 <Plus size={18} color="#010101" />
-                <span>Schedule Mission</span>
+                <span>Schedule Task</span>
               </button>
             </div>
           </form>
@@ -1712,7 +1712,7 @@ const handleCreateMission = async (e: React.FormEvent) => {
         <div className="admin-card" style={{ background: 'rgba(6, 10, 10, 0.95)', border: '1px solid rgba(169, 221, 211, 0.22)', borderRadius: '20px', padding: '28px' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', flexWrap: 'wrap', gap: '12px' }}>
             <h3 style={{ fontSize: '18px', fontWeight: 800, color: '#E8E3D5', margin: 0 }}>
-              Scheduled Missions Database ({missions.length} Registered)
+              Scheduled Tasks Database ({missions.length} Registered)
             </h3>
 
             {/* Quick Actions (Select All / Clear) */}
@@ -1829,8 +1829,8 @@ const handleCreateMission = async (e: React.FormEvent) => {
                     </div>
                   </th>
                   <th>Day / Date</th>
-                  <th>Title & Content</th>
-                  <th>Type & SS</th>
+                  <th>Task Title & Content</th>
+                  <th>Task Type & SS</th>
                   <th>Reward</th>
                   <th>Status</th>
                   <th>Actions</th>
@@ -2070,25 +2070,78 @@ const handleCreateMission = async (e: React.FormEvent) => {
 
                         {/* ACTIONS - IMMEDIATE WORKING DELETE */}
                         <td>
-                          <button
-                            type="button"
-                            onClick={() => handleDeleteMission(m.id)}
-                            style={{
-                              background: 'rgba(239, 68, 68, 0.12)',
-                              border: '1px solid rgba(239, 68, 68, 0.3)',
-                              borderRadius: '8px',
-                              color: '#EF4444',
-                              cursor: 'pointer',
-                              padding: '6px 10px',
-                              display: 'inline-flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              transition: 'all 0.15s ease',
-                            }}
-                            title="Delete this mission immediately"
-                          >
-                            <Trash2 size={15} />
-                          </button>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                            {/* Edit Button */}
+                            <button
+                              type="button"
+                              onClick={() => handleStartEditMission(m)}
+                              style={{
+                                background: editingMissionId === m.id ? '#FBBF24' : 'rgba(251, 191, 36, 0.15)',
+                                border: '1.5px solid rgba(251, 191, 36, 0.5)',
+                                borderRadius: '8px',
+                                color: editingMissionId === m.id ? '#010101' : '#FBBF24',
+                                cursor: 'pointer',
+                                padding: '6px 12px',
+                                fontSize: '11px',
+                                fontWeight: 800,
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '5px',
+                                transition: 'all 0.15s ease',
+                                boxShadow: '0 2px 8px rgba(251, 191, 36, 0.2)',
+                              }}
+                              title="Edit this task title, reward, card, or link"
+                            >
+                              <Edit3 size={13} />
+                              <span>Edit</span>
+                            </button>
+
+                            {/* + Add Task to this Day Button */}
+                            <button
+                              type="button"
+                              onClick={() => handleQuickAddTaskToDay(m.dayNumber, m.scheduledDate)}
+                              style={{
+                                background: 'rgba(169, 221, 211, 0.15)',
+                                border: '1.5px solid rgba(169, 221, 211, 0.45)',
+                                borderRadius: '8px',
+                                color: '#A9DDD3',
+                                cursor: 'pointer',
+                                padding: '6px 12px',
+                                fontSize: '11px',
+                                fontWeight: 800,
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '5px',
+                                transition: 'all 0.15s ease',
+                                boxShadow: '0 2px 8px rgba(169, 221, 211, 0.2)',
+                              }}
+                              title={`Add another task for Day ${m.dayNumber} (${m.scheduledDate})`}
+                            >
+                              <Plus size={13} />
+                              <span>+ Add Task</span>
+                            </button>
+
+                            {/* Delete Button */}
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteMission(m.id)}
+                              style={{
+                                background: 'rgba(239, 68, 68, 0.12)',
+                                border: '1px solid rgba(239, 68, 68, 0.35)',
+                                borderRadius: '8px',
+                                color: '#EF4444',
+                                cursor: 'pointer',
+                                padding: '6px 10px',
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                transition: 'all 0.15s ease',
+                              }}
+                              title="Delete this task immediately"
+                            >
+                              <Trash2 size={15} />
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     );
