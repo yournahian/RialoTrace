@@ -9,6 +9,7 @@ import { Radio, Megaphone, Send, Award, Trophy, Bell, Check, Users, Sparkle, Tag
 import Link from 'next/link';
 import {
   Calendar,
+  Edit3,
   Plus,
   Trash2,
   Lock,
@@ -172,6 +173,7 @@ export default function AdminPage() {
   const [screenshotRequirement, setScreenshotRequirement] = useState<ScreenshotRequirement>('none');
   const [rewardCardId, setRewardCardId] = useState<string>('');
   const [rewardCardCount, setRewardCardCount] = useState<number>(1);
+  const [editingMissionId, setEditingMissionId] = useState<string | null>(null);
 
   // Dedicated Quiz Fields
   const [quizQuestion, setQuizQuestion] = useState('What makes Rialo consensus unique?');
@@ -449,7 +451,72 @@ export default function AdminPage() {
     }
   };
 
-  const handleCreateMission = async (e: React.FormEvent) => {
+    const handleStartEditMission = (m: Mission) => {
+    setEditingMissionId(m.id);
+    setDayNumber(m.dayNumber);
+    setScheduledDate(m.scheduledDate);
+    setTitle(m.title);
+    setDescription(m.description);
+    setLink(m.link || '');
+    setType(m.type);
+    setActionLabel(m.actionLabel || '');
+    setRewardShards(m.rewardShards || 25);
+    setRewardCardId(m.rewardCardId || '');
+    setRewardCardCount(m.rewardCardCount || 1);
+    setScreenshotRequirement(m.screenshotRequirement || 'none');
+
+    if (m.type === 'quiz') {
+      setQuizQuestion(m.quizQuestion || m.title);
+      if (m.quizOptions && m.quizOptions.length >= 4) {
+        setQuizOptA(m.quizOptions[0]);
+        setQuizOptB(m.quizOptions[1]);
+        setQuizOptC(m.quizOptions[2]);
+        setQuizOptD(m.quizOptions[3]);
+        if (m.quizAnswer === m.quizOptions[1]) setCorrectOption('B');
+        else if (m.quizAnswer === m.quizOptions[2]) setCorrectOption('C');
+        else if (m.quizAnswer === m.quizOptions[3]) setCorrectOption('D');
+        else setCorrectOption('A');
+      }
+      setQuizExplanation(m.quizExplanation || '');
+    }
+
+    const panel = document.getElementById('mission-editor-panel');
+    if (panel) {
+      panel.scrollIntoView({ behavior: 'smooth' });
+    }
+    const titleInput = document.getElementById('mission-title-input');
+    if (titleInput) titleInput.focus();
+
+    showToast(`?? Editing: "${m.title}". Make changes and click Save!`);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingMissionId(null);
+    setTitle('');
+    setDescription('');
+    setRewardCardId('');
+    setRewardCardCount(1);
+    showToast('Edit mode cancelled.');
+  };
+
+  const handleQuickAddTaskToDay = (targetDay: number, targetDate: string) => {
+    setEditingMissionId(null);
+    setDayNumber(targetDay);
+    setScheduledDate(targetDate);
+    setTitle('');
+    setDescription('');
+    setRewardCardId('');
+    setRewardCardCount(1);
+    const panel = document.getElementById('mission-editor-panel');
+    if (panel) {
+      panel.scrollIntoView({ behavior: 'smooth' });
+    }
+    const titleInput = document.getElementById('mission-title-input');
+    if (titleInput) titleInput.focus();
+    showToast(`? Adding another task for Day ${targetDay} (${targetDate})! Enter title and click Schedule.`);
+  };
+
+const handleCreateMission = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim()) return alert('Please specify a title for the mission');
 
@@ -473,8 +540,8 @@ export default function AdminPage() {
       }
     }
 
-    const newMission: Mission = {
-      id: `m-${Date.now()}`,
+    const missionToSave: Mission = {
+      id: editingMissionId || `m-${Date.now()}`,
       dayNumber: Number(dayNumber),
       scheduledDate,
       title: title.trim(),
@@ -484,8 +551,10 @@ export default function AdminPage() {
       actionLabel: actionLabel.trim() || undefined,
       rewardPacks: 1,
       rewardShards: Number(rewardShards) || 25,
+      rewardCardId: rewardCardId ? rewardCardId : undefined,
+      rewardCardCount: rewardCardId ? (Number(rewardCardCount) || 1) : undefined,
       screenshotRequirement,
-      isActive: true,
+      isActive: editingMissionId ? (missions.find((m) => m.id === editingMissionId)?.isActive ?? true) : true,
       quizQuestion: type === 'quiz' ? finalMainQuestion : undefined,
       quizOptions: type === 'quiz' ? finalMainOptions : undefined,
       quizAnswer: type === 'quiz' ? finalMainAnswer : undefined,
@@ -493,11 +562,19 @@ export default function AdminPage() {
       quizQuestions: type === 'quiz' ? finalQuizQuestions : undefined,
     };
 
-    // Optimistically update list
-    setMissions((prev) => [...prev, newMission]);
+    if (editingMissionId) {
+      setMissions((prev) => prev.map((m) => (m.id === editingMissionId ? missionToSave : m)));
+      showToast(`? Mission "${missionToSave.title}" updated successfully!`);
+    } else {
+      setMissions((prev) => [...prev, missionToSave]);
+      showToast(`? Mission scheduled for Day ${dayNumber}!`);
+    }
+
+    setEditingMissionId(null);
     setTitle('');
     setDescription('');
-    showToast(`✓ Mission scheduled for Day ${dayNumber}!`);
+    setRewardCardId('');
+    setRewardCardCount(1);
 
     try {
       const res = await fetch(`/api/admin/missions?key=${encodeURIComponent(passkey)}`, {
@@ -505,7 +582,7 @@ export default function AdminPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           action: 'CREATE_MISSION',
-          mission: newMission,
+          mission: missionToSave,
         }),
       });
       const data = await res.json();
