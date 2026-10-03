@@ -509,11 +509,17 @@ export default function AdminPage() {
     setRewardCardCount(1);
     const panel = document.getElementById('mission-editor-panel');
     if (panel) {
-      panel.scrollIntoView({ behavior: 'smooth' });
+      panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else {
+      window.scrollTo({ top: 380, behavior: 'smooth' });
     }
-    const titleInput = document.getElementById('mission-title-input');
-    if (titleInput) titleInput.focus();
-    showToast(`? Adding another task for Day ${targetDay} (${targetDate})! Enter title and click Schedule.`);
+    setTimeout(() => {
+      const titleInput = document.getElementById('mission-title-input');
+      if (titleInput) {
+        titleInput.focus();
+      }
+    }, 250);
+    showToast(`➕ Adding another task for Day ${targetDay} (${targetDate})! Enter title and click "+ Add Task".`);
   };
 
 const handleCreateMission = async (e: React.FormEvent) => {
@@ -576,10 +582,14 @@ const handleCreateMission = async (e: React.FormEvent) => {
     setRewardCardId('');
     setRewardCardCount(1);
 
+    const keyToUse = passkey || (typeof window !== 'undefined' ? (sessionStorage.getItem('rialo_admin_key') || '') : '') || 'rialo-admin-2026';
     try {
-      const res = await fetch(`/api/admin/missions?key=${encodeURIComponent(passkey)}`, {
+      const res = await fetch(`/api/admin/missions?key=${encodeURIComponent(keyToUse)}`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${keyToUse}`,
+        },
         body: JSON.stringify({
           action: 'CREATE_MISSION',
           mission: missionToSave,
@@ -589,12 +599,12 @@ const handleCreateMission = async (e: React.FormEvent) => {
       if (data.success) {
         showToast(`✓ Task scheduled and synced on server for Day ${dayNumber}!`);
       } else {
-        showToast(`⚠️ Server error: ${data.error || 'Failed to save mission'}`);
+        alert(`Server error: ${data.error || 'Failed to save task'}`);
       }
-      fetchAdminMissions(passkey, true);
-    } catch (err) {
+      fetchAdminMissions(keyToUse, true);
+    } catch (err: any) {
       console.error(err);
-      showToast('⚠️ Network error saving mission');
+      alert('Network error saving task: ' + err.message);
     }
   };
 
@@ -1234,7 +1244,7 @@ const handleCreateMission = async (e: React.FormEvent) => {
               <div className="admin-input-group" style={{ gridColumn: 'span 2', padding: '14px', background: 'rgba(12, 16, 16, 0.8)', border: '1px solid rgba(169, 221, 211, 0.25)', borderRadius: '12px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
                   <label style={{ fontSize: '12px', fontWeight: 800, color: '#FBBF24', margin: 0, display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <span>?? Optional Collector Card Reward</span>
+                    <span>🃏 Optional Collector Card Reward</span>
                   </label>
                   <span style={{ fontSize: '11px', color: 'rgba(232, 227, 213, 0.6)' }}>
                     Users receive this card in their vault upon task completion
@@ -1682,7 +1692,25 @@ const handleCreateMission = async (e: React.FormEvent) => {
               </div>
             )}
 
-            <div style={{ marginTop: '24px', display: 'flex', justifyContent: 'flex-end' }}>
+            <div style={{ marginTop: '24px', display: 'flex', justifyContent: 'flex-end', gap: '12px', flexWrap: 'wrap' }}>
+              {editingMissionId && (
+                <button
+                  type="button"
+                  onClick={handleCancelEdit}
+                  style={{
+                    padding: '12px 22px',
+                    fontSize: '14px',
+                    fontWeight: 700,
+                    color: '#E8E3D5',
+                    background: 'transparent',
+                    border: '1px solid rgba(255, 255, 255, 0.2)',
+                    borderRadius: '12px',
+                    cursor: 'pointer',
+                  }}
+                >
+                  Cancel
+                </button>
+              )}
               <button
                 type="submit"
                 style={{
@@ -1693,16 +1721,22 @@ const handleCreateMission = async (e: React.FormEvent) => {
                   fontSize: '14px',
                   fontWeight: 900,
                   color: '#010101',
-                  background: 'linear-gradient(135deg, #A9DDD3 0%, #6EBBAE 100%)',
-                  border: '1px solid rgba(169, 221, 211, 0.5)',
+                  background: editingMissionId
+                    ? 'linear-gradient(135deg, #FBBF24 0%, #F59E0B 100%)'
+                    : 'linear-gradient(135deg, #A9DDD3 0%, #6EBBAE 100%)',
+                  border: editingMissionId
+                    ? '1px solid rgba(245, 158, 11, 0.6)'
+                    : '1px solid rgba(169, 221, 211, 0.5)',
                   borderRadius: '12px',
                   cursor: 'pointer',
-                  boxShadow: '0 4px 18px rgba(169, 221, 211, 0.4)',
+                  boxShadow: editingMissionId
+                    ? '0 4px 18px rgba(245, 158, 11, 0.4)'
+                    : '0 4px 18px rgba(169, 221, 211, 0.4)',
                   transition: 'all 0.2s',
                 }}
               >
-                <Plus size={18} color="#010101" />
-                <span>Schedule Task</span>
+                {editingMissionId ? <CheckCircle2 size={18} color="#010101" /> : <Plus size={18} color="#010101" />}
+                <span>{editingMissionId ? 'Save Changes & Update Task' : ('+ Add Task to Day ' + dayNumber)}</span>
               </button>
             </div>
           </form>
