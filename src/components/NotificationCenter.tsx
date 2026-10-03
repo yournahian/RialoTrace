@@ -97,7 +97,7 @@ export const NotificationCenter: React.FC<NotificationCenterProps> = ({
                 title: isClaimed ? `✅ Card Gift Revealed: ${g.cardTitle}` : `🎁 Card Gift Airdrop: ${g.quantity}x ${g.cardTitle}`,
                 message: isClaimed
                   ? `Claimed and revealed ${g.quantity}x ${g.cardTitle} (${g.cardRarity}) into your Season 1 Binder.`
-                  : `You received ${g.quantity > 1 ? `${g.quantity} cards` : 'a card'} gift for your contribution on "${g.reason || 'Platform Contribution'}". Open Daily Missions to reveal!`,
+                  : `You received ${g.quantity > 1 ? `${g.quantity} cards` : 'a card'} gift for your contribution on "${g.reason || 'Platform Contribution'}". Open Daily Tasks to reveal!`,
                 time: formatRelativeTime(g.timestamp),
                 icon: isClaimed ? '✅' : '🎁',
                 read: isClaimed,
@@ -115,7 +115,7 @@ export const NotificationCenter: React.FC<NotificationCenterProps> = ({
         id: 'notif-sys-welcome',
         type: 'broadcast',
         title: '⚡ Welcome to RialoTrace Testnet Wave 1',
-        message: 'Your cryptographic identity is active. Daily missions, P2P card binder, and The Forge are online.',
+        message: 'Your cryptographic identity is active. Daily tasks, P2P card binder, and The Forge are online.',
         time: 'Active',
         icon: '⚡',
         read: false,

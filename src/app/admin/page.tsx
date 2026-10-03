@@ -100,7 +100,7 @@ export default function AdminPage() {
         try {
           sound.playJackpot();
         } catch (_) {}
-        setGiftActionMsg(`✓ Successfully dispatched ${giftQuantity}x "${data.giftLog?.cardTitle || giftSelectedCardId}" gift to @${data.user?.username || giftRecipient}! (Queued for 3D card reveal in player's Daily Missions tab)`);
+        setGiftActionMsg(`✓ Successfully dispatched ${giftQuantity}x "${data.giftLog?.cardTitle || giftSelectedCardId}" gift to @${data.user?.username || giftRecipient}! (Queued for 3D card reveal in player's Daily Tasks tab)`);
         fetchGiftData();
         setTimeout(() => setGiftActionMsg(''), 7000);
       } else {
@@ -357,7 +357,7 @@ export default function AdminPage() {
         setMissions(data.missions || []);
         setSeason(data.season || null);
         if (!isSilent) {
-          showToast(`✓ Missions refreshed! (${data.missions?.length || 0} registered)`);
+          showToast(`✓ Tasks refreshed! (${data.missions?.length || 0} registered)`);
         }
       } else {
         setAuthError(data.error || 'Authentication failed');
@@ -567,7 +567,7 @@ const handleCreateMission = async (e: React.FormEvent) => {
       showToast(`? Mission "${missionToSave.title}" updated successfully!`);
     } else {
       setMissions((prev) => [...prev, missionToSave]);
-      showToast(`? Mission scheduled for Day ${dayNumber}!`);
+      showToast(`? Task scheduled for Day ${dayNumber}!`);
     }
 
     setEditingMissionId(null);
@@ -587,7 +587,7 @@ const handleCreateMission = async (e: React.FormEvent) => {
       });
       const data = await res.json();
       if (data.success) {
-        showToast(`✓ Mission scheduled and synced on server for Day ${dayNumber}!`);
+        showToast(`✓ Task scheduled and synced on server for Day ${dayNumber}!`);
       } else {
         showToast(`⚠️ Server error: ${data.error || 'Failed to save mission'}`);
       }
@@ -603,7 +603,7 @@ const handleCreateMission = async (e: React.FormEvent) => {
     // Immediate optimistic update
     setMissions((prev) => prev.filter((m) => m.id !== id));
     setSelectedIds((prev) => prev.filter((x) => x !== id));
-    showToast('✓ Mission deleted.');
+    showToast('✓ Task deleted.');
 
     try {
       await fetch(`/api/admin/missions?key=${encodeURIComponent(passkey)}`, {
@@ -720,7 +720,7 @@ const handleCreateMission = async (e: React.FormEvent) => {
     }
   };
 
-  // Instant Auto Pre-Schedule 30 Days of Tasks (Non-blocking & Infallible)
+  // Instant Auto Pre-Schedule 30 Days of Tasks of Tasks (Non-blocking & Infallible)
   const handleBulkPrepopulate30Days = async () => {
     setIsGenerating(true);
     const today = new Date();
@@ -843,7 +843,7 @@ const handleCreateMission = async (e: React.FormEvent) => {
             Rialo Admin Enclave
           </h2>
           <p style={{ fontSize: '13px', color: 'var(--rialo-text-muted)', margin: '0 0 24px' }}>
-            Protected admin access for scheduling daily missions & managing seasons.
+            Protected admin access for scheduling daily tasks & managing seasons.
           </p>
 
           <form onSubmit={handleAuth} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
@@ -883,7 +883,7 @@ const handleCreateMission = async (e: React.FormEvent) => {
               <ArrowLeft size={14} /> Return to RialoTrace Platform
             </Link>
             <h1 style={{ fontSize: '28px', fontWeight: 900, color: '#E8E3D5', margin: 0, letterSpacing: '-0.02em' }}>
-              Mission Manager & <span className="gradient-text-rialo">30-Day Scheduler</span>
+              Task Manager & <span className="gradient-text-rialo">30-Day Scheduler</span>
             </h1>
             <p style={{ fontSize: '13px', color: 'rgba(232, 227, 213, 0.7)', marginTop: '4px' }}>
               Drag to reorder daily drops, bulk-select to delete in one click, and pre-schedule upcoming drops up to 30 days ahead.
@@ -939,7 +939,7 @@ const handleCreateMission = async (e: React.FormEvent) => {
                 fontWeight: 700,
                 transition: 'all 0.2s',
               }}
-              title="Refresh Missions List"
+              title="Refresh Tasks List"
             >
               <RefreshCw size={16} color="#A9DDD3" className={loading ? 'animate-spin' : ''} />
               <span>Refresh</span>
@@ -1023,7 +1023,7 @@ const handleCreateMission = async (e: React.FormEvent) => {
             }}
           >
             <Calendar size={17} />
-            <span>📋 30-Day Mission Scheduler & Manager</span>
+            <span>📋 30-Day Task Scheduler & Manager</span>
             <span style={{
               background: activeAdminTab === 'scheduler' ? '#010101' : 'rgba(169, 221, 211, 0.15)',
               color: activeAdminTab === 'scheduler' ? '#A9DDD3' : '#A9DDD3',
@@ -1128,7 +1128,7 @@ const handleCreateMission = async (e: React.FormEvent) => {
             </div>
             <div>
               <h3 style={{ fontSize: '18px', fontWeight: 800, color: '#E8E3D5', margin: 0 }}>
-                Schedule a Specific Daily Mission
+                Schedule a Specific Daily Task
               </h3>
               <p style={{ fontSize: '12px', color: 'rgba(232, 227, 213, 0.65)', margin: '2px 0 0' }}>
                 Fill in details for any custom task drop. For Web3 Quizzes, question and options configure automatically below.

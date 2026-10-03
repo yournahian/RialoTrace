@@ -317,7 +317,7 @@ export const DailyMissions: React.FC<DailyMissionsProps> = ({
             <Calendar size={14} /> Season 1 Daily Tasks • {todayDate || 'Today'}
           </div>
           <h2 className="tcg-title">
-            Complete Daily Missions ➔ <span className="gradient-text-rialo">Unlock 3 Cards</span>
+            Complete Daily Tasks ➔ <span className="gradient-text-rialo">Unlock 3 Cards</span>
           </h2>
           <p className="tcg-subtitle">
             Tasks reset daily at 00:00 UTC. Collect all 30 Season 1 Genesis warriors to secure your Guaranteed Free Mint!
