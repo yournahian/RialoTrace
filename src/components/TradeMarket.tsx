@@ -166,6 +166,12 @@ export const TradeMarket: React.FC<TradeMarketProps> = ({
         setIsPostModalOpen(false);
         setSelectedOfferCardId('');
         setSelectedRequestCardId('');
+        if (typeof window !== 'undefined') {
+          const clean = user.username.replace('@', '').toLowerCase();
+          const cur = parseInt(localStorage.getItem(`rialo_trades_created_${clean}`) || '0') + 1;
+          localStorage.setItem(`rialo_trades_created_${clean}`, String(cur));
+          window.dispatchEvent(new Event('rialo_trade_activity'));
+        }
         showToast('✓ Trade offer published to marketplace!');
         fetchTrades();
       } else {
@@ -206,6 +212,17 @@ export const TradeMarket: React.FC<TradeMarketProps> = ({
       const data = await res.json();
       if (data.success) {
         if (data.buyer) onUserUpdate(data.buyer);
+        if (typeof window !== 'undefined') {
+          const clean = user.username.replace('@', '').toLowerCase();
+          const cur = parseInt(localStorage.getItem(`rialo_trades_completed_${clean}`) || '0') + 1;
+          localStorage.setItem(`rialo_trades_completed_${clean}`, String(cur));
+          const recCard = RIALO_30_ARCHETYPES[trade.offeredCardId];
+          if (recCard && ['RARE', 'EPIC', 'LEGENDARY', 'MYTHIC'].includes(recCard.rarity?.toUpperCase())) {
+            const arb = parseInt(localStorage.getItem(`rialo_trades_arbitrage_${clean}`) || '0') + 1;
+            localStorage.setItem(`rialo_trades_arbitrage_${clean}`, String(arb));
+          }
+          window.dispatchEvent(new Event('rialo_trade_activity'));
+        }
         fetchTrades();
 
         // Trigger Epic Celebration Animation Modal

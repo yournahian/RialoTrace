@@ -108,6 +108,18 @@ export const TheForge: React.FC<TheForgeProps> = ({ user, onUserUpdate, onNaviga
         setShowForgeModal(true);
         setSelectedCards([]);
         sound.playJackpot();
+        if (typeof window !== 'undefined') {
+          const clean = (user.username || 'yournahian').toLowerCase().replace('@', '');
+          const cur = parseInt(localStorage.getItem(`rialo_forged_count_${clean}`) || '0') + 1;
+          localStorage.setItem(`rialo_forged_count_${clean}`, String(cur));
+          if (data.forgedCard?.rarity && ['RARE', 'EPIC', 'LEGENDARY', 'MYTHIC'].includes(data.forgedCard.rarity.toUpperCase())) {
+            localStorage.setItem(`rialo_forged_high_yield_${clean}`, 'true');
+          }
+          if (data.forgedCard?.rarity?.toUpperCase() === 'MYTHIC') {
+            localStorage.setItem(`rialo_forged_mythic_${clean}`, 'true');
+          }
+          window.dispatchEvent(new Event('rialo_forge_activity'));
+        }
         if (data.user && onUserUpdate) {
           onUserUpdate(data.user);
         }

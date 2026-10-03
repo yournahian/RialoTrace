@@ -46,6 +46,11 @@ export const CyberSoundboard: React.FC = () => {
   const handlePadPress = (pad: SoundPad) => {
     setActivePad(pad.id);
     pad.action();
+    if (typeof window !== 'undefined') {
+      const clean = (localStorage.getItem('rialo_active_user') || 'yournahian').toLowerCase().replace('@', '');
+      localStorage.setItem(`rialo_dj_pad_used_${clean}`, 'true');
+      window.dispatchEvent(new Event('rialo_arcade_activity'));
+    }
     setTimeout(() => setActivePad(null), 150);
   };
 
@@ -56,6 +61,11 @@ export const CyberSoundboard: React.FC = () => {
       setIsLooping(false);
     } else {
       setIsLooping(true);
+      if (typeof window !== 'undefined') {
+        const clean = (localStorage.getItem('rialo_active_user') || 'yournahian').toLowerCase().replace('@', '');
+        localStorage.setItem(`rialo_arpeggiator_loop_used_${clean}`, 'true');
+        window.dispatchEvent(new Event('rialo_arcade_activity'));
+      }
       let step = 0;
       loopIntervalRef.current = setInterval(() => {
         if (step % 4 === 0) sound.playKick();

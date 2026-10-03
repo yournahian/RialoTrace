@@ -273,6 +273,14 @@ export const ZeroFrictionGlide: React.FC<ZeroFrictionGlideProps> = ({ user, onUs
             if (data.success) {
               setEarnedShards(data.earnedShards);
               if (data.highscore) setHighscore(data.highscore);
+              if (typeof window !== 'undefined') {
+                const clean = (user?.username || 'yournahian').toLowerCase().replace('@', '');
+                const cur = parseInt(localStorage.getItem(`rialo_glide_highscore_${clean}`) || '0');
+                if (finalScore > cur) {
+                  localStorage.setItem(`rialo_glide_highscore_${clean}`, String(finalScore));
+                }
+                window.dispatchEvent(new Event('rialo_arcade_activity'));
+              }
               if (data.user && onUserUpdate) onUserUpdate(data.user);
             }
           })

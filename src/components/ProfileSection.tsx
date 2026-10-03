@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { User, Award, Trophy, Sparkles, Shield, Flame, CheckCircle, CheckCircle2, Lock, ExternalLink, ArrowRight, RefreshCw, Radio, Megaphone, Bell, X, Zap, MessageSquare, Send } from 'lucide-react';
 import { UserProfile, BroadcastEvent } from '@/lib/types';
 import { PLATFORM_ACHIEVEMENTS, PlatformAchievement } from '@/lib/achievementsData';
+import { ALL_30_CARDS, RIALO_30_ARCHETYPES } from '@/lib/cardsData';
 import { sound } from '@/lib/soundFx';
 
 interface ProfileSectionProps {
@@ -32,20 +33,88 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onSelectTa
   const [isVerifyingMission, setIsVerifyingMission] = useState(false);
   const [missionClaimSuccessMsg, setMissionClaimSuccessMsg] = useState('');
   const [claimedMissionIds, setClaimedMissionIds] = useState<Record<string, boolean>>({});
+  const [userRank, setUserRank] = useState<number>(0);
+  const [totalUsers, setTotalUsers] = useState<number>(1);
+  const [glideScore, setGlideScore] = useState<number>(0);
+  const [tradesCreatedCount, setTradesCreatedCount] = useState<number>(0);
+  const [tradesCompletedCount, setTradesCompletedCount] = useState<number>(0);
+  const [tradesArbitrageCount, setTradesArbitrageCount] = useState<number>(0);
+  const [forgedCount, setForgedCount] = useState<number>(0);
+  const [forgedHighYield, setForgedHighYield] = useState<boolean>(false);
+  const [forgedMythic, setForgedMythic] = useState<boolean>(false);
+  const [djPadUsed, setDjPadUsed] = useState<boolean>(false);
+  const [arpeggiatorUsed, setArpeggiatorUsed] = useState<boolean>(false);
+  const [alphaEngaged, setAlphaEngaged] = useState<boolean>(false);
 
-  // Sync Trollbox message count from localStorage
+  // Sync real gameplay activity and achievements state
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const cleanU = (user?.username || 'yournahian').replace('@', '').toLowerCase();
-      const current = parseInt(localStorage.getItem(`rialo_trollbox_sent_${cleanU}`) || '0');
-      setTrollboxSentCount(current);
 
-      const handleMsgSent = () => {
-        const updated = parseInt(localStorage.getItem(`rialo_trollbox_sent_${cleanU}`) || '0');
-        setTrollboxSentCount(updated);
+      const refreshLocalStats = () => {
+        setTrollboxSentCount(parseInt(localStorage.getItem(`rialo_trollbox_sent_${cleanU}`) || '0'));
+        setForgedCount(parseInt(localStorage.getItem(`rialo_forged_count_${cleanU}`) || '0'));
+        setForgedHighYield(localStorage.getItem(`rialo_forged_high_yield_${cleanU}`) === 'true');
+        setForgedMythic(localStorage.getItem(`rialo_forged_mythic_${cleanU}`) === 'true');
+        setTradesCreatedCount(parseInt(localStorage.getItem(`rialo_trades_created_${cleanU}`) || '0'));
+        setTradesCompletedCount(parseInt(localStorage.getItem(`rialo_trades_completed_${cleanU}`) || '0'));
+        setTradesArbitrageCount(parseInt(localStorage.getItem(`rialo_trades_arbitrage_${cleanU}`) || '0'));
+        setDjPadUsed(localStorage.getItem(`rialo_dj_pad_used_${cleanU}`) === 'true');
+        setArpeggiatorUsed(localStorage.getItem(`rialo_arpeggiator_loop_used_${cleanU}`) === 'true');
+        setAlphaEngaged(localStorage.getItem(`rialo_alpha_liked_${cleanU}`) === 'true');
+        const localGlide = parseInt(localStorage.getItem(`rialo_glide_highscore_${cleanU}`) || '0');
+        if (localGlide > 0) setGlideScore((prev) => Math.max(prev, localGlide));
       };
-      window.addEventListener('rialo_trollbox_msg_sent', handleMsgSent);
-      return () => window.removeEventListener('rialo_trollbox_msg_sent', handleMsgSent);
+
+      refreshLocalStats();
+
+      // Fetch arcade data for glide highscore
+      fetch(`/api/arcade?username=${encodeURIComponent(cleanU)}`)
+        .then((r) => r.json())
+        .then((d) => {
+          if (d.success && typeof d.glideHighscore === 'number') {
+            setGlideScore(d.glideHighscore);
+          }
+        })
+        .catch(() => {});
+
+      // Fetch user rank & leaderboard info
+      fetch(`/api/user?username=${encodeURIComponent(cleanU)}`)
+        .then((r) => r.json())
+        .then((d) => {
+          if (d.success) {
+            setUserRank(d.rank || 0);
+            setTotalUsers(d.totalUsers || 1);
+          }
+        })
+        .catch(() => {});
+
+      // Fetch open trades to count user created trades
+      fetch('/api/trades')
+        .then((r) => r.json())
+        .then((d) => {
+          if (d.success && Array.isArray(d.trades)) {
+            const myTrades = d.trades.filter((t: any) => t.offeredBy?.toLowerCase() === cleanU);
+            if (myTrades.length > 0) {
+              setTradesCreatedCount((prev) => Math.max(prev, myTrades.length));
+            }
+          }
+        })
+        .catch(() => {});
+
+      window.addEventListener('rialo_trollbox_msg_sent', refreshLocalStats);
+      window.addEventListener('rialo_arcade_activity', refreshLocalStats);
+      window.addEventListener('rialo_forge_activity', refreshLocalStats);
+      window.addEventListener('rialo_trade_activity', refreshLocalStats);
+      window.addEventListener('rialo_alpha_activity', refreshLocalStats);
+
+      return () => {
+        window.removeEventListener('rialo_trollbox_msg_sent', refreshLocalStats);
+        window.removeEventListener('rialo_arcade_activity', refreshLocalStats);
+        window.removeEventListener('rialo_forge_activity', refreshLocalStats);
+        window.removeEventListener('rialo_trade_activity', refreshLocalStats);
+        window.removeEventListener('rialo_alpha_activity', refreshLocalStats);
+      };
     }
   }, [user?.username]);
 
@@ -112,12 +181,24 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onSelectTa
     }
   };
 
-  const inventoryCount = user?.uniqueCardsCount || 5;
-  const totalCards = user?.totalCardsCount || 6;
-  const shards = user?.shards || 580;
-  const lifetimePoints = user?.lifetimePoints || 580;
-  const streakDays = user?.streakDays || 1;
-  const missionsCount = user?.completedMissions?.length || 2;
+  const inventoryCount = user?.uniqueCardsCount ?? 0;
+  const totalCards = user?.totalCardsCount ?? 0;
+  const shards = user?.shards ?? 0;
+  const lifetimePoints = user?.lifetimePoints ?? 0;
+  const streakDays = user?.streakDays ?? 1;
+  const missionsCount = user?.completedMissions?.length ?? 0;
+
+  const duplicateCount = Object.keys(user?.inventory || {}).reduce((sum, cid) => {
+    const qty = user?.inventory[cid] || 0;
+    return sum + Math.max(0, qty - 1);
+  }, 0);
+
+  const hasHolo = Object.keys(user?.inventory || {}).some((cid) => {
+    const qty = user?.inventory[cid] || 0;
+    if (qty <= 0) return false;
+    const card = RIALO_30_ARCHETYPES[cid] || ALL_30_CARDS.find((c) => c.id === cid);
+    return card && ['LEGENDARY', 'MYTHIC'].includes(card.rarity.toUpperCase());
+  });
 
   // Check if admin broadcasted any achievement specifically to current user or ALL
   const userHandle = (user?.username || 'yournahian').toLowerCase().replace('@', '');
@@ -137,21 +218,22 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onSelectTa
     let progressText = 'Locked';
 
     switch (ach.id) {
+      // --- 🚀 Quests & Genesis (6) ---
       case 'genesis_pioneer':
-        isUnlocked = true;
-        progressText = 'Activated';
+        isUnlocked = Boolean(user && user.username);
+        progressText = isUnlocked ? 'Activated & Enrolled' : 'Pending Activation';
         break;
       case 'first_quest':
         isUnlocked = missionsCount >= 1;
-        progressText = `${Math.min(missionsCount, 1)}/1 Quest`;
+        progressText = `${Math.min(missionsCount, 1)}/1 Quest Complete`;
         break;
       case 'dedicated_runner':
         isUnlocked = missionsCount >= 5;
-        progressText = `${Math.min(missionsCount, 5)}/5 Quests`;
+        progressText = `${Math.min(missionsCount, 5)}/5 Quests Complete`;
         break;
       case 'crypto_scholar':
-        isUnlocked = missionsCount >= 2;
-        progressText = `${Math.min(missionsCount, 3)}/3 Quizzes`;
+        isUnlocked = missionsCount >= 3;
+        progressText = `${Math.min(missionsCount, 3)}/3 Quizzes Solved`;
         break;
       case 'streak_keeper':
         isUnlocked = streakDays >= 3;
@@ -161,9 +243,11 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onSelectTa
         isUnlocked = streakDays >= 7;
         progressText = `${streakDays}/7 Days Streak`;
         break;
+
+      // --- 🎴 Cards & Collecting (6) ---
       case 'rookie_cardholder':
         isUnlocked = totalCards >= 1;
-        progressText = `${Math.min(totalCards, 1)}/1 Card in Deck`;
+        progressText = `${Math.min(totalCards, 1)}/1 Card in Vault`;
         break;
       case 'collector_apprentice':
         isUnlocked = inventoryCount >= 5;
@@ -178,69 +262,81 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onSelectTa
         progressText = `${Math.min(inventoryCount, 20)}/20 Unique Cards`;
         break;
       case 'holo_mirage':
-        isUnlocked = true;
-        progressText = '1 Sovereign Holo Card Owned';
+        isUnlocked = Boolean(hasHolo);
+        progressText = hasHolo ? '1 Legendary/Mythic Owned' : '0/1 Legendary or Mythic Holo';
         break;
       case 'omniscient_binder':
         isUnlocked = inventoryCount >= 30;
         progressText = `${inventoryCount}/30 Full Collection`;
         break;
+
+      // --- 🧪 The Superconducting Forge (4) ---
       case 'apprentice_melter':
-        isUnlocked = totalCards >= 2;
-        progressText = '2 Duplicates Ready for Forge';
+        isUnlocked = duplicateCount >= 1 || forgedCount >= 1;
+        progressText = isUnlocked
+          ? (forgedCount >= 1 ? `${forgedCount} Cards Transmuted` : `${duplicateCount} Duplicates Ready for Forge`)
+          : `${duplicateCount}/1 Duplicate Available`;
         break;
       case 'forge_alchemist':
-        isUnlocked = totalCards >= 3;
-        progressText = `${Math.min(totalCards, 3)}/3 Cards Transmuted`;
+        isUnlocked = forgedCount >= 3;
+        progressText = `${Math.min(forgedCount, 3)}/3 Cards Transmuted`;
         break;
       case 'fusion_ignition':
-        isUnlocked = totalCards >= 4;
-        progressText = 'Fusion Field Resonance Active';
+        isUnlocked = forgedHighYield || forgedCount >= 3;
+        progressText = isUnlocked ? 'Fusion Field Resonance Active' : 'Awaiting High-Yield Fusion';
         break;
       case 'zero_resist_forge':
-        isUnlocked = false;
-        progressText = 'Requires Sovereign Blueprint';
+        isUnlocked = forgedMythic;
+        progressText = isUnlocked ? 'Sovereign Card Forged' : 'Requires Sovereign Blueprint';
         break;
+
+      // --- 🔄 P2P Trading (4) ---
       case 'trade_broker':
-        isUnlocked = totalCards >= 2;
-        progressText = '1 Duplicate Available';
+        isUnlocked = tradesCreatedCount >= 1;
+        progressText = isUnlocked ? 'Exchange Offer Listed' : '0/1 Active Trade Offer';
         break;
       case 'liquidity_facilitator':
-        isUnlocked = true;
-        progressText = '3 Peer Swaps Completed';
+        isUnlocked = tradesCompletedCount >= 3;
+        progressText = `${Math.min(tradesCompletedCount, 3)}/3 Peer Swaps Completed`;
         break;
       case 'market_arbitrageur':
-        isUnlocked = true;
-        progressText = '1 Arbitrage Offer Settled';
+        isUnlocked = tradesArbitrageCount >= 1;
+        progressText = isUnlocked ? '1 Arbitrage Offer Settled' : '0/1 Arbitrage Swap Settled';
         break;
       case 'titan_swapper':
-        isUnlocked = false;
-        progressText = '3/10 Swaps Completed';
+        isUnlocked = tradesCompletedCount >= 10;
+        progressText = `${Math.min(tradesCompletedCount, 10)}/10 Swaps Completed`;
         break;
+
+      // --- 🕹️ Meissner Arcade & Sound Lab (4) ---
       case 'arcade_ace':
-        isUnlocked = true;
-        progressText = 'Magnetic Glide Highscore Logged';
+        isUnlocked = glideScore > 0;
+        progressText = isUnlocked ? `${glideScore} PTS Glide Highscore` : 'Awaiting 1st Flight';
         break;
       case 'gravity_defier':
-        isUnlocked = true;
-        progressText = '142 PTS Glide Record';
+        isUnlocked = glideScore >= 100;
+        progressText = `${Math.min(glideScore, 100)}/100 PTS Record`;
         break;
       case 'sound_maestro':
-        isUnlocked = true;
-        progressText = 'MPC Drum Machine Active';
+        isUnlocked = djPadUsed;
+        progressText = isUnlocked ? 'MPC Drum Machine Active' : '0/1 Beat Synthesized';
         break;
       case 'frequency_alchemist':
-        isUnlocked = true;
-        progressText = '16-Step Arpeggiator Synthesized';
+        isUnlocked = arpeggiatorUsed;
+        progressText = isUnlocked ? '16-Step Arpeggiator Synthesized' : '0/1 Loop Pattern Triggered';
         break;
+
+      // --- 💬 Community & Trollbox (2) ---
       case 'trollbox_vanguard':
-        isUnlocked = true;
-        progressText = '5 Protocol Signals Transmitted';
+        isUnlocked = trollboxSentCount >= 5;
+        progressText = `${Math.min(trollboxSentCount, 5)}/5 Protocol Signals Transmitted`;
         break;
       case 'alpha_hunter':
-        isUnlocked = true;
-        progressText = 'Alpha Curator Standing Verified';
+        isUnlocked = alphaEngaged;
+        progressText = isUnlocked ? 'Alpha Curator Standing Verified' : '0/1 Alpha Post Engaged';
         break;
+
+      // --- 👑 Prestige & Dynamic Whitelist (4) ---
       case 'shard_tycoon':
         isUnlocked = shards >= 500;
         progressText = `${shards}/500 Superconducting Shards`;
@@ -249,20 +345,24 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onSelectTa
         isUnlocked = lifetimePoints >= 1500;
         progressText = `${lifetimePoints}/1500 Lifetime Points`;
         break;
-      case 'whitelist_ascendant':
-        isUnlocked = true;
-        progressText = 'Top 1% Standing Confirmed';
+      case 'whitelist_ascendant': {
+        const isTop5 = userRank > 0 && totalUsers > 0 && (userRank / totalUsers) <= 0.05;
+        const pct = totalUsers > 0 && userRank > 0 ? ((userRank / totalUsers) * 100).toFixed(1) : '100';
+        isUnlocked = isTop5;
+        progressText = isTop5 ? `Top ${pct}% Standing Confirmed` : `Current Standing: Top ${pct}%`;
         break;
+      }
       case 'whitelist_immortal':
-        isUnlocked = true;
-        progressText = 'Rank #1 Secured (Top 0.5%)';
+        isUnlocked = userRank === 1;
+        progressText = userRank === 1 ? 'Rank #1 Secured (Top 0.5%)' : (userRank > 0 ? `Current Rank: #${userRank}` : 'Unranked');
         break;
+
       default:
         isUnlocked = false;
         progressText = 'In Progress';
     }
 
-    // If admin explicitly broadcasted this achievement to this user, override unlock!
+        // If admin explicitly broadcasted this achievement to this user, override unlock!
     if (broadcastedAchievementIds.has(ach.id)) {
       isUnlocked = true;
       progressText = 'Awarded by Protocol Admin';

@@ -21,6 +21,23 @@ export const TrophyCabinet: React.FC<TrophyCabinetProps> = ({ user }) => {
   const inventoryCount = user?.uniqueCardsCount || 0;
   const completedMissionsCount = user?.completedMissions?.length || 0;
   const shards = user?.shards || 0;
+  const cleanU = (user?.username || 'yournahian').toLowerCase().replace('@', '');
+
+  const [glideScore, setGlideScore] = React.useState<number>(0);
+  const [forgedCount, setForgedCount] = React.useState<number>(0);
+  const [djPadUsed, setDjPadUsed] = React.useState<boolean>(false);
+  const [hasSpunWheel, setHasSpunWheel] = React.useState<boolean>(false);
+  const [hasCreatedCard, setHasCreatedCard] = React.useState<boolean>(false);
+
+  React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setGlideScore(parseInt(localStorage.getItem(`rialo_glide_highscore_${cleanU}`) || '0'));
+      setForgedCount(parseInt(localStorage.getItem(`rialo_forged_count_${cleanU}`) || '0'));
+      setDjPadUsed(localStorage.getItem(`rialo_dj_pad_used_${cleanU}`) === 'true');
+      setHasSpunWheel(Boolean(localStorage.getItem(`rialo_wheel_last_spin_${cleanU}`)));
+      setHasCreatedCard(Boolean(localStorage.getItem(`rialo_custom_card_${cleanU}`)));
+    }
+  }, [cleanU]);
 
   const ACHIEVEMENTS: Achievement[] = [
     {
@@ -45,7 +62,7 @@ export const TrophyCabinet: React.FC<TrophyCabinetProps> = ({ user }) => {
       desc: 'Fuse 3 cards into higher rarity in The Forge.',
       icon: '🧪',
       shardsReward: 75,
-      isUnlocked: (user?.totalCardsCount || 0) >= 3,
+      isUnlocked: forgedCount >= 1,
     },
     {
       id: 'shard_whale',
@@ -61,7 +78,7 @@ export const TrophyCabinet: React.FC<TrophyCabinetProps> = ({ user }) => {
       desc: 'Achieve flight distance over 50m in Zero-Friction Glide.',
       icon: '🚀',
       shardsReward: 50,
-      isUnlocked: true,
+      isUnlocked: glideScore >= 50,
     },
     {
       id: 'lucky_spinner',
@@ -69,7 +86,7 @@ export const TrophyCabinet: React.FC<TrophyCabinetProps> = ({ user }) => {
       desc: 'Spin the Daily Quantum Lucky Wheel.',
       icon: '🎰',
       shardsReward: 30,
-      isUnlocked: true,
+      isUnlocked: hasSpunWheel,
     },
     {
       id: 'quiz_genius',
@@ -85,7 +102,7 @@ export const TrophyCabinet: React.FC<TrophyCabinetProps> = ({ user }) => {
       desc: 'Drop beats and trigger loops on the Rialo DJ Soundboard.',
       icon: '🎹',
       shardsReward: 35,
-      isUnlocked: true,
+      isUnlocked: djPadUsed,
     },
     {
       id: 'streak_titan',
@@ -101,7 +118,7 @@ export const TrophyCabinet: React.FC<TrophyCabinetProps> = ({ user }) => {
       desc: 'Forge your own custom trading card in the Creator Studio.',
       icon: '🎨',
       shardsReward: 50,
-      isUnlocked: true,
+      isUnlocked: hasCreatedCard,
     },
   ];
 
