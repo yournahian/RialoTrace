@@ -4,6 +4,7 @@ import { CryoStreakVault } from './CryoStreakVault';
 
 import React, { useState, useEffect } from 'react';
 import { Mission, UserProfile, CardArchetype, PendingGiftItem } from '@/lib/types';
+import { ALL_30_CARDS } from '@/lib/cardsData';
 import { Lock, CheckCircle2, Circle, ExternalLink, Gift, Sparkles, Flame, Coins, Calendar, Check, Camera, X, HelpCircle, Upload, Trash2 } from 'lucide-react';
 import { playPackOpenSound, playCardRevealSound } from '@/lib/sounds';
 
@@ -11,6 +12,14 @@ interface DailyMissionsProps {
   username: string;
   onUserDataUpdate?: (user: UserProfile) => void;
   onOpenPackInRialoCards?: (pulledCards: CardArchetype[]) => void;
+}
+
+function getLocalClientDate(): string {
+  const d = new Date();
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
 }
 
 export const DailyMissions: React.FC<DailyMissionsProps> = ({
@@ -71,7 +80,7 @@ export const DailyMissions: React.FC<DailyMissionsProps> = ({
   const fetchMissions = async () => {
     try {
       setLoading(true);
-      const clientDate = new Date().toISOString().split('T')[0];
+      const clientDate = getLocalClientDate();
       const res = await fetch(`/api/missions?username=${encodeURIComponent(username)}&date=${encodeURIComponent(clientDate)}`);
       const data = await res.json();
       if (data.success) {

@@ -22,6 +22,8 @@ CREATE TABLE IF NOT EXISTS missions (
     quiz_questions JSONB,
     reward_packs INTEGER DEFAULT 1,
     reward_shards INTEGER DEFAULT 25,
+    reward_card_id TEXT,
+    reward_card_count INTEGER DEFAULT 1,
     is_active BOOLEAN DEFAULT true,
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -113,6 +115,11 @@ CREATE TABLE IF NOT EXISTS kv_store (
 -- Disabling RLS allows the server-side Supabase client (using anon key)
 -- to freely SELECT, INSERT, UPDATE, and DELETE across all required tables.
 -- ==============================================================================
+
+-- OPTIONAL REWARD CARD UPGRADE (run if table already exists)
+ALTER TABLE missions ADD COLUMN IF NOT EXISTS reward_card_id TEXT;
+ALTER TABLE missions ADD COLUMN IF NOT EXISTS reward_card_count INTEGER DEFAULT 1;
+
 ALTER TABLE missions DISABLE ROW LEVEL SECURITY;
 ALTER TABLE users DISABLE ROW LEVEL SECURITY;
 ALTER TABLE trades DISABLE ROW LEVEL SECURITY;

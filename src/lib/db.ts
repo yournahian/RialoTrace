@@ -9,7 +9,7 @@ export function getTodayDateStr(): string {
 }
 
 function missionToRow(m: Mission) {
-  return {
+  const row: any = {
     id: m.id,
     day_number: m.dayNumber,
     scheduled_date: m.scheduledDate,
@@ -28,9 +28,27 @@ function missionToRow(m: Mission) {
     reward_shards: m.rewardShards,
     is_active: m.isActive,
   };
+  if (m.rewardCardId) {
+    row.reward_card_id = m.rewardCardId;
+    row.reward_card_count = m.rewardCardCount ?? 1;
+  }
+  return row;
 }
 
 function rowToMission(r: any): Mission {
+  let rewardCardId = r.reward_card_id ?? undefined;
+  let rewardCardCount = r.reward_card_count ?? undefined;
+
+  if (!rewardCardId && r.action_label && r.action_label.includes('[CARD:')) {
+    const match = r.action_label.match(/\[CARD:([^:]+)(?::(\d+))?\]/);
+    if (match) {
+      rewardCardId = match[1];
+      rewardCardCount = match[2] ? Number(match[2]) : 1;
+    }
+  }
+
+  const cleanActionLabel = r.action_label ? r.action_label.replace(/\[CARD:[^\]]+\]/, '').trim() : undefined;
+
   return {
     id: r.id,
     dayNumber: r.day_number,
@@ -39,7 +57,7 @@ function rowToMission(r: any): Mission {
     description: r.description,
     link: r.link,
     type: r.type,
-    actionLabel: r.action_label ?? undefined,
+    actionLabel: cleanActionLabel || undefined,
     screenshotRequirement: r.screenshot_requirement ?? 'none',
     quizQuestion: r.quiz_question ?? undefined,
     quizOptions: r.quiz_options ?? undefined,
@@ -48,6 +66,8 @@ function rowToMission(r: any): Mission {
     quizQuestions: r.quiz_questions ?? undefined,
     rewardPacks: r.reward_packs,
     rewardShards: r.reward_shards,
+    rewardCardId,
+    rewardCardCount,
     isActive: r.is_active,
   };
 }
@@ -116,11 +136,29 @@ export async function getAllMissions(): Promise<Mission[]> {
 }
 
 export async function upsertMission(mission: Mission): Promise<Mission> {
-  const { data, error } = await supabase
+  const row = missionToRow(mission);
+  let { data, error } = await supabase
     .from('missions')
-    .upsert(missionToRow(mission), { onConflict: 'id' })
+    .upsert(row, { onConflict: 'id' })
     .select()
     .single();
+
+  if (error && (error.code === '42703' || error.message && error.message.includes('reward_card_id'))) {
+    const fallbackRow = Object.assign({}, row);
+    delete fallbackRow.reward_card_id;
+    delete fallbackRow.reward_card_count;
+    if (mission.rewardCardId) {
+      fallbackRow.action_label = ((fallbackRow.action_label || '') + ' [CARD:' + mission.rewardCardId + ':' + (mission.rewardCardCount || 1) + ']').trim();
+    }
+    const retryRes = await supabase
+      .from('missions')
+      .upsert(fallbackRow, { onConflict: 'id' })
+      .select()
+      .single();
+    if (retryRes.error) throw new Error(retryRes.error.message);
+    return rowToMission(retryRes.data);
+  }
+
   if (error) throw new Error(error.message);
   return rowToMission(data);
 }

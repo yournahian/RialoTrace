@@ -39,6 +39,8 @@ export interface Mission {
   quizQuestions?: QuizQuestionItem[];
   rewardPacks: number;
   rewardShards: number;
+  rewardCardId?: string;
+  rewardCardCount?: number;
   isActive: boolean;
 }
 

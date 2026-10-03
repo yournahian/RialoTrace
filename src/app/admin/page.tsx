@@ -170,6 +170,8 @@ export default function AdminPage() {
   const [actionLabel, setActionLabel] = useState('Follow on X');
   const [rewardShards, setRewardShards] = useState<number>(25);
   const [screenshotRequirement, setScreenshotRequirement] = useState<ScreenshotRequirement>('none');
+  const [rewardCardId, setRewardCardId] = useState<string>('');
+  const [rewardCardCount, setRewardCardCount] = useState<number>(1);
 
   // Dedicated Quiz Fields
   const [quizQuestion, setQuizQuestion] = useState('What makes Rialo consensus unique?');
@@ -1149,6 +1151,67 @@ export default function AdminPage() {
                   className="admin-input"
                   style={{ width: '100%', height: '42px', background: 'rgba(12, 16, 16, 0.9)', border: '1px solid rgba(169, 221, 211, 0.25)', borderRadius: '10px', padding: '0 14px', color: '#FFFFFF' }}
                 />
+              </div>
+
+              {/* OPTIONAL CARD REWARD SELECTOR */}
+              <div className="admin-input-group" style={{ gridColumn: 'span 2', padding: '14px', background: 'rgba(12, 16, 16, 0.8)', border: '1px solid rgba(169, 221, 211, 0.25)', borderRadius: '12px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+                  <label style={{ fontSize: '12px', fontWeight: 800, color: '#FBBF24', margin: 0, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <span>?? Optional Collector Card Reward</span>
+                  </label>
+                  <span style={{ fontSize: '11px', color: 'rgba(232, 227, 213, 0.6)' }}>
+                    Users receive this card in their vault upon task completion
+                  </span>
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: '10px' }}>
+                  <select
+                    value={rewardCardId}
+                    onChange={(e) => setRewardCardId(e.target.value)}
+                    className="admin-input"
+                    style={{
+                      width: '100%',
+                      height: '42px',
+                      background: 'rgba(12, 16, 16, 0.9)',
+                      border: rewardCardId ? '1.5px solid #F59E0B' : '1px solid rgba(169, 221, 211, 0.25)',
+                      borderRadius: '10px',
+                      padding: '0 14px',
+                      color: rewardCardId ? '#FBBF24' : '#E8E3D5',
+                      fontWeight: 700,
+                    }}
+                  >
+                    <option value="">? No Card (Shards only)</option>
+                    <optgroup label="30 Genesis Warriors Archetypes">
+                      {ALL_30_CARDS.map((card) => (
+                        <option key={card.id} value={card.id}>
+                          {card.badgeEmoji} {card.title} ({card.rarity})
+                        </option>
+                      ))}
+                    </optgroup>
+                  </select>
+                  {rewardCardId && (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <span style={{ fontSize: '12px', color: '#E8E3D5', fontWeight: 700 }}>Qty:</span>
+                      <input
+                        type="number"
+                        min={1}
+                        max={10}
+                        value={rewardCardCount}
+                        onChange={(e) => setRewardCardCount(Math.max(1, Number(e.target.value) || 1))}
+                        className="admin-input"
+                        style={{ width: '70px', height: '42px', background: 'rgba(12, 16, 16, 0.9)', border: '1px solid rgba(245, 158, 11, 0.5)', borderRadius: '10px', padding: '0 10px', color: '#FBBF24', fontWeight: 800, textAlign: 'center' }}
+                      />
+                    </div>
+                  )}
+                </div>
+                {rewardCardId && (() => {
+                  const sel = ALL_30_CARDS.find((c) => c.id === rewardCardId);
+                  if (!sel) return null;
+                  return (
+                    <div style={{ marginTop: '8px', fontSize: '11px', color: '#FBBF24', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <span>? Rewarding {rewardCardCount}x <strong>{sel.title}</strong> ({sel.rarity}) for completing this quest!</span>
+                    </div>
+                  );
+                })()}
               </div>
 
               {/* SCREENSHOT PROOF VERIFICATION CONFIGURATION */}
