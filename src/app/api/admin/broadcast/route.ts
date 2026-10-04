@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 import { NextRequest, NextResponse } from 'next/server';
 import { addBroadcastEvent, getBroadcastEvents, awardUserShards, deleteBroadcastEvent } from '@/lib/db';
 import { BroadcastEvent } from '@/lib/types';
