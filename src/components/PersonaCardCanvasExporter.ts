@@ -178,7 +178,8 @@ export async function exportPersonaCardPNG(data: PersonaCardData): Promise<Blob 
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.letterSpacing = '6px';
-  ctx.fillText('RIALO', 0, 0);
+  ctx.font = '900 56px "Bebas Neue", "Impact", "Arial Black", sans-serif';
+  ctx.fillText('RIALO TRACE', 0, 0);
   ctx.restore();
 
   // 5. RIGHT VERTICAL TAG BAR
@@ -199,7 +200,7 @@ export async function exportPersonaCardPNG(data: PersonaCardData): Promise<Blob 
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.letterSpacing = '3px';
-  ctx.fillText('OCT 2026 • RIALO PROTOCOL', 0, 0);
+  ctx.fillText('OCT 2026 • RIALO.IO', 0, 0);
   ctx.restore();
 
   // 6. TOP HEADER BAR

@@ -392,15 +392,15 @@ export const PersonaCardStudio: React.FC = () => {
 
               {/* LEFT: vertical RIALO text */}
               <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 5, background: 'rgba(0,0,0,0.55)', borderRight: '1px solid rgba(229,195,101,0.25)' }}>
-                <span style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)', fontFamily: "'Bebas Neue','Impact','Arial Black',sans-serif", fontSize: '36px', fontWeight: 900, letterSpacing: '4px', color: theme.color, textShadow: `0 0 20px ${theme.glow}, 0 0 40px ${theme.glow}`, textTransform: 'uppercase', lineHeight: 1, userSelect: 'none', whiteSpace: 'nowrap' }}>
-                  RIALO
+                <span style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)', fontFamily: "'Bebas Neue','Impact','Arial Black',sans-serif", fontSize: '28px', fontWeight: 900, letterSpacing: '4px', color: theme.color, textShadow: `0 0 20px ${theme.glow}, 0 0 40px ${theme.glow}`, textTransform: 'uppercase', lineHeight: 1, userSelect: 'none', whiteSpace: 'nowrap' }}>
+                  RIALO TRACE
                 </span>
               </div>
 
               {/* RIGHT: vertical date tag */}
               <div style={{ position: 'absolute', right: 0, top: 0, bottom: 0, width: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 5, background: `${theme.color}18`, borderLeft: '1px solid rgba(229,195,101,0.25)' }}>
                 <span style={{ writingMode: 'vertical-rl', fontFamily: "'Space Mono',monospace", fontSize: '8px', fontWeight: 700, letterSpacing: '2px', color: `${theme.color}BB`, textTransform: 'uppercase', whiteSpace: 'nowrap', userSelect: 'none' }}>
-                  OCT 2026 • RIALO PROTOCOL
+                  OCT 2026 • RIALO.IO
                 </span>
               </div>
 
