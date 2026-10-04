@@ -19,6 +19,14 @@ interface TwitterUserResponse {
 
 const RIALO_PROJECTS = ['RialoHQ', 'latch', 'agp'];
 
+// In-memory cache to guarantee instant responses and prevent repeated slow queries
+interface CacheEntry {
+  timestamp: number;
+  data: any;
+}
+const MEMORY_CACHE = new Map<string, CacheEntry>();
+const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
+
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const username = searchParams.get('handle') || searchParams.get('username');
@@ -48,21 +56,30 @@ export async function POST(req: NextRequest) {
 
 async function handleImpressions(rawUsername: string, targetProject?: string) {
   try {
-    const cleanUsername = rawUsername.replace(/^@/, '').trim();
+    const cleanUsername = rawUsername.replace(/^@/, '').trim().toLowerCase();
+    const cacheKey = `${cleanUsername}:${targetProject || 'all'}`;
+
+    // 0. Check in-memory cache
+    const cached = MEMORY_CACHE.get(cacheKey);
+    if (cached && Date.now() - cached.timestamp < CACHE_TTL_MS) {
+      return NextResponse.json(cached.data);
+    }
+
     const projectsToQuery = targetProject && targetProject !== 'all' ? [targetProject] : RIALO_PROJECTS;
 
     // 1. Fetch live real data across Rialo Ecosystem (RialoHQ, latch, agp)
+    // High timeout (18s) because heavy accounts with 250+ posts on Xerper take 9-12s
     try {
       const results = await Promise.all(
         projectsToQuery.map(async (prj) => {
           try {
             const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 6500);
+            const timeoutId = setTimeout(() => controller.abort(), 18000);
             const xerperRes = await fetch('https://www.xerper.com/api/impressions', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
               },
               body: JSON.stringify({
                 username: cleanUsername,
@@ -122,7 +139,7 @@ async function handleImpressions(rawUsername: string, targetProject?: string) {
         });
 
         const rawAvatar = bestProfile?.avatar?.replace('_normal', '_400x400');
-        return NextResponse.json({
+        const responseData = {
           ok: true,
           username: cleanUsername,
           project: targetProject || 'Rialo Ecosystem (RialoHQ, Latch, AGP)',
@@ -147,7 +164,12 @@ async function handleImpressions(rawUsername: string, targetProject?: string) {
           breakdown,
           series: results.find((r) => r.data?.series?.length)?.data.series || [],
           posts: dedupedPosts,
-        });
+        };
+
+        // Cache the response
+        MEMORY_CACHE.set(cacheKey, { timestamp: Date.now(), data: responseData });
+
+        return NextResponse.json(responseData);
       }
     } catch (err) {
       console.warn('Live ecosystem proxy fetch failed, trying direct X API / fallback:', err);
