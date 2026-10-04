@@ -458,7 +458,7 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onSelectTa
   const activeBroadcast = broadcasts.find((b) => !dismissedBroadcasts[b.id]);
 
   return (
-    <div style={{ maxWidth: '1160px', margin: '0 auto', padding: '20px 16px 80px' }}>
+    <div style={{ maxWidth: '1160px', margin: '0 auto', padding: '16px 8px 60px 8px', width: '100%', boxSizing: 'border-box', overflowX: 'hidden' }}>
       {/* ========================================================
           USER IDENTITY PROFILE CARD (OFFICIAL BRAND THEME)
           ======================================================== */}
@@ -754,7 +754,7 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onSelectTa
         {/* Achievements Grid (30 Achievements) */}
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 280px), 1fr))',
           gap: '16px',
         }}>
           {filteredAchievements.map((ach) => {

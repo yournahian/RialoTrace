@@ -615,8 +615,8 @@ export const TopRialoPosts: React.FC<TopRialoPostsProps> = ({ currentUsername })
           </p>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '6px', flexWrap: 'wrap', justifyContent: 'center' }}>
-            {/* View Mode Toggle (Stream vs Grid) */}
-            <div style={{ display: 'flex', background: 'rgba(232, 227, 213, 0.06)', borderRadius: '12px', padding: '3px', border: '1px solid rgba(169, 221, 211, 0.2)' }}>
+            {/* View Mode Toggle (Desktop only: on mobile only stream is active) */}
+            <div className="desktop-only-controls" style={{ display: 'flex', background: 'rgba(232, 227, 213, 0.06)', borderRadius: '12px', padding: '3px', border: '1px solid rgba(169, 221, 211, 0.2)' }}>
               <button
                 type="button"
                 onClick={() => setViewMode('stream')}
@@ -672,9 +672,9 @@ export const TopRialoPosts: React.FC<TopRialoPostsProps> = ({ currentUsername })
               </div>
             </div>
 
-            {/* Manual Left/Right Nav Arrows (for stream mode) */}
+            {/* Manual Left/Right Nav Arrows (Desktop only, hidden on mobile) */}
             {viewMode === 'stream' && (
-              <div style={{ display: 'flex', gap: '6px' }}>
+              <div className="desktop-only-controls" style={{ display: 'flex', gap: '6px' }}>
                 <button
                   type="button"
                   onClick={handleScrollLeft}

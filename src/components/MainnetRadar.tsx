@@ -135,8 +135,8 @@ export const MainnetRadar: React.FC = () => {
           Currently live in active developer playground testnet.
         </p>
 
-        {/* Roadmap Stages Bar (Playground itself is Testnet) */}
-        <div className="roadmap-stages-grid">
+        {/* Roadmap Stages: Phase 1 & 2 side-by-side, Phase 3 centered in next line */}
+        <div className="roadmap-stages-grid-special">
           {[
             {
               stage: 'PHASE 01',
@@ -149,7 +149,7 @@ export const MainnetRadar: React.FC = () => {
             {
               stage: 'PHASE 02',
               title: 'Playground Testnet',
-              status: 'Live Now (Online)',
+              status: 'Live Now',
               color: '#A9DDD3',
               active: true,
               icon: '🟢',
@@ -158,14 +158,14 @@ export const MainnetRadar: React.FC = () => {
               stage: 'PHASE 03',
               title: 'Public Mainnet',
               status: 'Coming Soon',
-              color: '#60A5FA',
+              color: '#A9DDD3',
               active: false,
               icon: '⏳',
             },
           ].map((item, idx) => (
             <div
               key={idx}
-              className={`roadmap-stage-card ${item.active ? 'stage-active' : ''}`}
+              className={`roadmap-stage-card ${item.active ? 'stage-active' : ''} ${idx === 2 ? 'stage-centered-row' : ''}`}
             >
               <div className="stage-top-row">
                 <span className="stage-num">{item.stage}</span>
@@ -179,36 +179,49 @@ export const MainnetRadar: React.FC = () => {
           ))}
         </div>
 
-        {/* Quick Developer Action CTAs */}
-        <div className="playground-cta-bar">
+        {/* Quick Developer Action CTAs: Dev Playground & Learn Architecture side-by-side, CBOE centered below */}
+        <div className="playground-cta-grid-special">
           <a
             href="https://playground.rialo.io"
             target="_blank"
             rel="noopener noreferrer"
-            className="monad-claim-button"
+            className="monad-claim-button cta-item"
             style={{
               display: 'inline-flex',
               alignItems: 'center',
-              gap: '8px',
+              justifyContent: 'center',
+              gap: '6px',
               textDecoration: 'none',
               background: 'linear-gradient(135deg, #A9DDD3, #6EBBAE)',
               color: '#010101',
               fontWeight: 800,
+              padding: '10px 14px',
+              borderRadius: '12px',
+              fontSize: '12px',
             }}
           >
-            <Terminal style={{ width: '16px', height: '16px' }} />
-            <span>Enter Developer Playground</span>
-            <ExternalLink style={{ width: '14px', height: '14px' }} />
+            <Terminal style={{ width: '15px', height: '15px' }} />
+            <span>Dev Playground</span>
+            <ExternalLink style={{ width: '13px', height: '13px' }} />
           </a>
 
           <a
             href="https://learn.rialo.io"
             target="_blank"
             rel="noopener noreferrer"
-            className="choose-yours-btn"
-            style={{ textDecoration: 'none' }}
+            className="choose-yours-btn cta-item"
+            style={{
+              textDecoration: 'none',
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '6px',
+              padding: '10px 14px',
+              borderRadius: '12px',
+              fontSize: '12px',
+            }}
           >
-            <BookOpen style={{ width: '16px', height: '16px' }} />
+            <BookOpen style={{ width: '15px', height: '15px' }} />
             <span>Learn Architecture</span>
           </a>
 
@@ -216,11 +229,23 @@ export const MainnetRadar: React.FC = () => {
             href="https://rialo.io/posts/subzero-labs-cboe-innovation-spotlight"
             target="_blank"
             rel="noopener noreferrer"
-            className="choose-yours-btn"
-            style={{ textDecoration: 'none', borderColor: 'rgba(245, 158, 11, 0.4)', color: '#F59E0B' }}
+            className="choose-yours-btn cta-item cta-centered-row"
+            style={{
+              textDecoration: 'none',
+              borderColor: 'rgba(169, 221, 211, 0.4)',
+              color: '#A9DDD3',
+              background: 'rgba(169, 221, 211, 0.06)',
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '6px',
+              padding: '10px 16px',
+              borderRadius: '12px',
+              fontSize: '12px',
+            }}
           >
-            <Sparkles style={{ width: '16px', height: '16px' }} />
-            <span>CBOE Innovation Spotlight</span>
+            <Sparkles style={{ width: '15px', height: '15px', color: '#A9DDD3' }} />
+            <span>CBOE Spotlight</span>
           </a>
         </div>
       </div>

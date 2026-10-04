@@ -9,9 +9,9 @@ const POPULAR_MATCHUPS = [
 ];
 
 const BATTLE_STEPS = [
-  '⚔️ INITIATING RIALO CREATOR CLASH...',
-  '⚡ BENCHMARKING RIALO TRANSACTION VELOCITY & TPS...',
-  '🔥 AUDITING ON-CHAIN PROOF-OF-WORK & VIRALITY...',
+  '⚔️ CLASH INITIATED: VERIFYING PROOFS...',
+  '⚡ BENCHMARKING TRANSACTION VELOCITY...',
+  '🔥 AUDITING VIRALITY & SOCIAL PROOF...',
   '👑 TALLYING FINALITY CONSENSUS...',
 ];
 
@@ -38,6 +38,7 @@ export const VersusArena: React.FC = () => {
   // Ticker and Cypher Interval Refs
   const cypherIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const countAnimationRef = useRef<NodeJS.Timeout | null>(null);
+  const battleRef = useRef<HTMLDivElement>(null);
 
   // Clean up timers on unmount
   useEffect(() => {
@@ -203,6 +204,9 @@ export const VersusArena: React.FC = () => {
     e.preventDefault();
     if (input1.trim() && input2.trim() && battleStage !== 'battling') {
       fetchVersusData(input1, input2);
+      setTimeout(() => {
+        battleRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }, 150);
     }
   };
 
@@ -270,8 +274,8 @@ export const VersusArena: React.FC = () => {
         </p>
 
         {/* Dual Input Controls with Enter Submit */}
-        <form onSubmit={handleFightSubmit} className="versus-controls-bar">
-          <div className="feature-input-wrap">
+        <form onSubmit={handleFightSubmit} className="versus-controls-bar" style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box' }}>
+          <div className="feature-input-wrap" style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box' }}>
             <span className="feature-input-prefix" style={{ color: '#A9DDD3' }}>
               @
             </span>
@@ -287,10 +291,10 @@ export const VersusArena: React.FC = () => {
           </div>
 
           <div className={`versus-vs-icon ${battleStage === 'battling' ? 'is-battling' : ''}`}>
-            <Swords style={{ width: '16px', height: '16px' }} />
+            <Swords style={{ width: '18px', height: '18px' }} />
           </div>
 
-          <div className="feature-input-wrap">
+          <div className="feature-input-wrap" style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box' }}>
             <span className="feature-input-prefix" style={{ color: '#E8E3D5' }}>
               @
             </span>
@@ -427,7 +431,7 @@ export const VersusArena: React.FC = () => {
       </div>
 
       {/* Showdown Ring Cards */}
-      <div className="versus-showdown-grid">
+      <div ref={battleRef} className="versus-showdown-grid">
         {/* Center VS circle on desktop */}
         <div className={`versus-center-badge ${battleStage === 'battling' ? 'is-battling' : ''}`}>
           VS

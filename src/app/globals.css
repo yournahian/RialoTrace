@@ -69,6 +69,7 @@ html {
 body {
   min-height: 100%;
   width: 100%;
+  max-width: 100vw;
   margin: 0;
   padding: 0;
   font-family: var(--font-main);
@@ -81,7 +82,7 @@ body {
   background-size: 100% 100%, 100% 100%, 54px 54px, 54px 54px;
   background-position: center top, center center, center center, center center;
   color: var(--rialo-text);
-  overflow: visible;
+  overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -1680,7 +1681,7 @@ body {
   overflow: hidden;
   border-radius: 28px;
   border: 1px solid rgba(169, 221, 211, 0.28);
-  background: linear-gradient(180deg, #0B1528 0%, #080E1D 50%, #040711 100%);
+  background: radial-gradient(ellipse at top, rgba(169, 221, 211, 0.08) 0%, rgba(3, 7, 6, 0.98) 70%), #040706;
   padding: 40px 24px;
   box-shadow: 0 0 50px rgba(169, 221, 211, 0.12);
   display: flex;
@@ -4948,5 +4949,100 @@ body {
     bottom: calc(68px + env(safe-area-inset-bottom, 0px)) !important;
     right: 12px !important;
     z-index: 45 !important;
+  }
+}
+
+/* Rialo Radar 2-top-1-centered special layout */
+.roadmap-stages-grid-special {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  width: 100%;
+  max-width: 580px;
+  margin: 14px auto 0 auto;
+}
+
+.roadmap-stages-grid-special .stage-centered-row {
+  grid-column: 1 / span 2;
+  width: calc(50% - 6px);
+  margin: 0 auto;
+}
+
+@media (max-width: 540px) {
+  .roadmap-stages-grid-special .stage-centered-row {
+    width: 65%;
+  }
+}
+
+.playground-cta-grid-special {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  width: 100%;
+  max-width: 580px;
+  margin: 16px auto 0 auto;
+}
+
+.playground-cta-grid-special .cta-centered-row {
+  grid-column: 1 / span 2;
+  width: fit-content;
+  min-width: 180px;
+  margin: 0 auto;
+}
+
+.versus-vs-icon.is-battling {
+  animation: swordsBattlePulse 0.5s ease-in-out infinite alternate !important;
+  color: #A9DDD3 !important;
+  background: rgba(169, 221, 211, 0.2) !important;
+  border-color: #A9DDD3 !important;
+  box-shadow: 0 0 25px rgba(169, 221, 211, 0.6) !important;
+}
+
+@keyframes swordsBattlePulse {
+  0% { transform: scale(1) rotate(-15deg); }
+  100% { transform: scale(1.3) rotate(15deg); }
+}
+
+/* Strict mobile controls hiding */
+@media (max-width: 768px) {
+  .desktop-only-controls {
+    display: none !important;
+  }
+  .versus-center-badge {
+    display: none !important;
+  }
+  .profile-action-full {
+    grid-column: span 2 !important;
+    width: 100% !important;
+  }
+}
+
+/* Mobile Battle Ticker & Versus Input boundaries */
+@media (max-width: 768px) {
+  .battle-ticker-banner {
+    font-size: 11px !important;
+    padding: 8px 14px !important;
+    max-width: 96% !important;
+    text-align: center !important;
+    white-space: normal !important;
+    word-break: break-word !important;
+    line-height: 1.35 !important;
+    margin: 6px auto !important;
+  }
+  .versus-controls-bar {
+    padding: 0 4px !important;
+    margin: 0 auto !important;
+  }
+  .feature-header-wrap {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+  }
+  .profile-action-half {
+    width: 100% !important;
+  }
+  .profile-action-full {
+    grid-column: span 2 !important;
+    width: 100% !important;
   }
 }
