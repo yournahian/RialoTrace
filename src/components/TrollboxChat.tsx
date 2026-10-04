@@ -361,16 +361,9 @@ export const TrollboxChat: React.FC<TrollboxChatProps> = ({
         </div>
       )}
 
-      {/* Floating Trollbox Launcher Bar */}
-      <div
-        style={{
-          position: 'fixed',
-          bottom: '24px',
-          right: '24px',
-          zIndex: 99999,
-        }}
-      >
-        {!isOpen && (
+      {/* Floating Trollbox Launcher Bar (When closed) */}
+      {!isOpen && (
+        <div className="trollbox-launcher-anchor">
           <button
             type="button"
             onClick={() => {
@@ -378,31 +371,10 @@ export const TrollboxChat: React.FC<TrollboxChatProps> = ({
               setIsOpen(true);
             }}
             title="Open Community Live Trollbox"
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '10px',
-              padding: '12px 20px',
-              background: 'linear-gradient(135deg, rgba(14, 22, 20, 0.95) 0%, rgba(6, 12, 10, 0.98) 100%)',
-              border: '1.5px solid #A9DDD3',
-              borderRadius: '9999px',
-              color: '#FFFFFF',
-              cursor: 'pointer',
-              boxShadow: '0 10px 30px rgba(0, 0, 0, 0.8), 0 0 20px rgba(169, 221, 211, 0.35)',
-              backdropFilter: 'blur(16px)',
-              transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'translateY(-3px) scale(1.03)';
-              e.currentTarget.style.boxShadow = '0 16px 40px rgba(0, 0, 0, 0.9), 0 0 30px rgba(169, 221, 211, 0.55)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'translateY(0) scale(1)';
-              e.currentTarget.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.8), 0 0 20px rgba(169, 221, 211, 0.35)';
-            }}
+            className="trollbox-launcher-btn"
           >
             <div style={{ position: 'relative' }}>
-              <MessageSquare size={18} color="#A9DDD3" />
+              <MessageSquare size={17} color="#A9DDD3" />
               <span
                 style={{
                   position: 'absolute',
@@ -416,10 +388,11 @@ export const TrollboxChat: React.FC<TrollboxChatProps> = ({
                 }}
               />
             </div>
-            <span style={{ fontSize: '13px', fontWeight: 900, letterSpacing: '0.02em', color: '#E8E3D5' }}>
+            <span className="trollbox-launcher-text" style={{ fontSize: '13px', fontWeight: 900, letterSpacing: '0.02em', color: '#E8E3D5' }}>
               Live Trollbox
             </span>
             <span
+              className="trollbox-launcher-badge"
               style={{
                 fontSize: '10px',
                 fontWeight: 900,
@@ -433,27 +406,24 @@ export const TrollboxChat: React.FC<TrollboxChatProps> = ({
               GLOBAL
             </span>
           </button>
-        )}
+        </div>
+      )}
 
-        {/* Expanded Trollbox Modal Box */}
-        {isOpen && (
+      {/* Expanded Trollbox Modal Box (Desktop Floating / Mobile Bottom Sheet) */}
+      {isOpen && (
+        <div className="trollbox-mobile-overlay">
+          {/* Backdrop click to dismiss on mobile */}
           <div
-            style={{
-              width: '390px',
-              maxWidth: 'calc(100vw - 28px)',
-              height: '550px',
-              maxHeight: 'calc(100vh - 100px)',
-              background: 'linear-gradient(180deg, rgba(8, 14, 12, 0.98) 0%, rgba(2, 6, 5, 0.99) 100%)',
-              border: '1.5px solid rgba(169, 221, 211, 0.4)',
-              borderRadius: '24px',
-              boxShadow: '0 24px 70px rgba(0, 0, 0, 0.95), 0 0 40px rgba(169, 221, 211, 0.25)',
-              backdropFilter: 'blur(24px)',
-              display: 'flex',
-              flexDirection: 'column',
-              overflow: 'hidden',
-              animation: 'trollboxPop 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+            className="trollbox-backdrop-click"
+            onClick={() => {
+              sound.playTap();
+              setIsOpen(false);
             }}
-          >
+          />
+
+          <div className="trollbox-modal-box">
+            {/* Mobile Sheet Drag Indicator Handle */}
+            <div className="trollbox-drag-handle" />
             {/* Trollbox Header */}
             <div
               style={{
@@ -797,8 +767,8 @@ export const TrollboxChat: React.FC<TrollboxChatProps> = ({
               </button>
             </form>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </>
   );
 };
