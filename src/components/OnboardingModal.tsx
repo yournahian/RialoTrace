@@ -10,6 +10,7 @@ interface OnboardingModalProps {
   onClose: () => void;
   onSuccess: (user: UserProfile) => void;
   initialHandle?: string;
+  isMandatory?: boolean;
 }
 
 export const OnboardingModal: React.FC<OnboardingModalProps> = ({
@@ -17,6 +18,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
   onClose,
   onSuccess,
   initialHandle = '',
+  isMandatory = false,
 }) => {
   const [handle, setHandle] = useState(initialHandle.replace('@', ''));
   const [pin, setPin] = useState('');
@@ -97,6 +99,11 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
 
       sound.playSuccess();
       localStorage.setItem('rialo_active_user', clean);
+      try {
+        const existing = JSON.parse(localStorage.getItem('rialo_recommended_handles') || '[]');
+        const updated = Array.from(new Set([clean, ...existing]));
+        localStorage.setItem('rialo_recommended_handles', JSON.stringify(updated));
+      } catch (err) {}
       onSuccess(data.user);
       onClose();
     } catch (err: any) {
@@ -133,6 +140,11 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
 
       sound.playSuccess();
       localStorage.setItem('rialo_active_user', clean);
+      try {
+        const existing = JSON.parse(localStorage.getItem('rialo_recommended_handles') || '[]');
+        const updated = Array.from(new Set([clean, ...existing]));
+        localStorage.setItem('rialo_recommended_handles', JSON.stringify(updated));
+      } catch (err) {}
       onSuccess(data.user);
       onClose();
     } catch (err: any) {
@@ -172,52 +184,78 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
           boxSizing: 'border-box',
         }}
       >
-        {/* Close Button */}
-        <button
-          type="button"
-          onClick={onClose}
-          style={{
-            position: 'absolute',
-            top: '16px',
-            right: '16px',
-            width: '32px',
-            height: '32px',
-            borderRadius: '50%',
-            background: 'rgba(232, 227, 213, 0.06)',
-            border: '1px solid rgba(169, 221, 211, 0.2)',
-            color: '#A9DDD3',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            cursor: 'pointer',
-          }}
-          title="Browse as Guest"
-        >
-          <X size={16} />
-        </button>
+        {/* Close Button - hidden when mandatory */}
+        {!isMandatory && (
+          <button
+            type="button"
+            onClick={onClose}
+            style={{
+              position: 'absolute',
+              top: '16px',
+              right: '16px',
+              width: '32px',
+              height: '32px',
+              borderRadius: '50%',
+              background: 'rgba(232, 227, 213, 0.06)',
+              border: '1px solid rgba(169, 221, 211, 0.2)',
+              color: '#A9DDD3',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+            }}
+            title="Close"
+          >
+            <X size={16} />
+          </button>
+        )}
 
         {/* STEP 1: ENTER HANDLE */}
         {step === 'HANDLE' && (
           <div>
             <div style={{ textAlign: 'center', marginBottom: '24px' }}>
-              <div
-                style={{
-                  display: 'inline-flex',
-                  padding: '12px',
-                  borderRadius: '50%',
-                  background: 'rgba(169, 221, 211, 0.12)',
-                  border: '1px solid rgba(169, 221, 211, 0.3)',
-                  color: '#A9DDD3',
-                  marginBottom: '12px',
-                }}
-              >
-                <User size={28} />
-              </div>
+              {isMandatory ? (
+                <div
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    padding: '5px 14px',
+                    borderRadius: '9999px',
+                    background: 'rgba(169, 221, 211, 0.12)',
+                    border: '1px solid rgba(169, 221, 211, 0.35)',
+                    color: '#A9DDD3',
+                    fontSize: '11px',
+                    fontWeight: 800,
+                    letterSpacing: '0.04em',
+                    marginBottom: '14px',
+                  }}
+                >
+                  <ShieldCheck size={14} />
+                  <span>ACCESS REQUIRED • ENTER HANDLE TO ACCESS</span>
+                </div>
+              ) : (
+                <div
+                  style={{
+                    display: 'inline-flex',
+                    padding: '12px',
+                    borderRadius: '50%',
+                    background: 'rgba(169, 221, 211, 0.12)',
+                    border: '1px solid rgba(169, 221, 211, 0.3)',
+                    color: '#A9DDD3',
+                    marginBottom: '12px',
+                  }}
+                >
+                  <User size={28} />
+                </div>
+              )}
               <h2 style={{ fontSize: '24px', fontWeight: 900, margin: '0 0 6px 0', fontFamily: 'var(--font-display)' }}>
-                Connect Your <span className="gradient-text-rialo">X Profile</span>
+                Enter Your <span className="gradient-text-rialo">X Handle</span>
               </h2>
               <p style={{ fontSize: '13px', color: 'rgba(232, 227, 213, 0.65)', margin: 0, lineHeight: '1.5' }}>
-                Enter your Twitter/X handle to claim daily card packs, participate in P2P trades, and climb whitelist tiers.
+                {isMandatory
+                  ? 'Please enter your Twitter/X handle to unlock RialoTrace daily quests, collector cards, and live analytics.'
+                  : 'Enter your Twitter/X handle to claim daily card packs, participate in P2P trades, and climb whitelist tiers.'}
               </p>
             </div>
 
@@ -281,7 +319,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
 
             <div style={{ marginTop: '20px', textAlign: 'center' }}>
               <span style={{ fontSize: '11px', color: 'rgba(232, 227, 213, 0.45)' }}>
-                Protected with 4-Digit Security PIN • Zero wallet popups
+                🔒 Public handle only • No password or Twitter authorization needed
               </span>
             </div>
           </div>

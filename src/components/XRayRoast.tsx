@@ -178,7 +178,7 @@ export const XRayRoast: React.FC<{ initialHandle?: string }> = ({ initialHandle 
           type="text"
           value={handle}
           onChange={(e) => setHandle(e.target.value)}
-          placeholder="Enter X handle (e.g. yournahian, RialoHQ, itachee_x)..."
+          placeholder="Enter X handle (e.g. RialoHQ, itachee_x, VitalikButerin)..."
           style={{
             flex: 1,
             background: 'transparent',
@@ -217,7 +217,7 @@ export const XRayRoast: React.FC<{ initialHandle?: string }> = ({ initialHandle 
 
       {/* Preset Chips */}
       <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', flexWrap: 'wrap', marginBottom: '24px' }}>
-        {['yournahian', 'RialoHQ', 'VitalikButerin', 'elonmusk', 'satoshi'].map((preset) => (
+        {['RialoHQ', 'itachee_x', 'VitalikButerin', 'elonmusk', 'satoshi'].map((preset) => (
           <button
             key={preset}
             type="button"

@@ -225,7 +225,7 @@ export const HIGH_ENGAGEMENT_COMMUNITY_POSTS: RialoPost[] = [
   },
 ];
 
-const SAMPLE_HANDLES = ['RialoHQ', 'itachee_x', 'Subzero_Labs', 'PanteraCapital', 'yournahian'];
+const CORE_TOP_HANDLES = ['RialoHQ', 'itachee_x', 'Subzero_Labs', 'PanteraCapital'];
 
 // Verified Official Protocol Knowledge & Milestones
 const PROTOCOL_ALPHA_RESOURCES = [
@@ -285,7 +285,45 @@ const PROTOCOL_ALPHA_RESOURCES = [
   },
 ];
 
-export const TopRialoPosts: React.FC = () => {
+interface TopRialoPostsProps {
+  currentUsername?: string;
+}
+
+export const TopRialoPosts: React.FC<TopRialoPostsProps> = ({ currentUsername }) => {
+  const [recommendedHandles, setRecommendedHandles] = useState<string[]>(CORE_TOP_HANDLES);
+
+  React.useEffect(() => {
+    const active = currentUsername || (typeof window !== 'undefined' ? localStorage.getItem('rialo_active_user') : '') || '';
+    let localSaved: string[] = [];
+    try {
+      const stored = localStorage.getItem('rialo_recommended_handles');
+      if (stored) localSaved = JSON.parse(stored);
+    } catch (e) {}
+
+    const set = new Set<string>();
+    if (active && active.trim()) {
+      set.add(active.trim().replace(/^@/, ''));
+    }
+    localSaved.forEach((h) => {
+      if (h && h.trim()) set.add(h.trim().replace(/^@/, ''));
+    });
+    CORE_TOP_HANDLES.forEach((h) => set.add(h));
+    setRecommendedHandles(Array.from(set).slice(0, 10));
+
+    fetch('/api/leaderboard')
+      .then((r) => r.json())
+      .then((res) => {
+        if (res.success && Array.isArray(res.leaderboard)) {
+          const dbUsernames = res.leaderboard.map((u: any) => u.username).filter(Boolean);
+          setRecommendedHandles((prev) => {
+            const s = new Set<string>(prev);
+            dbUsernames.forEach((u: string) => s.add(u));
+            return Array.from(s).slice(0, 10);
+          });
+        }
+      })
+      .catch(() => {});
+  }, [currentUsername]);
   const [handle, setHandle] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -1112,7 +1150,7 @@ export const TopRialoPosts: React.FC = () => {
               type="text"
               value={handle}
               onChange={(e) => setHandle(e.target.value)}
-              placeholder="Enter X handle (e.g. RialoHQ, itachee_x, yournahian, Subzero_Labs)"
+              placeholder="Enter X handle (e.g. RialoHQ, itachee_x, Subzero_Labs)"
               style={{
                 width: '100%',
                 padding: '14px 18px 14px 38px',
@@ -1152,7 +1190,7 @@ export const TopRialoPosts: React.FC = () => {
         {/* Suggestion Chips */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '14px', flexWrap: 'wrap' }}>
           <span style={{ fontSize: '12px', color: 'rgba(232, 227, 213, 0.4)' }}>Quick search:</span>
-          {SAMPLE_HANDLES.map((h) => (
+          {recommendedHandles.map((h) => (
             <button
               key={h}
               type="button"

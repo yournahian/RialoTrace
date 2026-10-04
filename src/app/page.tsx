@@ -69,13 +69,15 @@ export default function HomePage() {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const activeUser = localStorage.getItem('rialo_active_user');
-      if (activeUser) {
-        setCurrentUsername(activeUser);
-        fetchUserData(activeUser);
+      if (activeUser && activeUser.trim()) {
+        setCurrentUsername(activeUser.trim());
+        fetchUserData(activeUser.trim());
+        setIsOnboardingOpen(false);
       } else {
-        // First-time visitor / unauthenticated user:
+        // Mandatory Entry Gate: first-time visitors / unauthenticated users must enter handle first!
         setCurrentUsername('');
         setCurrentUser(null);
+        setIsOnboardingOpen(true);
       }
       const savedAvatar = localStorage.getItem('rialo_user_avatar');
       if (savedAvatar) setHeaderAvatarUrl(savedAvatar);
@@ -102,8 +104,14 @@ export default function HomePage() {
   const handleOnboardingSuccess = (user: UserProfile) => {
     setCurrentUsername(user.username);
     setCurrentUser(user);
+    setIsOnboardingOpen(false);
     if (typeof window !== 'undefined') {
       localStorage.setItem('rialo_active_user', user.username);
+      try {
+        const existing = JSON.parse(localStorage.getItem('rialo_recommended_handles') || '[]');
+        const updated = Array.from(new Set([user.username, ...existing]));
+        localStorage.setItem('rialo_recommended_handles', JSON.stringify(updated));
+      } catch (e) {}
     }
     fetchUserData(user.username);
   };
@@ -368,7 +376,7 @@ export default function HomePage() {
                 transition: 'all 0.2s',
               }}
             >
-              <span>⚡ Connect X Account</span>
+              <span>⚡ Enter X Handle</span>
             </button>
           )}
 
@@ -387,10 +395,18 @@ export default function HomePage() {
         </div>
       </header>
 
-      <NavigationDock activeTab={activeTab} onSelectTab={handleSelectTab} />
+      <NavigationDock activeTab={activeTab} onSelectTab={!currentUsername ? () => setIsOnboardingOpen(true) : handleSelectTab} />
 
-      <main className="main-stage">
-        {activeTab === 'proof' && <ProofOfWork />}
+      <main
+        className="main-stage"
+        style={{
+          filter: !currentUsername ? 'blur(10px) brightness(0.35)' : undefined,
+          pointerEvents: !currentUsername ? 'none' : 'auto',
+          userSelect: !currentUsername ? 'none' : 'auto',
+          transition: 'filter 0.3s ease',
+        }}
+      >
+        {activeTab === 'proof' && <ProofOfWork currentUsername={currentUsername} />}
         {activeTab === 'missions' && (
           <DailyMissions
             username={currentUsername}
@@ -432,7 +448,7 @@ export default function HomePage() {
         )}
         {activeTab === 'versus' && <VersusArena />}
         {activeTab === 'radar' && <MainnetRadar />}
-        {(activeTab === 'best_posts' || activeTab === 'terminal') && <TopRialoPosts />}
+        {(activeTab === 'best_posts' || activeTab === 'terminal') && <TopRialoPosts currentUsername={currentUsername} />}
         {(activeTab === 'profile' || activeTab === 'trophies') && (
           <ProfileSection user={currentUser} onSelectTab={handleSelectTab} onLogOut={handleLogOut} onSwitchAccount={() => setIsOnboardingOpen(true)} onUserUpdate={(u) => setCurrentUser(u)} />
         )}
@@ -448,8 +464,13 @@ export default function HomePage() {
       <TrollboxChat user={currentUser} onUserUpdate={(u) => setCurrentUser(u)} />
       {/* Interactive PIN-Protected Onboarding & Account Switcher Modal */}
       <OnboardingModal
-        isOpen={isOnboardingOpen}
-        onClose={() => setIsOnboardingOpen(false)}
+        isOpen={isOnboardingOpen || !currentUsername}
+        isMandatory={!currentUsername}
+        onClose={() => {
+          if (currentUsername) {
+            setIsOnboardingOpen(false);
+          }
+        }}
         onSuccess={handleOnboardingSuccess}
         initialHandle={currentUsername}
       />

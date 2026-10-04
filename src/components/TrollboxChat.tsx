@@ -487,7 +487,7 @@ export const TrollboxChat: React.FC<{ user: UserProfile | null; onUserUpdate?: (
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 maxLength={300}
-                placeholder={user?.username ? 'Broadcast message to everyone...' : 'Connect X account to chat...'}
+                placeholder={user?.username ? 'Broadcast message to everyone...' : 'Enter X handle to chat...'}
                 disabled={!user?.username || isSending}
                 style={{
                   flex: 1,

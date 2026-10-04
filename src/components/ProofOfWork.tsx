@@ -35,18 +35,76 @@ interface ImpressionsResponse {
   error?: string;
 }
 
-const SAMPLE_HANDLES = ['RialoHQ', 'itachee_x', 'yournahian', 'Subzero_Labs'];
+interface ProofOfWorkProps {
+  currentUsername?: string;
+}
 
-export const ProofOfWork: React.FC = () => {
+const CORE_ECOSYSTEM_HANDLES = ['RialoHQ', 'itachee_x', 'Subzero_Labs'];
+
+export const ProofOfWork: React.FC<ProofOfWorkProps> = ({ currentUsername }) => {
   const [handleInput, setHandleInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [data, setData] = useState<ImpressionsResponse | null>(null);
   const [downloading, setDownloading] = useState(false);
+  const [recommendedHandles, setRecommendedHandles] = useState<string[]>(CORE_ECOSYSTEM_HANDLES);
+
+  // Dynamic recommendations: includes whoever gives an X account + registered players!
+  React.useEffect(() => {
+    const loadRecommendations = () => {
+      const active = currentUsername || (typeof window !== 'undefined' ? localStorage.getItem('rialo_active_user') : '') || '';
+      let localSaved: string[] = [];
+      try {
+        const stored = localStorage.getItem('rialo_recommended_handles');
+        if (stored) localSaved = JSON.parse(stored);
+      } catch (e) {}
+
+      const set = new Set<string>();
+      if (active && active.trim()) {
+        set.add(active.trim().replace(/^@/, ''));
+      }
+      localSaved.forEach((h) => {
+        if (h && h.trim()) set.add(h.trim().replace(/^@/, ''));
+      });
+      CORE_ECOSYSTEM_HANDLES.forEach((h) => set.add(h));
+
+      setRecommendedHandles(Array.from(set).slice(0, 10));
+    };
+
+    loadRecommendations();
+
+    // Query registered players from leaderboard so all joined users appear in recommendations!
+    fetch('/api/leaderboard')
+      .then((r) => r.json())
+      .then((res) => {
+        if (res.success && Array.isArray(res.leaderboard)) {
+          const dbUsernames = res.leaderboard.map((u: any) => u.username).filter(Boolean);
+          setRecommendedHandles((prev) => {
+            const set = new Set<string>(prev);
+            dbUsernames.forEach((u: string) => set.add(u));
+            return Array.from(set).slice(0, 10);
+          });
+        }
+      })
+      .catch(() => {});
+  }, [currentUsername]);
 
   const fetchImpressions = async (usernameToFetch: string) => {
     const trimmed = usernameToFetch.trim().replace(/^@/, '');
     if (!trimmed) return;
+
+    // Add searched handle to recommendations dynamically!
+    setRecommendedHandles((prev) => {
+      const set = new Set<string>([trimmed, ...prev]);
+      return Array.from(set).slice(0, 10);
+    });
+    if (typeof window !== 'undefined') {
+      try {
+        const existing = JSON.parse(localStorage.getItem('rialo_recommended_handles') || '[]');
+        const updated = Array.from(new Set([trimmed, ...existing]));
+        localStorage.setItem('rialo_recommended_handles', JSON.stringify(updated));
+      } catch (e) {}
+    }
 
     setLoading(true);
     setError('');
@@ -219,19 +277,33 @@ export const ProofOfWork: React.FC = () => {
             <span style={{ fontSize: '11px', color: 'var(--rialo-text-muted)', fontWeight: '600', marginRight: '4px' }}>
               Quick Try:
             </span>
-            {SAMPLE_HANDLES.map((h) => (
-              <button
-                key={h}
-                type="button"
-                className="sample-chip"
-                onClick={() => {
-                  setHandleInput(h);
-                  fetchImpressions(h);
-                }}
-              >
-                @{h}
-              </button>
-            ))}
+            {recommendedHandles.map((h) => {
+              const isYou = Boolean(currentUsername && h.toLowerCase() === currentUsername.toLowerCase());
+              return (
+                <button
+                  key={h}
+                  type="button"
+                  className="sample-chip"
+                  style={
+                    isYou
+                      ? {
+                          borderColor: 'var(--rialo-accent)',
+                          background: 'rgba(169, 221, 211, 0.18)',
+                          color: '#A9DDD3',
+                          fontWeight: 700,
+                          boxShadow: '0 0 10px rgba(169, 221, 211, 0.25)',
+                        }
+                      : undefined
+                  }
+                  onClick={() => {
+                    setHandleInput(h);
+                    fetchImpressions(h);
+                  }}
+                >
+                  @{h} {isYou ? '• You' : ''}
+                </button>
+              );
+            })}
           </div>
         </>
       )}
