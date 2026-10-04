@@ -26,10 +26,17 @@ export const TieredLeaderboard: React.FC<TieredLeaderboardProps> = ({ currentUse
   const [loading, setLoading] = useState(true);
   const [selectedTierFilter, setSelectedTierFilter] = useState<number | null>(null);
 
-  const fetchLeaderboard = async () => {
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const fetchLeaderboard = async (isManual = false) => {
     try {
-      setLoading(true);
-      const res = await fetch('/api/leaderboard');
+      if (isManual) setIsRefreshing(true);
+      else if (users.length === 0) setLoading(true);
+
+      const res = await fetch(`/api/leaderboard?t=${Date.now()}`, {
+        cache: 'no-store',
+        headers: { Pragma: 'no-cache', 'Cache-Control': 'no-cache' },
+      });
       const data = await res.json();
       if (data.success) {
         setUsers(data.users || []);
@@ -39,12 +46,18 @@ export const TieredLeaderboard: React.FC<TieredLeaderboardProps> = ({ currentUse
       console.error(err);
     } finally {
       setLoading(false);
+      setIsRefreshing(false);
     }
   };
 
   useEffect(() => {
     fetchLeaderboard();
-  }, []);
+    // Live poll every 8 seconds so newly joined questers appear live on the leaderboard!
+    const interval = setInterval(() => {
+      fetchLeaderboard(false);
+    }, 8000);
+    return () => clearInterval(interval);
+  }, [currentUsername]);
 
   const filtered = selectedTierFilter !== null
     ? users.filter((u) => u.tierInfo?.tierNumber === selectedTierFilter)
@@ -66,10 +79,34 @@ export const TieredLeaderboard: React.FC<TieredLeaderboardProps> = ({ currentUse
           </p>
         </div>
 
-        <div className="tcg-stats-pill">
-          <div className="tcg-stat-item" style={{ color: 'var(--arc-cyan)' }}>
-            <Users size={16} />
-            <span>{totalUsers} Active Questers</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <button
+            type="button"
+            onClick={() => fetchLeaderboard(true)}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '6px 14px',
+              borderRadius: '9999px',
+              background: 'rgba(169, 221, 211, 0.1)',
+              border: '1px solid rgba(169, 221, 211, 0.3)',
+              color: '#A9DDD3',
+              fontSize: '12px',
+              fontWeight: 700,
+              cursor: 'pointer',
+              transition: 'all 0.2s',
+            }}
+            title="Refresh Leaderboard"
+          >
+            <span style={{ display: 'inline-block', animation: isRefreshing ? 'spin 1s linear infinite' : 'none' }}>🔄</span>
+            <span>{isRefreshing ? 'Syncing...' : 'Live Sync'}</span>
+          </button>
+          <div className="tcg-stats-pill">
+            <div className="tcg-stat-item" style={{ color: 'var(--arc-cyan)' }}>
+              <Users size={16} />
+              <span>{totalUsers} Active Questers</span>
+            </div>
           </div>
         </div>
       </div>

@@ -1,6 +1,9 @@
-﻿import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { getUser, getOrCreateUser, saveUser } from '@/lib/db';
 import crypto from 'crypto';
+
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 function hashPin(pin: string, username: string): string {
   return crypto.createHash('sha256').update(`${pin}:${username.toLowerCase()}`).digest('hex');
@@ -14,8 +17,17 @@ export async function POST(req: NextRequest) {
     if (!cleanUsername) return NextResponse.json({ success: false, error: 'Username is required' }, { status: 400 });
 
     if (action === 'CHECK_USER') {
-      const existing = await getUser(cleanUsername);
-      return NextResponse.json({ success: true, exists: Boolean(existing), hasPin: Boolean(existing?.pinHash), username: cleanUsername });
+      // Immediately register / get user so they instantly appear on leaderboard & recommendations!
+      const user = await getOrCreateUser(cleanUsername);
+      const hasPin = Boolean(user?.pinHash);
+      return NextResponse.json(
+        { success: true, exists: hasPin, hasPin, username: cleanUsername },
+        {
+          headers: {
+            'Cache-Control': 'no-store, no-cache, must-revalidate',
+          },
+        }
+      );
     }
 
     if (!pin || pin.trim().length < 4) return NextResponse.json({ success: false, error: 'PIN must be at least 4 digits' }, { status: 400 });

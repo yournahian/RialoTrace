@@ -1,6 +1,9 @@
-﻿import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { getOrCreateUser, getAllUsersSummary } from '@/lib/db';
 import { calculateDynamicTier } from '@/lib/tiers';
+
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export async function GET(req: NextRequest) {
   try {
@@ -14,7 +17,14 @@ export async function GET(req: NextRequest) {
     const rank = allUsers.findIndex(u => u.username === user.username) + 1;
     const tier = calculateDynamicTier(rank || 1, allUsers.length);
 
-    return NextResponse.json({ success: true, user, rank, totalUsers: allUsers.length, tier });
+    return NextResponse.json(
+      { success: true, user, rank, totalUsers: allUsers.length, tier },
+      {
+        headers: {
+          'Cache-Control': 'no-store, no-cache, must-revalidate',
+        },
+      }
+    );
   } catch (err: any) {
     return NextResponse.json({ success: false, error: err.message }, { status: 500 });
   }

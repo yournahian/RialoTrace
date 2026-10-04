@@ -1,6 +1,9 @@
-﻿import { NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { getAllUsersSummary } from '@/lib/db';
 import { calculateDynamicTier } from '@/lib/tiers';
+
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export async function GET() {
   try {
@@ -13,9 +16,27 @@ export async function GET() {
     const ranked = usersList.map((u, index) => {
       const rank = index + 1;
       const tier = calculateDynamicTier(rank, totalUsers);
-      return { rank, username: u.username, uniqueCardsCount: u.uniqueCardsCount, totalCardsCount: u.totalCardsCount, lifetimePoints: u.lifetimePoints, shards: 0, tier, tierInfo: tier };
+      return {
+        rank,
+        username: u.username,
+        uniqueCardsCount: u.uniqueCardsCount,
+        totalCardsCount: u.totalCardsCount,
+        lifetimePoints: u.lifetimePoints,
+        shards: 0,
+        tier,
+        tierInfo: tier,
+      };
     });
-    return NextResponse.json({ success: true, totalUsers, users: ranked, leaderboard: ranked });
+    return NextResponse.json(
+      { success: true, totalUsers, users: ranked, leaderboard: ranked },
+      {
+        headers: {
+          'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+          Pragma: 'no-cache',
+          Expires: '0',
+        },
+      }
+    );
   } catch (err: any) {
     return NextResponse.json({ success: false, error: err.message }, { status: 500 });
   }
