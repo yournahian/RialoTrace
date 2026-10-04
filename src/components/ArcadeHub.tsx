@@ -27,99 +27,59 @@ export const ArcadeHub: React.FC<ArcadeHubProps> = ({ user, onUserUpdate, onNavi
   };
 
   return (
-    <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '16px' }}>
-      {/* Top Banner / Lounge Intro */}
-      <div style={{
-        background: 'linear-gradient(135deg, rgba(169, 221, 211, 0.12) 0%, rgba(4, 8, 7, 0.95) 100%)',
-        border: '1px solid rgba(169, 221, 211, 0.28)',
-        borderRadius: '24px',
-        padding: '24px',
-        marginBottom: '24px',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        flexWrap: 'wrap',
-        gap: '16px',
-        boxShadow: '0 10px 30px rgba(0,0,0,0.5)',
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-          <div style={{
-            width: '52px',
-            height: '52px',
-            borderRadius: '16px',
-            background: 'radial-gradient(circle, #102621 0%, #030806 100%)',
-            border: '1px solid #A9DDD3',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            boxShadow: '0 0 20px rgba(169, 221, 211, 0.3)',
-          }}>
-            <Gamepad2 size={28} color="#A9DDD3" />
-          </div>
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <h1 style={{ fontSize: '24px', fontWeight: '900', color: '#E8E3D5', margin: 0 }}>
-                Quantum Arcade & <span className="gradient-text-rialo">Fun Zone</span>
-              </h1>
-              <span style={{
-                background: 'rgba(169, 221, 211, 0.18)',
-                color: '#A9DDD3',
-                fontSize: '11px',
-                fontWeight: '800',
-                padding: '2px 8px',
-                borderRadius: '9999px',
-                border: '1px solid rgba(169, 221, 211, 0.35)',
-              }}>
-                PLAY TO EARN
-              </span>
-            </div>
-            <p style={{ color: '#8E9B97', fontSize: '13px', margin: '4px 0 0 0' }}>
-              High-action micro-games, endless runner, daily lucky wheel, cyberpunk DJ beats, and viral X roasts.
-            </p>
-          </div>
+    <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '8px 12px' }}>
+      {/* Top Banner - Unified Centered Architecture */}
+      <div className="tcg-header" style={{ marginBottom: '14px', paddingBottom: '12px' }}>
+        <div className="tcg-eyebrow">
+          <Gamepad2 size={13} /> PLAY TO EARN // ARCADE ZONE
         </div>
+        <h1 className="tcg-title">
+          Quantum Arcade & <span className="gradient-text-rialo">Fun Zone</span>
+        </h1>
+        <p className="tcg-subtitle">
+          High-action micro-games, endless runner, daily lucky wheel, cyberpunk DJ beats, and viral X roasts.
+        </p>
 
-        {/* User Balance Badge */}
+        {/* User Balance Badge - Centered */}
         <div style={{
-          display: 'flex',
+          display: 'inline-flex',
           alignItems: 'center',
           gap: '12px',
           background: 'rgba(0, 0, 0, 0.6)',
           border: '1px solid rgba(169, 221, 211, 0.25)',
-          borderRadius: '16px',
-          padding: '10px 18px',
+          borderRadius: '9999px',
+          padding: '4px 16px',
+          marginTop: '4px',
         }}>
-          <div>
-            <div style={{ fontSize: '10px', color: '#8E9B97', textTransform: 'uppercase', fontFamily: 'var(--font-mono)' }}>Your Shards</div>
-            <div style={{ fontSize: '18px', fontWeight: '900', color: '#A9DDD3' }}>{user?.shards || 0} Shards</div>
-          </div>
-          <div style={{ width: '1px', height: '28px', background: 'rgba(255,255,255,0.1)' }} />
-          <div>
-            <div style={{ fontSize: '10px', color: '#8E9B97', textTransform: 'uppercase', fontFamily: 'var(--font-mono)' }}>Cards Owned</div>
-            <div style={{ fontSize: '18px', fontWeight: '900', color: '#E8E3D5' }}>{user?.totalCardsCount || 0} Cards</div>
-          </div>
+          <span style={{ fontSize: '11px', fontFamily: 'var(--font-mono)', color: '#A9DDD3', fontWeight: 800 }}>
+            💎 {user?.shards || 0} Shards
+          </span>
+          <span style={{ width: '1px', height: '12px', background: 'rgba(255,255,255,0.15)' }} />
+          <span style={{ fontSize: '11px', fontFamily: 'var(--font-mono)', color: '#E8E3D5', fontWeight: 800 }}>
+            🎴 {user?.totalCardsCount || 0} Cards Owned
+          </span>
         </div>
       </div>
 
-      {/* Sub-Navigation Pills */}
+      {/* Sub-Navigation Pills - Centered & Compact */}
       <div style={{
         display: 'flex',
-        gap: '10px',
-        marginBottom: '24px',
-        overflowX: 'auto',
-        paddingBottom: '4px',
+        justifyContent: 'center',
+        gap: '6px',
+        marginBottom: '16px',
+        flexWrap: 'wrap',
       }}>
         <button
           type="button"
           onClick={() => handleSwitchTab('wheel')}
           style={{
-            padding: '12px 20px',
+            padding: '7px 15px',
             borderRadius: '9999px',
             border: activeSubTab === 'wheel' ? '1.5px solid #A9DDD3' : '1px solid rgba(255, 255, 255, 0.1)',
             background: activeSubTab === 'wheel' ? 'rgba(169, 221, 211, 0.18)' : 'rgba(255, 255, 255, 0.03)',
             color: activeSubTab === 'wheel' ? '#A9DDD3' : '#8E9B97',
             fontWeight: '800',
-            fontSize: '13px',
+            fontSize: '12px',
             cursor: 'pointer',
             display: 'inline-flex',
             alignItems: 'center',
@@ -135,13 +95,13 @@ export const ArcadeHub: React.FC<ArcadeHubProps> = ({ user, onUserUpdate, onNavi
           type="button"
           onClick={() => handleSwitchTab('glide')}
           style={{
-            padding: '12px 20px',
+            padding: '7px 15px',
             borderRadius: '9999px',
             border: activeSubTab === 'glide' ? '1.5px solid #A9DDD3' : '1px solid rgba(255, 255, 255, 0.1)',
             background: activeSubTab === 'glide' ? 'rgba(169, 221, 211, 0.18)' : 'rgba(255, 255, 255, 0.03)',
             color: activeSubTab === 'glide' ? '#A9DDD3' : '#8E9B97',
             fontWeight: '800',
-            fontSize: '13px',
+            fontSize: '12px',
             cursor: 'pointer',
             display: 'inline-flex',
             alignItems: 'center',
@@ -157,13 +117,13 @@ export const ArcadeHub: React.FC<ArcadeHubProps> = ({ user, onUserUpdate, onNavi
           type="button"
           onClick={() => handleSwitchTab('rush')}
           style={{
-            padding: '12px 20px',
+            padding: '7px 15px',
             borderRadius: '9999px',
             border: activeSubTab === 'rush' ? '1.5px solid #A9DDD3' : '1px solid rgba(255, 255, 255, 0.1)',
             background: activeSubTab === 'rush' ? 'rgba(169, 221, 211, 0.18)' : 'rgba(255, 255, 255, 0.03)',
             color: activeSubTab === 'rush' ? '#A9DDD3' : '#8E9B97',
             fontWeight: '800',
-            fontSize: '13px',
+            fontSize: '12px',
             cursor: 'pointer',
             display: 'inline-flex',
             alignItems: 'center',
@@ -179,13 +139,13 @@ export const ArcadeHub: React.FC<ArcadeHubProps> = ({ user, onUserUpdate, onNavi
           type="button"
           onClick={() => handleSwitchTab('soundboard')}
           style={{
-            padding: '12px 20px',
+            padding: '7px 15px',
             borderRadius: '9999px',
             border: activeSubTab === 'soundboard' ? '1.5px solid #A9DDD3' : '1px solid rgba(255, 255, 255, 0.1)',
             background: activeSubTab === 'soundboard' ? 'rgba(169, 221, 211, 0.18)' : 'rgba(255, 255, 255, 0.03)',
             color: activeSubTab === 'soundboard' ? '#A9DDD3' : '#8E9B97',
             fontWeight: '800',
-            fontSize: '13px',
+            fontSize: '12px',
             cursor: 'pointer',
             display: 'inline-flex',
             alignItems: 'center',
@@ -201,13 +161,13 @@ export const ArcadeHub: React.FC<ArcadeHubProps> = ({ user, onUserUpdate, onNavi
           type="button"
           onClick={() => handleSwitchTab('roast')}
           style={{
-            padding: '12px 20px',
+            padding: '7px 15px',
             borderRadius: '9999px',
             border: activeSubTab === 'roast' ? '1.5px solid #A9DDD3' : '1px solid rgba(255, 255, 255, 0.1)',
             background: activeSubTab === 'roast' ? 'rgba(169, 221, 211, 0.18)' : 'rgba(255, 255, 255, 0.03)',
             color: activeSubTab === 'roast' ? '#A9DDD3' : '#8E9B97',
             fontWeight: '800',
-            fontSize: '13px',
+            fontSize: '12px',
             cursor: 'pointer',
             display: 'inline-flex',
             alignItems: 'center',

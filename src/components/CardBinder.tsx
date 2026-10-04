@@ -197,18 +197,19 @@ export const CardBinder: React.FC<CardBinderProps> = ({ user, onUserUpdate, onSe
 
   return (
     <div className="tcg-container">
-      {/* Mode Switcher: Album vs The Forge */}
+      {/* Mode Switcher: Album vs The Forge - Centered & Compact */}
       <div style={{
         display: 'flex',
         justifyContent: 'center',
-        gap: '12px',
-        marginBottom: '24px',
+        gap: '8px',
+        marginBottom: '14px',
+        flexWrap: 'wrap',
       }}>
         <button
           type="button"
           onClick={() => { sound.playTap(); setBinderMode('album'); }}
           style={{
-            padding: '12px 26px',
+            padding: '7px 18px',
             borderRadius: '9999px',
             border: binderMode === 'album' ? '1.5px solid #A9DDD3' : '1px solid rgba(255, 255, 255, 0.1)',
             background: binderMode === 'album' ? 'rgba(169, 221, 211, 0.18)' : 'rgba(255, 255, 255, 0.03)',
@@ -230,7 +231,7 @@ export const CardBinder: React.FC<CardBinderProps> = ({ user, onUserUpdate, onSe
           type="button"
           onClick={() => { sound.playTap(); setBinderMode('forge'); }}
           style={{
-            padding: '12px 24px',
+            padding: '7px 18px',
             borderRadius: '9999px',
             border: binderMode === 'forge' ? '1.5px solid #A9DDD3' : '1px solid rgba(255, 255, 255, 0.1)',
             background: binderMode === 'forge' ? 'rgba(169, 221, 211, 0.18)' : 'rgba(255, 255, 255, 0.03)',
@@ -252,7 +253,7 @@ export const CardBinder: React.FC<CardBinderProps> = ({ user, onUserUpdate, onSe
           type="button"
           onClick={() => { sound.playTap(); setBinderMode('studio'); }}
           style={{
-            padding: '12px 24px',
+            padding: '7px 18px',
             borderRadius: '9999px',
             border: binderMode === 'studio' ? '1.5px solid #A9DDD3' : '1px solid rgba(255, 255, 255, 0.1)',
             background: binderMode === 'studio' ? 'rgba(169, 221, 211, 0.18)' : 'rgba(255, 255, 255, 0.03)',
@@ -277,31 +278,40 @@ export const CardBinder: React.FC<CardBinderProps> = ({ user, onUserUpdate, onSe
         <CardCreatorStudio />
       ) : (
         <>
-          {/* Top Header */}
-      <div className="tcg-header">
-        <div>
-          <div className="tcg-eyebrow">
-            <Sparkles size={14} /> DIGITAL COLLECTOR ALBUM • SEASON 1: GENESIS
-          </div>
-          <h2 className="tcg-title">
-            Season 1 <span className="gradient-text-rialo">Card Binder</span> ({uniqueCount}/30 Collected)
-          </h2>
-          <p className="tcg-subtitle">
-            Click any card to inspect full 3D interactive hologram, download high-res PNG, or copy card link.
-          </p>
+          {/* Top Header - Unified Centered Architecture */}
+      <div className="tcg-header" style={{ marginBottom: '12px', paddingBottom: '10px' }}>
+        <div className="tcg-eyebrow">
+          <Sparkles size={13} /> DIGITAL COLLECTOR ALBUM • SEASON 1: GENESIS
         </div>
+        <h2 className="tcg-title">
+          Season 1 <span className="gradient-text-rialo">Card Binder</span> ({uniqueCount}/30 Collected)
+        </h2>
+        <p className="tcg-subtitle">
+          Click any card to inspect full 3D interactive hologram, download high-res PNG, or fuse duplicates in The Forge.
+        </p>
 
-        <button type="button" onClick={() => { sound.playTap(); setBinderMode('forge'); }}
-          className="admin-btn-primary"
-          style={{
-            background: 'linear-gradient(135deg, #A9DDD3 0%, #76c0b2 100%)',
-            color: '#010101',
-            fontWeight: '800',
-            boxShadow: '0 4px 16px rgba(169, 221, 211, 0.4)',
-            transition: 'all 0.2s',
-          }}>
-          <Flame size={16} /> 🧪 Open The Forge (Card Fusion)
-        </button>
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', marginTop: '4px' }}>
+          <button
+            type="button"
+            onClick={() => { sound.playTap(); setBinderMode('forge'); }}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '5px 16px',
+              borderRadius: '9999px',
+              background: 'linear-gradient(135deg, #A9DDD3 0%, #76c0b2 100%)',
+              color: '#010101',
+              fontSize: '11px',
+              fontWeight: 800,
+              cursor: 'pointer',
+              border: 'none',
+              boxShadow: '0 2px 10px rgba(169, 221, 211, 0.3)',
+            }}
+          >
+            <Flame size={14} /> Open The Forge (Card Fusion)
+          </button>
+        </div>
       </div>
 
       {/* Progress Bar */}

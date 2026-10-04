@@ -86,65 +86,49 @@ export const CryoStreakVault: React.FC<CryoStreakVaultProps> = ({ user, onUserUp
   return (
     <div style={{
       background: 'linear-gradient(180deg, rgba(8, 14, 12, 0.95) 0%, rgba(2, 5, 4, 0.98) 100%)',
-      border: '1px solid rgba(169, 221, 211, 0.25)',
-      borderRadius: '24px',
-      padding: '28px 22px',
+      border: '1px solid rgba(169, 221, 211, 0.22)',
+      borderRadius: '20px',
+      padding: '16px 18px',
       color: '#FFFFFF',
-      boxShadow: '0 20px 50px rgba(0, 0, 0, 0.7)',
-      marginBottom: '28px',
+      boxShadow: '0 16px 40px rgba(0, 0, 0, 0.7)',
+      marginBottom: '16px',
     }}>
-      {/* Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px', marginBottom: '22px' }}>
-        <div>
-          <div style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '6px',
-            padding: '4px 14px',
-            background: 'rgba(169, 221, 211, 0.08)',
-            border: '1px solid rgba(169, 221, 211, 0.3)',
-            borderRadius: '9999px',
-            color: '#A9DDD3',
-            fontSize: '11px',
-            fontWeight: '800',
-            textTransform: 'uppercase',
-            letterSpacing: '1px',
-            marginBottom: '6px',
-          }}>
-            <Sparkles size={13} /> Daily Cryogenic Reactor
-          </div>
-          <h3 style={{ fontSize: '22px', fontWeight: '900', color: '#E8E3D5', margin: 0 }}>
-            7-Day Streak & <span className="gradient-text-rialo">Mystery Vault</span>
-          </h3>
-          <p style={{ fontSize: '13px', color: '#8E9B97', margin: '4px 0 0 0' }}>
-            Check in consecutively for 7 days to unlock the Grand Mystery Vault with a guaranteed Holographic Card!
-          </p>
+      {/* Header - Unified Centered Architecture */}
+      <div className="tcg-header" style={{ marginBottom: '14px', paddingBottom: '10px', borderBottom: 'none' }}>
+        <div className="tcg-eyebrow">
+          <Sparkles size={13} /> DAILY CRYOGENIC REACTOR
         </div>
+        <h3 className="tcg-title" style={{ fontSize: '22px' }}>
+          7-Day Streak & <span className="gradient-text-rialo">Mystery Vault</span>
+        </h3>
+        <p className="tcg-subtitle">
+          Check in consecutively for 7 days to unlock the Grand Mystery Vault with a guaranteed Holographic Card!
+        </p>
 
-        {/* Action Button */}
-        <div>
+        {/* Action Button - Centered */}
+        <div style={{ marginTop: '4px' }}>
           {canClaim ? (
             <button
               type="button"
               disabled={claiming}
               onClick={handleClaimStreak}
               style={{
-                padding: '12px 28px',
+                padding: '8px 24px',
                 background: 'linear-gradient(135deg, #A9DDD3 0%, #76c0b2 100%)',
                 color: '#010101',
                 border: 'none',
                 borderRadius: '9999px',
-                fontSize: '14px',
+                fontSize: '13px',
                 fontWeight: '900',
                 cursor: 'pointer',
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '8px',
-                boxShadow: '0 0 25px rgba(169, 221, 211, 0.5)',
+                boxShadow: '0 0 20px rgba(169, 221, 211, 0.4)',
                 transition: 'all 0.2s',
               }}
             >
-              <Gift size={16} />
+              <Gift size={15} />
               <span>{claiming ? 'Extracting Shards...' : `CLAIM DAY ${streakDay} REWARD`}</span>
             </button>
           ) : (
@@ -152,15 +136,16 @@ export const CryoStreakVault: React.FC<CryoStreakVaultProps> = ({ user, onUserUp
               display: 'inline-flex',
               alignItems: 'center',
               gap: '8px',
-              padding: '10px 20px',
+              padding: '5px 16px',
+              borderRadius: '9999px',
               background: 'rgba(255, 255, 255, 0.04)',
               border: '1px solid rgba(169, 221, 211, 0.3)',
-              borderRadius: '9999px',
               color: '#A9DDD3',
-              fontSize: '13px',
-              fontWeight: '700',
+              fontSize: '11px',
+              fontFamily: 'var(--font-mono)',
+              fontWeight: 800,
             }}>
-              <CheckCircle2 size={16} color="#A9DDD3" />
+              <CheckCircle2 size={13} color="#A9DDD3" />
               <span>Day {streakDay > 1 ? streakDay - 1 : 7} Claimed Today</span>
             </div>
           )}

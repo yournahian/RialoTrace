@@ -65,21 +65,20 @@ export const TieredLeaderboard: React.FC<TieredLeaderboardProps> = ({ currentUse
 
   return (
     <div className="tcg-container">
-      {/* Top Banner */}
-      <div className="tcg-header">
-        <div>
-          <div className="tcg-eyebrow">
-            <Trophy size={14} /> Season 1 & Lifetime Whitelist Standings
-          </div>
-          <h2 className="tcg-title">
-            Dynamic 10-Tier <span className="gradient-text-rialo">Whitelist Leaderboard</span>
-          </h2>
-          <p className="tcg-subtitle">
-            Tiers dynamically scale with total participants ({totalUsers} Registered). Full 30/30 collectors secure Tier 1 Guaranteed Free Mint!
-          </p>
+      {/* Top Banner - Unified Centered Architecture */}
+      <div className="tcg-header" style={{ marginBottom: '14px', paddingBottom: '12px' }}>
+        <div className="tcg-eyebrow">
+          <Trophy size={13} /> SEASON 1 & LIFETIME WHITELIST STANDINGS
         </div>
+        <h1 className="tcg-title">
+          Dynamic 10-Tier <span className="gradient-text-rialo">Whitelist Leaderboard</span>
+        </h1>
+        <p className="tcg-subtitle">
+          Tiers dynamically scale with total participants ({totalUsers} Registered). Full 30/30 collectors secure Tier 1 Guaranteed Free Mint!
+        </p>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        {/* Centered Controls */}
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', marginTop: '4px' }}>
           <button
             type="button"
             onClick={() => fetchLeaderboard(true)}
@@ -87,12 +86,12 @@ export const TieredLeaderboard: React.FC<TieredLeaderboardProps> = ({ currentUse
               display: 'inline-flex',
               alignItems: 'center',
               gap: '6px',
-              padding: '6px 14px',
+              padding: '4px 12px',
               borderRadius: '9999px',
               background: 'rgba(169, 221, 211, 0.1)',
               border: '1px solid rgba(169, 221, 211, 0.3)',
               color: '#A9DDD3',
-              fontSize: '12px',
+              fontSize: '11px',
               fontWeight: 700,
               cursor: 'pointer',
               transition: 'all 0.2s',
@@ -102,9 +101,9 @@ export const TieredLeaderboard: React.FC<TieredLeaderboardProps> = ({ currentUse
             <span style={{ display: 'inline-block', animation: isRefreshing ? 'spin 1s linear infinite' : 'none' }}>🔄</span>
             <span>{isRefreshing ? 'Syncing...' : 'Live Sync'}</span>
           </button>
-          <div className="tcg-stats-pill">
+          <div className="tcg-stats-pill" style={{ padding: '4px 12px', fontSize: '11px' }}>
             <div className="tcg-stat-item" style={{ color: 'var(--arc-cyan)' }}>
-              <Users size={16} />
+              <Users size={14} />
               <span>{totalUsers} Active Questers</span>
             </div>
           </div>
@@ -141,8 +140,8 @@ export const TieredLeaderboard: React.FC<TieredLeaderboardProps> = ({ currentUse
         })}
       </div>
 
-      {/* Leaderboard Table */}
-      <div style={{ overflowX: 'auto', width: '100%' }}>
+      {/* Leaderboard Table with Sticky Header & Controlled Viewport Height */}
+      <div style={{ overflowX: 'auto', width: '100%', maxHeight: 'calc(100vh - 290px)', overflowY: 'auto', borderRadius: '16px', border: '1px solid rgba(169, 221, 211, 0.15)' }}>
         <table className="leaderboard-table">
           <thead>
             <tr>

@@ -598,18 +598,19 @@ export const TopRialoPosts: React.FC<TopRialoPostsProps> = ({ currentUsername })
           boxSizing: 'border-box',
         }}
       >
-        {/* Header Bar */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px', marginBottom: '18px' }}>
-          <div>
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: 800, color: '#A9DDD3', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '4px' }}>
-              <TrendingUp size={14} /> Live High-Impact Community Stream (Hover to Pause)
-            </div>
-            <h3 style={{ fontSize: '22px', fontWeight: 900, color: '#E8E3D5', fontFamily: 'var(--font-display)', margin: 0 }}>
-              Top Community Highlights & <span className="gradient-text-rialo">Alpha Stream</span>
-            </h3>
+        {/* Header Bar - Unified Centered Architecture */}
+        <div className="tcg-header" style={{ marginBottom: '14px', paddingBottom: '12px' }}>
+          <div className="tcg-eyebrow">
+            <TrendingUp size={13} /> LIVE HIGH-IMPACT COMMUNITY STREAM
           </div>
+          <h2 className="tcg-title">
+            Top Community Highlights & <span className="gradient-text-rialo">Alpha Stream</span>
+          </h2>
+          <p className="tcg-subtitle">
+            Curated viral insights, ecosystem updates, and technical deep-dives from verified Rialo contributors.
+          </p>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '6px', flexWrap: 'wrap', justifyContent: 'center' }}>
             {/* View Mode Toggle (Stream vs Grid) */}
             <div style={{ display: 'flex', background: 'rgba(232, 227, 213, 0.06)', borderRadius: '12px', padding: '3px', border: '1px solid rgba(169, 221, 211, 0.2)' }}>
               <button
@@ -1019,18 +1020,16 @@ export const TopRialoPosts: React.FC<TopRialoPostsProps> = ({ currentUsername })
           boxSizing: 'border-box',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '14px', marginBottom: '22px' }}>
-          <div>
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: 800, color: '#A9DDD3', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '4px' }}>
-              <Gem size={14} /> Core Ecosystem Champions
-            </div>
-            <h3 style={{ fontSize: '24px', fontWeight: 900, color: '#E8E3D5', fontFamily: 'var(--font-display)', margin: 0 }}>
-              💎 Top Rialo Gems & <span className="gradient-text-rialo">Core Builders</span>
-            </h3>
+        <div className="tcg-header" style={{ marginBottom: '14px', paddingBottom: '12px' }}>
+          <div className="tcg-eyebrow">
+            <Gem size={13} /> CORE ECOSYSTEM CHAMPIONS
           </div>
-          <span style={{ fontSize: '12px', color: 'rgba(232, 227, 213, 0.55)' }}>
-            Verified engineering leads & official organization profiles on X
-          </span>
+          <h2 className="tcg-title">
+            Top Rialo Gems & <span className="gradient-text-rialo">Core Builders</span>
+          </h2>
+          <p className="tcg-subtitle">
+            Verified engineering leads, key technical contributors, and early testnet ecosystem builders.
+          </p>
         </div>
 
         {loadingGems ? (
@@ -1129,14 +1128,14 @@ export const TopRialoPosts: React.FC<TopRialoPostsProps> = ({ currentUsername })
           boxSizing: 'border-box',
         }}
       >
-        <div style={{ marginBottom: '16px' }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: 800, color: '#A9DDD3', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '4px' }}>
-            <Search size={14} /> Real-Time Telemetry
+        <div className="tcg-header" style={{ marginBottom: '14px', paddingBottom: '12px' }}>
+          <div className="tcg-eyebrow">
+            <Search size={13} /> REAL-TIME TELEMETRY
           </div>
-          <h3 style={{ fontSize: '22px', fontWeight: 900, color: '#E8E3D5', fontFamily: 'var(--font-display)', margin: '0 0 4px 0' }}>
+          <h2 className="tcg-title">
             Creator & Contributor <span className="gradient-text-rialo">Proof of Work Explorer</span>
-          </h3>
-          <p style={{ fontSize: '13px', color: 'rgba(232, 227, 213, 0.55)', margin: 0 }}>
+          </h2>
+          <p className="tcg-subtitle">
             Query any Twitter/X handle to inspect their real impressions, social engagement metrics, and verified posts.
           </p>
         </div>

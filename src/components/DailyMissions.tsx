@@ -362,30 +362,28 @@ export const DailyMissions: React.FC<DailyMissionsProps> = ({
     <div className="tcg-container">
       <CryoStreakVault user={user} onUserUpdate={(u) => { setUser(u); if (onUserDataUpdate) onUserDataUpdate(u); }} />
 
-      {/* Top Banner */}
-      <div className="tcg-header">
-        <div>
-          <div className="tcg-eyebrow">
-            <Calendar size={14} /> Season 1 Daily Tasks • {todayDate || 'Today'}
-          </div>
-          <h2 className="tcg-title">
-            Complete Daily Tasks ➔ <span className="gradient-text-rialo">Unlock 3 Cards</span>
-          </h2>
-          <p className="tcg-subtitle">
-            Tasks reset daily at 00:00 UTC. Collect all 30 Season 1 Genesis warriors to secure your Guaranteed Free Mint!
-          </p>
+      {/* Top Banner - Unified Centered Architecture */}
+      <div className="tcg-header" style={{ marginBottom: '14px', paddingBottom: '12px' }}>
+        <div className="tcg-eyebrow">
+          <Calendar size={13} /> SEASON 1 DAILY TASKS • {todayDate || 'TODAY'}
         </div>
+        <h2 className="tcg-title">
+          Complete Daily Tasks ➔ <span className="gradient-text-rialo">Unlock 3 Cards</span>
+        </h2>
+        <p className="tcg-subtitle">
+          Tasks reset daily at 00:00 UTC. Collect all 30 Season 1 Genesis warriors to secure your Guaranteed Free Mint!
+        </p>
 
-        {/* User Stats Pill */}
+        {/* User Stats Pill - Centered */}
         {user && (
-          <div className="tcg-stats-pill">
+          <div className="tcg-stats-pill" style={{ padding: '4px 14px', marginTop: '4px' }}>
             <div className="tcg-stat-item tcg-stat-shards">
-              <Coins size={16} />
+              <Coins size={14} />
               <span>{user.shards} Shards</span>
             </div>
             <div className="tcg-stat-divider" />
             <div className="tcg-stat-item tcg-stat-streak">
-              <Flame size={16} />
+              <Flame size={14} />
               <span>{user.streakDays}d Streak</span>
             </div>
           </div>

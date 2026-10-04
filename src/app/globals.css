@@ -696,19 +696,19 @@ body {
 
 .feature-header-wrap {
   text-align: center;
-  max-width: 640px;
-  margin: 0 auto;
+  max-width: 680px;
+  margin: 0 auto 16px auto;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
+  gap: 6px;
 }
 
 .feature-pill-badge {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 6px 14px;
+  gap: 6px;
+  padding: 4px 14px;
   border-radius: 9999px;
   background: rgba(169, 221, 211, 0.08);
   border: 1px solid rgba(169, 221, 211, 0.28);
@@ -718,16 +718,23 @@ body {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  margin-bottom: 2px;
 }
 
 .feature-title {
   font-family: var(--font-display);
-  font-size: 38px;
+  font-size: 24px;
   font-weight: 800;
   color: #FFFFFF;
-  letter-spacing: -0.03em;
-  line-height: 1.15;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
   margin: 0;
+}
+
+@media (min-width: 640px) {
+  .feature-title {
+    font-size: 28px;
+  }
 }
 
 .feature-title .gradient-text-cyan {
@@ -3091,12 +3098,14 @@ body {
 
 .tcg-header {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  padding-bottom: 20px;
+  text-align: center;
+  gap: 6px;
+  padding-bottom: 14px;
+  margin-bottom: 16px;
   border-bottom: 1px solid rgba(232, 227, 213, 0.08);
+  width: 100%;
 }
 
 .tcg-eyebrow {
@@ -3109,23 +3118,31 @@ body {
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: #A9DDD3;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
 
 .tcg-title {
   font-family: var(--font-display);
-  font-size: 26px;
+  font-size: 24px;
   font-weight: 800;
   color: #FFFFFF;
   letter-spacing: -0.02em;
   margin: 0;
+  line-height: 1.2;
+}
+
+@media (min-width: 640px) {
+  .tcg-title {
+    font-size: 26px;
+  }
 }
 
 .tcg-subtitle {
   font-size: 13px;
   color: var(--rialo-text-muted);
-  margin-top: 4px;
-  line-height: 1.5;
+  margin: 2px auto 0 auto;
+  line-height: 1.45;
+  max-width: 620px;
 }
 
 .tcg-stats-pill {
@@ -3982,13 +3999,13 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 90px 16px 80px 16px;
+  padding: 68px 12px 84px 12px;
   width: 100%;
 }
 
 @media (min-width: 640px) {
   .main-stage {
-    padding: 80px 24px 80px 96px;
+    padding: 68px 24px 24px 88px;
   }
 }
 
@@ -4129,4 +4146,11 @@ body {
   background: rgba(8, 16, 14, 0.85);
   transform: translateY(-2px);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6), 0 0 15px rgba(169, 221, 211, 0.15);
+}
+
+.leaderboard-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: #060B09;
 }
