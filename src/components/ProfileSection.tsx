@@ -458,7 +458,7 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onSelectTa
   const activeBroadcast = broadcasts.find((b) => !dismissedBroadcasts[b.id]);
 
   return (
-    <div style={{ maxWidth: '1120px', margin: '0 auto', padding: '20px 16px 80px' }}>
+    <div style={{ maxWidth: '1160px', margin: '0 auto', padding: '20px 16px 80px' }}>
       {/* ========================================================
           USER IDENTITY PROFILE CARD (OFFICIAL BRAND THEME)
           ======================================================== */}

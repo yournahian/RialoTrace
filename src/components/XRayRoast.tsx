@@ -375,12 +375,14 @@ export const XRayRoast: React.FC<{ initialHandle?: string }> = ({ initialHandle 
         ))}
       </div>
 
-      {/* Persona Result Card Container - PC 100% Zoom 2-Column Responsive Layout */}
+      {/* Persona Result Card Container - Authentic Vertical Trading Card (Portrait TCG Layout) */}
       {result && !isScanning && (
         <div
           style={{
             perspective: '1200px',
             width: '100%',
+            maxWidth: '380px',
+            margin: '0 auto',
             position: 'relative',
             zIndex: 3,
           }}
@@ -398,23 +400,26 @@ export const XRayRoast: React.FC<{ initialHandle?: string }> = ({ initialHandle 
               transition: isHovered ? 'transform 0.1s ease-out' : 'transform 0.4s ease',
               transformStyle: 'preserve-3d',
               position: 'relative',
-              borderRadius: '22px',
-              padding: '18px 20px',
+              borderRadius: '20px',
+              padding: '16px',
               background: `
                 radial-gradient(
                   circle at ${mousePos.x * 100}% ${mousePos.y * 100}%,
                   ${theme.glow} 0%,
-                  rgba(10, 18, 15, 0.95) 45%,
+                  rgba(10, 18, 15, 0.96) 50%,
                   rgba(2, 6, 5, 0.99) 100%
                 )
               `,
               border: `2px solid ${theme.border}`,
               boxShadow: `
-                0 20px 60px rgba(0, 0, 0, 0.95),
+                0 20px 50px rgba(0, 0, 0, 0.95),
                 0 0 35px ${theme.glow},
                 inset 0 0 20px rgba(169, 221, 211, 0.08)
               `,
               overflow: 'hidden',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '12px',
             }}
           >
             {/* Holographic Iridescent Light Sheen Foil Overlay */}
@@ -422,7 +427,7 @@ export const XRayRoast: React.FC<{ initialHandle?: string }> = ({ initialHandle 
               style={{
                 position: 'absolute',
                 inset: 0,
-                borderRadius: '22px',
+                borderRadius: '20px',
                 pointerEvents: 'none',
                 opacity: isHovered ? 0.35 : 0.15,
                 background: `linear-gradient(${115 + mousePos.x * 50}deg, transparent 20%, rgba(169,221,211,0.5) 40%, rgba(255,182,255,0.4) 60%, rgba(0,240,255,0.5) 80%, transparent 100%)`,
@@ -432,367 +437,356 @@ export const XRayRoast: React.FC<{ initialHandle?: string }> = ({ initialHandle 
             />
 
             {/* Cyberpunk Neon Corner Brackets */}
-            <div style={{ position: 'absolute', top: '8px', left: '8px', width: '10px', height: '10px', borderTop: `2px solid ${theme.color}`, borderLeft: `2px solid ${theme.color}`, pointerEvents: 'none', opacity: 0.8 }} />
-            <div style={{ position: 'absolute', top: '8px', right: '8px', width: '10px', height: '10px', borderTop: `2px solid ${theme.color}`, borderRight: `2px solid ${theme.color}`, pointerEvents: 'none', opacity: 0.8 }} />
-            <div style={{ position: 'absolute', bottom: '8px', left: '8px', width: '10px', height: '10px', borderBottom: `2px solid ${theme.color}`, borderLeft: `2px solid ${theme.color}`, pointerEvents: 'none', opacity: 0.8 }} />
-            <div style={{ position: 'absolute', bottom: '8px', right: '8px', width: '10px', height: '10px', borderBottom: `2px solid ${theme.color}`, borderRight: `2px solid ${theme.color}`, pointerEvents: 'none', opacity: 0.8 }} />
+            <div style={{ position: 'absolute', top: '8px', left: '8px', width: '9px', height: '9px', borderTop: `2px solid ${theme.color}`, borderLeft: `2px solid ${theme.color}`, pointerEvents: 'none', opacity: 0.85 }} />
+            <div style={{ position: 'absolute', top: '8px', right: '8px', width: '9px', height: '9px', borderTop: `2px solid ${theme.color}`, borderRight: `2px solid ${theme.color}`, pointerEvents: 'none', opacity: 0.85 }} />
+            <div style={{ position: 'absolute', bottom: '8px', left: '8px', width: '9px', height: '9px', borderBottom: `2px solid ${theme.color}`, borderLeft: `2px solid ${theme.color}`, pointerEvents: 'none', opacity: 0.85 }} />
+            <div style={{ position: 'absolute', bottom: '8px', right: '8px', width: '9px', height: '9px', borderBottom: `2px solid ${theme.color}`, borderRight: `2px solid ${theme.color}`, pointerEvents: 'none', opacity: 0.85 }} />
 
-            {/* 2-Column Responsive Grid on Desktop */}
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(310px, 1fr))',
-                gap: '18px',
-                alignItems: 'center',
-              }}
-            >
-              {/* Left Column: Specimen Identity + Center Pedestal + Action Buttons */}
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
-                {/* Header row: Avatar + Handle + Rarity */}
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', marginBottom: '10px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <div style={{ position: 'relative', width: '42px', height: '42px' }}>
-                      <div
-                        style={{
-                          position: 'absolute',
-                          inset: '-3px',
-                          borderRadius: '50%',
-                          background: `conic-gradient(from 0deg, ${theme.color}, transparent 60%, ${theme.color})`,
-                          animation: 'pulseHalo 4s linear infinite',
-                          opacity: 0.7,
-                        }}
-                      />
-                      <div
-                        style={{
-                          position: 'relative',
-                          width: '100%',
-                          height: '100%',
-                          borderRadius: '50%',
-                          overflow: 'hidden',
-                          border: `2px solid #FFFFFF`,
-                          background: '#040706',
-                          boxShadow: `0 0 12px ${theme.glow}`,
-                        }}
-                      >
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={
-                            result.handle.toLowerCase() === 'yournahin' || result.handle.toLowerCase() === 'yournahian'
-                              ? 'https://pbs.twimg.com/profile_images/1990106346264666112/pbBiIRET_400x400.png'
-                              : `https://unavatar.io/x/${result.handle}`
-                          }
-                          alt={result.handle}
-                          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                          onError={(e) => {
-                            e.currentTarget.src = 'https://pbs.twimg.com/profile_images/1990106346264666112/pbBiIRET_400x400.png';
-                          }}
-                        />
-                      </div>
-                    </div>
-
-                    <div style={{ textAlign: 'left' }}>
-                      <div style={{ fontSize: '9px', color: '#A9DDD3', fontFamily: 'var(--font-mono)', fontWeight: 800 }}>
-                        SPECIMEN SCAN
-                      </div>
-                      <div style={{ fontSize: '18px', fontWeight: '900', color: '#FFFFFF', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        <span>@{result.handle}</span>
-                        <span style={{ fontSize: '12px', color: '#A9DDD3' }}>⚡</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Rarity Badge */}
-                  <div
-                    style={{
-                      padding: '4px 10px',
-                      borderRadius: '9999px',
-                      background: theme.badgeBg,
-                      border: `1.5px solid ${theme.badgeBorder}`,
-                      color: '#FFFFFF',
-                      fontSize: '10px',
-                      fontWeight: '900',
-                      letterSpacing: '1px',
-                      boxShadow: `0 0 12px ${theme.glow}`,
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '4px',
-                    }}
-                  >
-                    <Award size={12} color={theme.color} />
-                    <span>{result.rarity}</span>
-                  </div>
-                </div>
-
-                {/* Persona Center Pedestal: Floating Badge & Title */}
-                <div style={{
-                  padding: '12px 10px',
-                  background: 'radial-gradient(ellipse at center, rgba(169, 221, 211, 0.08) 0%, transparent 70%)',
-                  position: 'relative',
-                  width: '100%',
-                  marginBottom: '10px',
-                }}>
-                  {/* Concentric Hologram Rings */}
+            {/* Top Bar: Specimen Identity + Rarity Badge */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', position: 'relative', zIndex: 2 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <div style={{ position: 'relative', width: '36px', height: '36px', flexShrink: 0 }}>
                   <div
                     style={{
                       position: 'absolute',
-                      top: '50%',
-                      left: '50%',
-                      transform: 'translate(-50%, -50%)',
-                      width: '100px',
-                      height: '100px',
+                      inset: '-2px',
                       borderRadius: '50%',
-                      border: `1px dashed ${theme.color}`,
-                      opacity: 0.35,
-                      pointerEvents: 'none',
+                      background: `conic-gradient(from 0deg, ${theme.color}, transparent 60%, ${theme.color})`,
+                      animation: 'pulseHalo 4s linear infinite',
+                      opacity: 0.7,
                     }}
                   />
-                  {/* Floating Hologram Icon */}
                   <div
                     style={{
-                      fontSize: '44px',
-                      margin: '0 auto 6px auto',
-                      display: 'inline-block',
-                      animation: 'floatBadge 3s ease-in-out infinite',
-                      filter: `drop-shadow(0 0 18px ${theme.glow})`,
-                      userSelect: 'none',
+                      position: 'relative',
+                      width: '100%',
+                      height: '100%',
+                      borderRadius: '50%',
+                      overflow: 'hidden',
+                      border: '1.5px solid #FFFFFF',
+                      background: '#040706',
+                      boxShadow: `0 0 10px ${theme.glow}`,
                     }}
                   >
-                    {result.badgeEmoji}
-                  </div>
-
-                  <h3
-                    style={{
-                      fontSize: '18px',
-                      fontWeight: '900',
-                      color: '#FFFFFF',
-                      margin: '0 0 4px 0',
-                      letterSpacing: '-0.02em',
-                      textShadow: `0 0 20px ${theme.glow}`,
-                      lineHeight: 1.2,
-                    }}
-                  >
-                    {result.title}
-                  </h3>
-
-                  <div
-                    style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '5px',
-                      padding: '2px 10px',
-                      borderRadius: '9999px',
-                      background: 'rgba(0, 0, 0, 0.5)',
-                      border: '1px solid rgba(169, 221, 211, 0.25)',
-                      color: '#A9DDD3',
-                      fontSize: '9.5px',
-                      fontWeight: '800',
-                      fontFamily: 'var(--font-mono)',
-                    }}
-                  >
-                    <Cpu size={10} />
-                    <span>{result.classTag}</span>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={
+                        result.handle.toLowerCase() === 'yournahin' || result.handle.toLowerCase() === 'yournahian'
+                          ? 'https://pbs.twimg.com/profile_images/1990106346264666112/pbBiIRET_400x400.png'
+                          : `https://unavatar.io/x/${result.handle}`
+                      }
+                      alt={result.handle}
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      onError={(e) => {
+                        e.currentTarget.src = 'https://pbs.twimg.com/profile_images/1990106346264666112/pbBiIRET_400x400.png';
+                      }}
+                    />
                   </div>
                 </div>
 
-                {/* Action Buttons in Left Column */}
-                <div style={{ display: 'flex', gap: '8px', width: '100%' }}>
-                  <button
-                    type="button"
-                    onClick={handleShareToX}
-                    style={{
-                      flex: 1,
-                      padding: '9px 14px',
-                      background: 'linear-gradient(135deg, #A9DDD3 0%, #00F0FF 100%)',
-                      color: '#010101',
-                      border: 'none',
-                      borderRadius: '9999px',
-                      fontSize: '12px',
-                      fontWeight: '900',
-                      cursor: 'pointer',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      gap: '6px',
-                      boxShadow: '0 0 16px rgba(169, 221, 211, 0.4)',
-                      transition: 'all 0.2s',
-                    }}
-                  >
-                    <Share2 size={14} /> SHARE TO X
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={handleCopy}
-                    style={{
-                      padding: '9px 14px',
-                      background: 'rgba(255, 255, 255, 0.05)',
-                      border: '1px solid rgba(255, 255, 255, 0.2)',
-                      color: '#FFFFFF',
-                      borderRadius: '9999px',
-                      fontSize: '12px',
-                      fontWeight: '800',
-                      cursor: 'pointer',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '5px',
-                      transition: 'all 0.2s',
-                    }}
-                  >
-                    {copied ? <Check size={14} color="#A9DDD3" /> : <Copy size={14} />}
-                    <span>{copied ? 'Copied' : 'Copy'}</span>
-                  </button>
+                <div style={{ textAlign: 'left', minWidth: 0 }}>
+                  <div style={{ fontSize: '8.5px', color: '#A9DDD3', fontFamily: 'var(--font-mono)', fontWeight: 800, letterSpacing: '0.5px' }}>
+                    SPECIMEN SCAN
+                  </div>
+                  <div style={{ fontSize: '15px', fontWeight: '900', color: '#FFFFFF', display: 'flex', alignItems: 'center', gap: '4px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    <span>@{result.handle}</span>
+                    <span style={{ fontSize: '11px', color: '#A9DDD3' }}>⚡</span>
+                  </div>
                 </div>
               </div>
 
-              {/* Right Column: 4 HUD Telemetry Pods + Roasted Verdict Box */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                {/* 4 HUD Telemetry Pods Grid */}
-                <div
-                  style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(2, 1fr)',
-                    gap: '8px',
-                  }}
-                >
-                  {/* Pod 1: Thermal Friction */}
-                  <div className="persona-hud-pod" style={{ padding: '8px 10px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3px' }}>
-                      <span style={{ fontSize: '9px', color: '#8E9B97', fontWeight: 800, textTransform: 'uppercase', fontFamily: 'var(--font-mono)' }}>
-                        ⚡ Friction
-                      </span>
-                      <span style={{
-                        fontSize: '9px',
-                        fontWeight: 800,
-                        color: result.frictionPct > 50 ? '#EF4444' : '#10B981',
-                        background: result.frictionPct > 50 ? 'rgba(239, 68, 68, 0.15)' : 'rgba(16, 185, 129, 0.15)',
-                        padding: '1px 5px',
-                        borderRadius: '3px',
-                      }}>
-                        {result.frictionPct > 50 ? 'WARM' : 'COLD'}
-                      </span>
-                    </div>
-                    <div style={{ fontSize: '12px', fontWeight: '900', color: '#FFFFFF', marginBottom: '5px' }}>
-                      {result.frictionRate}
-                    </div>
-                    <div style={{ height: '3px', background: 'rgba(255,255,255,0.1)', borderRadius: '9999px', overflow: 'hidden' }}>
-                      <div
-                        style={{
-                          height: '100%',
-                          width: `${result.frictionPct}%`,
-                          background: result.frictionPct > 50 ? 'linear-gradient(90deg, #F59E0B, #EF4444)' : 'linear-gradient(90deg, #A9DDD3, #10B981)',
-                        }}
-                      />
-                    </div>
-                  </div>
+              {/* Rarity Pill Badge */}
+              <div
+                style={{
+                  padding: '3px 9px',
+                  borderRadius: '9999px',
+                  background: theme.badgeBg,
+                  border: `1.5px solid ${theme.badgeBorder}`,
+                  color: '#FFFFFF',
+                  fontSize: '9.5px',
+                  fontWeight: '900',
+                  letterSpacing: '0.8px',
+                  boxShadow: `0 0 10px ${theme.glow}`,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  flexShrink: 0,
+                }}
+              >
+                <Award size={11} color={theme.color} />
+                <span>{result.rarity}</span>
+              </div>
+            </div>
 
-                  {/* Pod 2: Finality Speed */}
-                  <div className="persona-hud-pod" style={{ padding: '8px 10px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3px' }}>
-                      <span style={{ fontSize: '9px', color: '#8E9B97', fontWeight: 800, textTransform: 'uppercase', fontFamily: 'var(--font-mono)' }}>
-                        ⏱️ Finality
-                      </span>
-                      <span style={{ fontSize: '9px', fontWeight: 800, color: '#00F0FF', background: 'rgba(0, 240, 255, 0.15)', padding: '1px 5px', borderRadius: '3px' }}>
-                        SPEED
-                      </span>
-                    </div>
-                    <div style={{ fontSize: '12px', fontWeight: '900', color: '#00F0FF', marginBottom: '5px' }}>
-                      {result.finalitySpeed}
-                    </div>
-                    <div style={{ height: '3px', background: 'rgba(255,255,255,0.1)', borderRadius: '9999px', overflow: 'hidden' }}>
-                      <div style={{ height: '100%', width: `${result.speedPct}%`, background: 'linear-gradient(90deg, #00F0FF, #A9DDD3)' }} />
-                    </div>
-                  </div>
+            {/* Central Holographic Art Frame Pedestal */}
+            <div
+              style={{
+                padding: '12px 10px 10px 10px',
+                background: 'radial-gradient(ellipse at center, rgba(169, 221, 211, 0.1) 0%, rgba(4, 9, 7, 0.7) 80%)',
+                border: '1px solid rgba(169, 221, 211, 0.15)',
+                borderRadius: '16px',
+                position: 'relative',
+                textAlign: 'center',
+                overflow: 'hidden',
+              }}
+            >
+              {/* Concentric Hologram Rings */}
+              <div
+                style={{
+                  position: 'absolute',
+                  top: '42%',
+                  left: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  width: '90px',
+                  height: '90px',
+                  borderRadius: '50%',
+                  border: `1px dashed ${theme.color}`,
+                  opacity: 0.35,
+                  pointerEvents: 'none',
+                }}
+              />
 
-                  {/* Pod 3: Shard Capacity */}
-                  <div className="persona-hud-pod" style={{ padding: '8px 10px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3px' }}>
-                      <span style={{ fontSize: '9px', color: '#8E9B97', fontWeight: 800, textTransform: 'uppercase', fontFamily: 'var(--font-mono)' }}>
-                        💎 Shards
-                      </span>
-                      <span style={{ fontSize: '9px', fontWeight: 800, color: '#A9DDD3', background: 'rgba(169, 221, 211, 0.15)', padding: '1px 5px', borderRadius: '3px' }}>
-                        VAULT
-                      </span>
-                    </div>
-                    <div style={{ fontSize: '12px', fontWeight: '900', color: '#A9DDD3', marginBottom: '5px' }}>
-                      {result.shardCapacity}
-                    </div>
-                    <div style={{ height: '3px', background: 'rgba(255,255,255,0.1)', borderRadius: '9999px', overflow: 'hidden' }}>
-                      <div style={{ height: '100%', width: `${result.capacityPct}%`, background: 'linear-gradient(90deg, #A9DDD3, #E8E3D5)' }} />
-                    </div>
-                  </div>
+              {/* Floating Hologram Icon */}
+              <div
+                style={{
+                  fontSize: '40px',
+                  margin: '0 auto 6px auto',
+                  display: 'inline-block',
+                  animation: 'floatBadge 3s ease-in-out infinite',
+                  filter: `drop-shadow(0 0 16px ${theme.glow})`,
+                  userSelect: 'none',
+                }}
+              >
+                {result.badgeEmoji}
+              </div>
 
-                  {/* Pod 4: Degen Purity */}
-                  <div className="persona-hud-pod" style={{ padding: '8px 10px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3px' }}>
-                      <span style={{ fontSize: '9px', color: '#8E9B97', fontWeight: 800, textTransform: 'uppercase', fontFamily: 'var(--font-mono)' }}>
-                        🧪 Degen
-                      </span>
-                      <span style={{ fontSize: '9px', fontWeight: 800, color: '#EC4899', background: 'rgba(236, 72, 153, 0.15)', padding: '1px 5px', borderRadius: '3px' }}>
-                        PURITY
-                      </span>
-                    </div>
-                    <div style={{ fontSize: '12px', fontWeight: '900', color: '#FFFFFF', marginBottom: '5px' }}>
-                      {result.degenIndex}
-                    </div>
-                    <div style={{ height: '3px', background: 'rgba(255,255,255,0.1)', borderRadius: '9999px', overflow: 'hidden' }}>
-                      <div style={{ height: '100%', width: `${result.degenPct}%`, background: 'linear-gradient(90deg, #A855F7, #EC4899)' }} />
-                    </div>
-                  </div>
+              <h3
+                style={{
+                  fontSize: '16px',
+                  fontWeight: '900',
+                  color: '#FFFFFF',
+                  margin: '0 0 4px 0',
+                  letterSpacing: '-0.02em',
+                  textShadow: `0 0 18px ${theme.glow}`,
+                  lineHeight: 1.2,
+                }}
+              >
+                {result.title}
+              </h3>
+
+              <div
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  padding: '2px 8px',
+                  borderRadius: '9999px',
+                  background: 'rgba(0, 0, 0, 0.6)',
+                  border: '1px solid rgba(169, 221, 211, 0.25)',
+                  color: '#A9DDD3',
+                  fontSize: '9px',
+                  fontWeight: '800',
+                  fontFamily: 'var(--font-mono)',
+                }}
+              >
+                <Cpu size={10} />
+                <span>{result.classTag}</span>
+              </div>
+            </div>
+
+            {/* 4 HUD Telemetry Pods (2x2 Matrix) */}
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(2, 1fr)',
+                gap: '6px',
+              }}
+            >
+              {/* Pod 1: Friction */}
+              <div className="persona-hud-pod" style={{ padding: '7px 9px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2px' }}>
+                  <span style={{ fontSize: '8.5px', color: '#8E9B97', fontWeight: 800, textTransform: 'uppercase', fontFamily: 'var(--font-mono)' }}>
+                    ⚡ Friction
+                  </span>
+                  <span style={{
+                    fontSize: '8px',
+                    fontWeight: 800,
+                    color: result.frictionPct > 50 ? '#EF4444' : '#10B981',
+                    background: result.frictionPct > 50 ? 'rgba(239, 68, 68, 0.15)' : 'rgba(16, 185, 129, 0.15)',
+                    padding: '1px 4px',
+                    borderRadius: '3px',
+                  }}>
+                    {result.frictionPct > 50 ? 'WARM' : 'COLD'}
+                  </span>
                 </div>
-
-                {/* Roasted Verdict Cyber Terminal Box */}
-                <div
-                  style={{
-                    background: 'rgba(2, 6, 5, 0.85)',
-                    border: '1.5px solid rgba(169, 221, 211, 0.22)',
-                    borderRadius: '14px',
-                    padding: '12px 14px',
-                    position: 'relative',
-                    overflow: 'hidden',
-                    boxShadow: 'inset 0 0 16px rgba(0, 0, 0, 0.8)',
-                  }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px', borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: '4px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#EF4444' }} />
-                      <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#F59E0B' }} />
-                      <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#10B981' }} />
-                      <span style={{ fontSize: '9px', fontFamily: 'var(--font-mono)', color: '#8E9B97', marginLeft: '4px' }}>
-                        AI_DIAGNOSTIC_VERDICT.log
-                      </span>
-                    </div>
-                    <span style={{ fontSize: '8.5px', color: '#10B981', fontFamily: 'var(--font-mono)', fontWeight: 800 }}>
-                      [ONLINE]
-                    </span>
-                  </div>
-
-                  <p
+                <div style={{ fontSize: '11px', fontWeight: '900', color: '#FFFFFF', marginBottom: '4px' }}>
+                  {result.frictionRate}
+                </div>
+                <div style={{ height: '3px', background: 'rgba(255,255,255,0.1)', borderRadius: '9999px', overflow: 'hidden' }}>
+                  <div
                     style={{
-                      fontSize: '12.5px',
-                      fontStyle: 'italic',
-                      color: '#E8E3D5',
-                      lineHeight: '1.5',
-                      margin: '0 0 8px 0',
+                      height: '100%',
+                      width: `${result.frictionPct}%`,
+                      background: result.frictionPct > 50 ? 'linear-gradient(90deg, #F59E0B, #EF4444)' : 'linear-gradient(90deg, #A9DDD3, #10B981)',
                     }}
-                  >
-                    &ldquo;{result.roast}&rdquo;
-                  </p>
-
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '6px' }}>
-                    <span style={{ fontSize: '8.5px', fontFamily: 'var(--font-mono)', color: '#8E9B97' }}>
-                      RIALO ZERO-FRICTION PROTOCOL AUTHENTICATED
-                    </span>
-                    <div style={{ display: 'flex', gap: '2px', alignItems: 'center', opacity: 0.6 }}>
-                      <span style={{ width: '2px', height: '8px', background: '#A9DDD3' }} />
-                      <span style={{ width: '1px', height: '8px', background: '#A9DDD3' }} />
-                      <span style={{ width: '3px', height: '8px', background: '#A9DDD3' }} />
-                      <span style={{ width: '1px', height: '8px', background: '#A9DDD3' }} />
-                      <span style={{ width: '2px', height: '8px', background: '#A9DDD3' }} />
-                      <span style={{ width: '3px', height: '8px', background: '#A9DDD3' }} />
-                    </div>
-                  </div>
+                  />
                 </div>
               </div>
+
+              {/* Pod 2: Finality */}
+              <div className="persona-hud-pod" style={{ padding: '7px 9px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2px' }}>
+                  <span style={{ fontSize: '8.5px', color: '#8E9B97', fontWeight: 800, textTransform: 'uppercase', fontFamily: 'var(--font-mono)' }}>
+                    ⏱️ Finality
+                  </span>
+                  <span style={{ fontSize: '8px', fontWeight: 800, color: '#00F0FF', background: 'rgba(0, 240, 255, 0.15)', padding: '1px 4px', borderRadius: '3px' }}>
+                    SPEED
+                  </span>
+                </div>
+                <div style={{ fontSize: '11px', fontWeight: '900', color: '#00F0FF', marginBottom: '4px' }}>
+                  {result.finalitySpeed}
+                </div>
+                <div style={{ height: '3px', background: 'rgba(255,255,255,0.1)', borderRadius: '9999px', overflow: 'hidden' }}>
+                  <div style={{ height: '100%', width: `${result.speedPct}%`, background: 'linear-gradient(90deg, #00F0FF, #A9DDD3)' }} />
+                </div>
+              </div>
+
+              {/* Pod 3: Shards */}
+              <div className="persona-hud-pod" style={{ padding: '7px 9px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2px' }}>
+                  <span style={{ fontSize: '8.5px', color: '#8E9B97', fontWeight: 800, textTransform: 'uppercase', fontFamily: 'var(--font-mono)' }}>
+                    💎 Shards
+                  </span>
+                  <span style={{ fontSize: '8px', fontWeight: 800, color: '#A9DDD3', background: 'rgba(169, 221, 211, 0.15)', padding: '1px 4px', borderRadius: '3px' }}>
+                    VAULT
+                  </span>
+                </div>
+                <div style={{ fontSize: '11px', fontWeight: '900', color: '#A9DDD3', marginBottom: '4px' }}>
+                  {result.shardCapacity}
+                </div>
+                <div style={{ height: '3px', background: 'rgba(255,255,255,0.1)', borderRadius: '9999px', overflow: 'hidden' }}>
+                  <div style={{ height: '100%', width: `${result.capacityPct}%`, background: 'linear-gradient(90deg, #A9DDD3, #E8E3D5)' }} />
+                </div>
+              </div>
+
+              {/* Pod 4: Degen */}
+              <div className="persona-hud-pod" style={{ padding: '7px 9px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2px' }}>
+                  <span style={{ fontSize: '8.5px', color: '#8E9B97', fontWeight: 800, textTransform: 'uppercase', fontFamily: 'var(--font-mono)' }}>
+                    🧪 Degen
+                  </span>
+                  <span style={{ fontSize: '8px', fontWeight: 800, color: '#EC4899', background: 'rgba(236, 72, 153, 0.15)', padding: '1px 4px', borderRadius: '3px' }}>
+                    PURITY
+                  </span>
+                </div>
+                <div style={{ fontSize: '11px', fontWeight: '900', color: '#FFFFFF', marginBottom: '4px' }}>
+                  {result.degenIndex}
+                </div>
+                <div style={{ height: '3px', background: 'rgba(255,255,255,0.1)', borderRadius: '9999px', overflow: 'hidden' }}>
+                  <div style={{ height: '100%', width: `${result.degenPct}%`, background: 'linear-gradient(90deg, #A855F7, #EC4899)' }} />
+                </div>
+              </div>
+            </div>
+
+            {/* Roasted Verdict Cyber Terminal Box */}
+            <div
+              style={{
+                background: 'rgba(2, 6, 5, 0.88)',
+                border: '1.5px solid rgba(169, 221, 211, 0.22)',
+                borderRadius: '12px',
+                padding: '10px 12px',
+                position: 'relative',
+                overflow: 'hidden',
+                boxShadow: 'inset 0 0 14px rgba(0, 0, 0, 0.8)',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '5px', borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: '3px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                  <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#EF4444' }} />
+                  <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#F59E0B' }} />
+                  <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#10B981' }} />
+                  <span style={{ fontSize: '8.5px', fontFamily: 'var(--font-mono)', color: '#8E9B97', marginLeft: '3px' }}>
+                    AI_DIAGNOSTIC_VERDICT.log
+                  </span>
+                </div>
+                <span style={{ fontSize: '8px', color: '#10B981', fontFamily: 'var(--font-mono)', fontWeight: 800 }}>
+                  [ONLINE]
+                </span>
+              </div>
+
+              <p
+                style={{
+                  fontSize: '11.5px',
+                  fontStyle: 'italic',
+                  color: '#E8E3D5',
+                  lineHeight: '1.45',
+                  margin: '0 0 6px 0',
+                }}
+              >
+                &ldquo;{result.roast}&rdquo;
+              </p>
+
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '5px' }}>
+                <span style={{ fontSize: '8px', fontFamily: 'var(--font-mono)', color: '#8E9B97' }}>
+                  RIALO ZERO-FRICTION PROTOCOL AUTHENTICATED
+                </span>
+                <div style={{ display: 'flex', gap: '2px', alignItems: 'center', opacity: 0.6 }}>
+                  <span style={{ width: '2px', height: '7px', background: '#A9DDD3' }} />
+                  <span style={{ width: '1px', height: '7px', background: '#A9DDD3' }} />
+                  <span style={{ width: '3px', height: '7px', background: '#A9DDD3' }} />
+                  <span style={{ width: '1px', height: '7px', background: '#A9DDD3' }} />
+                  <span style={{ width: '2px', height: '7px', background: '#A9DDD3' }} />
+                </div>
+              </div>
+            </div>
+
+            {/* Vertical Card Action Buttons */}
+            <div style={{ display: 'flex', gap: '8px', width: '100%', marginTop: '2px' }}>
+              <button
+                type="button"
+                onClick={handleShareToX}
+                style={{
+                  flex: 1,
+                  padding: '9px 12px',
+                  background: 'linear-gradient(135deg, #A9DDD3 0%, #00F0FF 100%)',
+                  color: '#010101',
+                  border: 'none',
+                  borderRadius: '9999px',
+                  fontSize: '12px',
+                  fontWeight: '900',
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '6px',
+                  boxShadow: '0 0 16px rgba(169, 221, 211, 0.4)',
+                  transition: 'all 0.2s',
+                }}
+              >
+                <Share2 size={13} /> SHARE TO X
+              </button>
+
+              <button
+                type="button"
+                onClick={handleCopy}
+                style={{
+                  padding: '9px 14px',
+                  background: 'rgba(255, 255, 255, 0.05)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  color: '#FFFFFF',
+                  borderRadius: '9999px',
+                  fontSize: '12px',
+                  fontWeight: '800',
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '5px',
+                  transition: 'all 0.2s',
+                }}
+              >
+                {copied ? <Check size={13} color="#A9DDD3" /> : <Copy size={13} />}
+                <span>{copied ? 'Copied' : 'Copy'}</span>
+              </button>
             </div>
           </div>
         </div>

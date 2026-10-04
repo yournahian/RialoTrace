@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { WhitelistTierInfo } from '@/lib/types';
 import { WHITELIST_TIERS } from '@/lib/tiers';
 import { Trophy, Users, Shield, Award, Sparkles, Filter } from 'lucide-react';
@@ -25,13 +25,16 @@ export const TieredLeaderboard: React.FC<TieredLeaderboardProps> = ({ currentUse
   const [totalUsers, setTotalUsers] = useState<number>(0);
   const [loading, setLoading] = useState(true);
   const [selectedTierFilter, setSelectedTierFilter] = useState<number | null>(null);
-
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const hasLoadedRef = useRef(false);
 
   const fetchLeaderboard = async (isManual = false) => {
     try {
-      if (isManual) setIsRefreshing(true);
-      else if (users.length === 0) setLoading(true);
+      if (isManual) {
+        setIsRefreshing(true);
+      } else if (!hasLoadedRef.current) {
+        setLoading(true);
+      }
 
       const res = await fetch(`/api/leaderboard?t=${Date.now()}`, {
         cache: 'no-store',
@@ -45,6 +48,7 @@ export const TieredLeaderboard: React.FC<TieredLeaderboardProps> = ({ currentUse
     } catch (err) {
       console.error(err);
     } finally {
+      hasLoadedRef.current = true;
       setLoading(false);
       setIsRefreshing(false);
     }
@@ -141,7 +145,7 @@ export const TieredLeaderboard: React.FC<TieredLeaderboardProps> = ({ currentUse
       </div>
 
       {/* Leaderboard Table with Sticky Header & Controlled Viewport Height */}
-      <div style={{ overflowX: 'auto', width: '100%', maxHeight: 'calc(100vh - 290px)', overflowY: 'auto', borderRadius: '16px', border: '1px solid rgba(169, 221, 211, 0.15)' }}>
+      <div style={{ overflowX: 'auto', width: '100%', borderRadius: '16px', border: '1px solid rgba(169, 221, 211, 0.15)' }}>
         <table className="leaderboard-table">
           <thead>
             <tr>

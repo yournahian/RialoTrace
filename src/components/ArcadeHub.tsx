@@ -27,9 +27,9 @@ export const ArcadeHub: React.FC<ArcadeHubProps> = ({ user, onUserUpdate, onNavi
   };
 
   return (
-    <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '8px 12px' }}>
+    <div style={{ maxWidth: '1160px', margin: '0 auto', padding: '8px 12px' }}>
       {/* Top Banner - Unified Centered Architecture */}
-      <div className="tcg-header" style={{ marginBottom: '14px', paddingBottom: '12px' }}>
+      <div className="tcg-header" style={{ marginBottom: '10px', paddingBottom: '8px' }}>
         <div className="tcg-eyebrow">
           <Gamepad2 size={13} /> PLAY TO EARN // ARCADE ZONE
         </div>
@@ -66,7 +66,7 @@ export const ArcadeHub: React.FC<ArcadeHubProps> = ({ user, onUserUpdate, onNavi
         display: 'flex',
         justifyContent: 'center',
         gap: '6px',
-        marginBottom: '16px',
+        marginBottom: '10px',
         flexWrap: 'wrap',
       }}>
         <button

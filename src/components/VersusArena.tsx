@@ -333,7 +333,7 @@ export const VersusArena: React.FC = () => {
                   ? 'not-allowed'
                   : 'pointer',
               minWidth: '160px',
-              height: '46px',
+              height: '40px',
               display: 'inline-flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -376,7 +376,7 @@ export const VersusArena: React.FC = () => {
 
         {/* Live Battle Ticker during Battling */}
         {battleStage === 'battling' && (
-          <div className="battle-ticker-banner" style={{ marginTop: '12px' }}>
+          <div className="battle-ticker-banner" style={{ marginTop: '6px' }}>
             <Zap style={{ width: '16px', height: '16px', color: '#A9DDD3' }} />
             <span>{BATTLE_STEPS[battleStepIndex]}</span>
           </div>
@@ -387,7 +387,7 @@ export const VersusArena: React.FC = () => {
           <div
             className="battle-ticker-banner"
             style={{
-              marginTop: '12px',
+              marginTop: '6px',
               borderColor: winner === 1 ? '#A9DDD3' : winner === 2 ? '#E8E3D5' : '#A9DDD3',
               color: '#FFFFFF',
               background:
@@ -410,7 +410,7 @@ export const VersusArena: React.FC = () => {
         )}
 
         {/* Quick Matchup Presets */}
-        <div className="monad-chips-row" style={{ marginTop: '8px' }}>
+        <div className="monad-chips-row" style={{ marginTop: '4px' }}>
           <span className="chips-label">Quick Battles:</span>
           {POPULAR_MATCHUPS.map((m, i) => (
             <button
@@ -676,14 +676,14 @@ export const VersusArena: React.FC = () => {
 
       {/* Share Showdown Footer */}
       {battleStage === 'revealed' && (
-        <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '8px' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '4px' }}>
           <button
             onClick={handleShareVersus}
             className="card-action-btn-primary"
             style={{
               width: 'auto',
               padding: '0 28px',
-              height: '46px',
+              height: '40px',
               borderRadius: '14px',
               fontFamily: 'var(--font-mono)',
             }}
