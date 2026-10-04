@@ -4157,3 +4157,22 @@ body {
   z-index: 10;
   background: #060B09;
 }
+
+/* Sleek Trollbox Custom Scrollbar */
+.trollbox-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(169, 221, 211, 0.28) transparent;
+}
+.trollbox-scroll::-webkit-scrollbar {
+  width: 5px;
+}
+.trollbox-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.trollbox-scroll::-webkit-scrollbar-thumb {
+  background: rgba(169, 221, 211, 0.25);
+  border-radius: 9999px;
+}
+.trollbox-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(169, 221, 211, 0.5);
+}

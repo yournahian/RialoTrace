@@ -439,8 +439,10 @@ export const TrollboxChat: React.FC<TrollboxChatProps> = ({
         {isOpen && (
           <div
             style={{
-              width: '360px',
-              height: '520px',
+              width: '390px',
+              maxWidth: 'calc(100vw - 28px)',
+              height: '550px',
+              maxHeight: 'calc(100vh - 100px)',
               background: 'linear-gradient(180deg, rgba(8, 14, 12, 0.98) 0%, rgba(2, 6, 5, 0.99) 100%)',
               border: '1.5px solid rgba(169, 221, 211, 0.4)',
               borderRadius: '24px',
@@ -455,15 +457,17 @@ export const TrollboxChat: React.FC<TrollboxChatProps> = ({
             {/* Trollbox Header */}
             <div
               style={{
-                padding: '16px 18px',
+                padding: '13px 16px',
                 borderBottom: '1px solid rgba(169, 221, 211, 0.15)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 background: 'rgba(169, 221, 211, 0.04)',
+                gap: '8px',
               }}
             >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              {/* Left Title & Live Indicator */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '9px', minWidth: 0 }}>
                 <div
                   style={{
                     width: '32px',
@@ -474,13 +478,14 @@ export const TrollboxChat: React.FC<TrollboxChatProps> = ({
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
+                    flexShrink: 0,
                   }}
                 >
                   <MessageSquare size={16} color="#A9DDD3" />
                 </div>
-                <div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <span style={{ fontWeight: 900, fontSize: '14px', color: '#E8E3D5' }}>
+                <div style={{ minWidth: 0 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', whiteSpace: 'nowrap' }}>
+                    <span style={{ fontWeight: 900, fontSize: '13.5px', color: '#E8E3D5', letterSpacing: '-0.01em' }}>
                       Community <span className="gradient-text-rialo">Trollbox</span>
                     </span>
                     <span
@@ -490,27 +495,29 @@ export const TrollboxChat: React.FC<TrollboxChatProps> = ({
                         borderRadius: '50%',
                         background: '#10B981',
                         boxShadow: '0 0 8px #10B981',
+                        flexShrink: 0,
                       }}
                     />
                   </div>
-                  <div style={{ fontSize: '10px', color: '#8E9B97', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                  <div style={{ fontSize: '10px', color: '#8E9B97', display: 'flex', alignItems: 'center', gap: '4px', whiteSpace: 'nowrap', marginTop: '1px' }}>
                     <span>Global Realtime Feed</span>
-                    <span>•</span>
-                    <span style={{ color: '#10B981', fontWeight: 700 }}>Live Sync</span>
+                    <span style={{ color: 'rgba(255, 255, 255, 0.25)' }}>•</span>
+                    <span style={{ color: '#10B981', fontWeight: 800 }}>Live Sync</span>
                   </div>
                 </div>
               </div>
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              {/* Right Action Chips */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0 }}>
                 {/* Live Shard Counter */}
                 <div
                   style={{
                     display: 'flex',
                     alignItems: 'center',
                     gap: '4px',
-                    padding: '4px 8px',
+                    padding: '3px 8px',
                     background: 'rgba(169, 221, 211, 0.1)',
-                    border: '1px solid rgba(169, 221, 211, 0.25)',
+                    border: '1px solid rgba(169, 221, 211, 0.28)',
                     borderRadius: '9999px',
                     color: '#A9DDD3',
                     fontSize: '11px',
@@ -519,7 +526,7 @@ export const TrollboxChat: React.FC<TrollboxChatProps> = ({
                   }}
                   title="Your Shard Balance"
                 >
-                  <span>💎</span>
+                  <span style={{ fontSize: '11px' }}>💎</span>
                   <span>{user?.shards ?? 100}</span>
                 </div>
 
@@ -532,7 +539,7 @@ export const TrollboxChat: React.FC<TrollboxChatProps> = ({
                     display: 'flex',
                     alignItems: 'center',
                     gap: '4px',
-                    padding: '5px 10px',
+                    padding: '4px 9px',
                     background: 'linear-gradient(135deg, rgba(0, 240, 255, 0.2) 0%, rgba(168, 85, 247, 0.2) 100%)',
                     border: '1px solid rgba(0, 240, 255, 0.5)',
                     borderRadius: '9999px',
@@ -540,13 +547,22 @@ export const TrollboxChat: React.FC<TrollboxChatProps> = ({
                     fontSize: '11px',
                     fontWeight: 800,
                     cursor: 'pointer',
-                    transition: 'all 0.2s',
+                    transition: 'all 0.18s ease',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'scale(1.04)';
+                    e.currentTarget.style.boxShadow = '0 0 12px rgba(0, 240, 255, 0.35)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'scale(1)';
+                    e.currentTarget.style.boxShadow = 'none';
                   }}
                 >
                   <CloudRain size={12} />
                   <span>Rain</span>
                 </button>
 
+                {/* Close Button */}
                 <button
                   type="button"
                   onClick={() => {
@@ -554,86 +570,168 @@ export const TrollboxChat: React.FC<TrollboxChatProps> = ({
                     setIsOpen(false);
                   }}
                   style={{
-                    background: 'transparent',
-                    border: 'none',
+                    background: 'rgba(255, 255, 255, 0.04)',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
                     color: '#8E9B97',
+                    borderRadius: '50%',
+                    width: '26px',
+                    height: '26px',
                     cursor: 'pointer',
-                    padding: '4px',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
+                    transition: 'all 0.18s ease',
                   }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'rgba(239, 68, 68, 0.2)';
+                    e.currentTarget.style.color = '#EF4444';
+                    e.currentTarget.style.borderColor = 'rgba(239, 68, 68, 0.4)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.04)';
+                    e.currentTarget.style.color = '#8E9B97';
+                    e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+                  }}
+                  title="Close Trollbox"
                 >
-                  <X size={18} />
+                  <X size={14} />
                 </button>
               </div>
             </div>
 
-            {/* Chat Messages Body */}
+            {/* Chat Messages Body with Sleek Custom Scrollbar */}
             <div
+              className="trollbox-scroll"
               style={{
                 flex: 1,
                 overflowY: 'auto',
-                padding: '14px',
+                padding: '12px 14px',
                 display: 'flex',
                 flexDirection: 'column',
-                gap: '10px',
+                gap: '8px',
               }}
             >
-              {messages.map((m) => (
-                <div
-                  key={m.id}
-                  style={{
-                    background: m.isSystem ? 'rgba(169, 221, 211, 0.08)' : 'rgba(255, 255, 255, 0.03)',
-                    border: m.isSystem ? '1px solid rgba(169, 221, 211, 0.3)' : '1px solid rgba(255, 255, 255, 0.06)',
-                    borderRadius: '14px',
-                    padding: '8px 12px',
-                  }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '4px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      {!m.isSystem && (
-                        <div
-                          style={{
-                            width: '18px',
-                            height: '18px',
-                            borderRadius: '50%',
-                            overflow: 'hidden',
-                            border: '1px solid #A9DDD3',
-                            flexShrink: 0,
-                          }}
-                        >
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img
-                            src={m.avatar || `https://unavatar.io/x/${m.sender}`}
-                            alt={m.sender}
-                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                            onError={(e) => {
-                              (e.currentTarget as HTMLImageElement).src =
-                                'https://pbs.twimg.com/profile_images/1990106346264666112/pbBiIRET_400x400.png';
+              {messages.map((m) => {
+                const isRain = m.sender === 'SHARD RAIN 🌧️' || (m.isSystem && m.text && m.text.includes('made it rain'));
+                const isSelf = Boolean(activeUsername && m.sender.toLowerCase().trim() === activeUsername.toLowerCase().trim());
+
+                return (
+                  <div
+                    key={m.id}
+                    style={{
+                      background: isRain
+                        ? 'linear-gradient(135deg, rgba(0, 240, 255, 0.09) 0%, rgba(168, 85, 247, 0.14) 100%)'
+                        : isSelf
+                        ? 'linear-gradient(135deg, rgba(169, 221, 211, 0.09) 0%, rgba(169, 221, 211, 0.03) 100%)'
+                        : m.isSystem
+                        ? 'rgba(169, 221, 211, 0.06)'
+                        : 'rgba(255, 255, 255, 0.03)',
+                      border: isRain
+                        ? '1px solid rgba(0, 240, 255, 0.38)'
+                        : isSelf
+                        ? '1px solid rgba(169, 221, 211, 0.28)'
+                        : m.isSystem
+                        ? '1px solid rgba(169, 221, 211, 0.22)'
+                        : '1px solid rgba(255, 255, 255, 0.07)',
+                      borderRadius: '13px',
+                      padding: '9px 12px',
+                      boxShadow: isRain ? '0 4px 16px rgba(0, 240, 255, 0.08)' : 'none',
+                      transition: 'border-color 0.2s',
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '4px', gap: '6px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', minWidth: 0 }}>
+                        {isRain ? (
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                            <span style={{ fontSize: '13px' }}>🌧️</span>
+                            <span style={{ fontWeight: 900, fontSize: '11px', color: '#00F0FF', letterSpacing: '0.04em' }}>
+                              SHARD RAIN
+                            </span>
+                          </div>
+                        ) : !m.isSystem ? (
+                          <>
+                            <div
+                              style={{
+                                width: '20px',
+                                height: '20px',
+                                borderRadius: '50%',
+                                overflow: 'hidden',
+                                border: isSelf ? '1.5px solid #A9DDD3' : '1px solid rgba(255, 255, 255, 0.2)',
+                                flexShrink: 0,
+                              }}
+                            >
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img
+                                src={m.avatar || `https://unavatar.io/x/${m.sender}`}
+                                alt={m.sender}
+                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                onError={(e) => {
+                                  (e.currentTarget as HTMLImageElement).src =
+                                    'https://pbs.twimg.com/profile_images/1990106346264666112/pbBiIRET_400x400.png';
+                                }}
+                              />
+                            </div>
+                            <span
+                              style={{
+                                fontWeight: 800,
+                                fontSize: '11.5px',
+                                color: isSelf ? '#A9DDD3' : '#E8E3D5',
+                                whiteSpace: 'nowrap',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                              }}
+                            >
+                              @{m.sender}
+                            </span>
+                            {isSelf && (
+                              <span
+                                style={{
+                                  fontSize: '8.5px',
+                                  fontWeight: 900,
+                                  background: '#A9DDD3',
+                                  color: '#010101',
+                                  padding: '1px 5px',
+                                  borderRadius: '4px',
+                                  lineHeight: 1.2,
+                                  letterSpacing: '0.04em',
+                                }}
+                              >
+                                YOU
+                              </span>
+                            )}
+                          </>
+                        ) : (
+                          <span
+                            style={{
+                              fontWeight: 800,
+                              fontSize: '11px',
+                              color: '#A9DDD3',
                             }}
-                          />
-                        </div>
-                      )}
-                      <span
-                        style={{
-                          fontWeight: 800,
-                          fontSize: '11px',
-                          color: m.isSystem ? '#A9DDD3' : '#E8E3D5',
-                        }}
-                      >
-                        {m.isSystem ? m.sender : `@${m.sender}`}
+                          >
+                            {m.sender}
+                          </span>
+                        )}
+                      </div>
+
+                      <span style={{ fontSize: '9.5px', color: '#7E8B87', fontFamily: 'var(--font-mono)', flexShrink: 0 }}>
+                        {formatMessageLocalTime(m)}
                       </span>
                     </div>
-                    <span style={{ fontSize: '9px', color: '#667773', fontFamily: 'var(--font-mono)' }}>
-                      {formatMessageLocalTime(m)}
-                    </span>
+
+                    <p
+                      style={{
+                        margin: 0,
+                        fontSize: '12px',
+                        color: isRain ? '#E0F2FE' : '#D4DDD9',
+                        lineHeight: 1.45,
+                        wordBreak: 'break-word',
+                      }}
+                    >
+                      {m.text}
+                    </p>
                   </div>
-                  <p style={{ margin: 0, fontSize: '12px', color: '#D4DDD9', lineHeight: 1.4, wordBreak: 'break-word' }}>
-                    {m.text}
-                  </p>
-                </div>
-              ))}
+                );
+              })}
               <div ref={messagesEndRef} />
             </div>
 
@@ -641,11 +739,12 @@ export const TrollboxChat: React.FC<TrollboxChatProps> = ({
             <form
               onSubmit={handleSendMessage}
               style={{
-                padding: '12px 14px',
+                padding: '10px 12px',
                 borderTop: '1px solid rgba(169, 221, 211, 0.15)',
                 display: 'flex',
                 gap: '8px',
-                background: 'rgba(0,0,0,0.6)',
+                background: 'rgba(2, 6, 5, 0.95)',
+                alignItems: 'center',
               }}
             >
               <input
@@ -657,20 +756,29 @@ export const TrollboxChat: React.FC<TrollboxChatProps> = ({
                 disabled={!activeUsername || isSending}
                 style={{
                   flex: 1,
-                  background: 'rgba(255, 255, 255, 0.05)',
+                  background: 'rgba(255, 255, 255, 0.04)',
                   border: '1px solid rgba(169, 221, 211, 0.25)',
                   borderRadius: '12px',
                   padding: '9px 12px',
                   color: '#FFFFFF',
                   fontSize: '12px',
                   outline: 'none',
+                  transition: 'border-color 0.2s',
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = '#A9DDD3';
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = 'rgba(169, 221, 211, 0.25)';
                 }}
               />
               <button
                 type="submit"
                 disabled={!input.trim() || !activeUsername || isSending}
                 style={{
-                  background: input.trim() && activeUsername && !isSending ? '#A9DDD3' : 'rgba(255, 255, 255, 0.1)',
+                  background: input.trim() && activeUsername && !isSending
+                    ? 'linear-gradient(135deg, #A9DDD3 0%, #6EBBAE 100%)'
+                    : 'rgba(255, 255, 255, 0.08)',
                   color: '#010101',
                   border: 'none',
                   borderRadius: '12px',
@@ -682,9 +790,10 @@ export const TrollboxChat: React.FC<TrollboxChatProps> = ({
                   cursor: input.trim() && activeUsername && !isSending ? 'pointer' : 'not-allowed',
                   transition: 'all 0.2s',
                   flexShrink: 0,
+                  boxShadow: input.trim() && activeUsername && !isSending ? '0 0 12px rgba(169, 221, 211, 0.4)' : 'none',
                 }}
               >
-                <Send size={15} color={input.trim() && user?.username && !isSending ? '#010101' : '#666'} />
+                <Send size={15} color={input.trim() && activeUsername && !isSending ? '#010101' : '#667773'} />
               </button>
             </form>
           </div>
