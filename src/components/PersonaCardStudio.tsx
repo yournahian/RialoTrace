@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useCallback } from 'react';
 import { Search, Sparkles, Share2, Copy, Check, RefreshCw, Upload, Palette, Edit3, Download } from 'lucide-react';
+import { toBlob } from 'html-to-image';
 import { sound } from '@/lib/soundFx';
 import { exportPersonaCardPNG } from './PersonaCardCanvasExporter';
 
@@ -171,13 +172,36 @@ export const PersonaCardStudio: React.FC = () => {
     setCard(prev => prev ? { ...prev, imageUrl: `https://unavatar.io/x/${prev.handle}`, useCustomImage: false } : prev);
   };
 
-  /* ── Download PNG Card ── */
+  /* Helper to generate 1:1 identical PNG blob */
+  const captureCardBlob = async (): Promise<Blob | null> => {
+    if (!card) return null;
+    if (cardRef.current) {
+      try {
+        const themeObj = rarityTheme(card.rarity);
+        const b = await toBlob(cardRef.current, {
+          pixelRatio: 2.5,
+          cacheBust: true,
+          style: {
+            transform: 'none',
+            transformStyle: 'flat',
+            boxShadow: `inset 0 0 0 2px ${themeObj.color}`,
+          },
+        });
+        if (b) return b;
+      } catch (err) {
+        console.warn('DOM capture fallback to canvas exporter', err);
+      }
+    }
+    return await exportPersonaCardPNG(card);
+  };
+
+  /* ── Download PNG Card (100% Identical) ── */
   const handleDownload = async () => {
     if (!card || downloading) return;
     sound.playTap();
     setDownloading(true);
     try {
-      const blob = await exportPersonaCardPNG(card);
+      const blob = await captureCardBlob();
       if (blob) {
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -196,13 +220,13 @@ export const PersonaCardStudio: React.FC = () => {
     }
   };
 
-  /* ── Copy Card Image to Clipboard ── */
+  /* ── Copy Card Image to Clipboard (100% Identical) ── */
   const handleCopyImage = async () => {
     if (!card || copying) return;
     sound.playTap();
     setCopying(true);
     try {
-      const blob = await exportPersonaCardPNG(card);
+      const blob = await captureCardBlob();
       if (blob && navigator.clipboard && typeof ClipboardItem !== 'undefined') {
         try {
           await navigator.clipboard.write([
@@ -210,7 +234,7 @@ export const PersonaCardStudio: React.FC = () => {
           ]);
           setCopiedStatus('IMAGE');
           sound.playSuccess?.();
-          setTimeout(() => setCopiedStatus(null), 2500);
+          setTimeout(() => setCopiedStatus(null), 3000);
           return;
         } catch (clipErr) {
           console.warn('Clipboard image write restricted, falling back to text', clipErr);
@@ -227,14 +251,14 @@ export const PersonaCardStudio: React.FC = () => {
     }
   };
 
-  /* ── Direct Share to X (Opens Twitter composer directly with image copied to clipboard) ── */
+  /* ── Direct Share to X (Directly opens Twitter composer with image copied to clipboard) ── */
   const handleShareToX = async () => {
     if (!card) return;
     sound.playTap();
 
-    // 1. Silently copy image to clipboard so user can just Ctrl+V into Twitter/X
+    // 1. Silently copy identical image to clipboard
     try {
-      const blob = await exportPersonaCardPNG(card);
+      const blob = await captureCardBlob();
       if (blob && navigator.clipboard && typeof ClipboardItem !== 'undefined') {
         await navigator.clipboard.write([
           new ClipboardItem({ 'image/png': blob })
@@ -396,6 +420,7 @@ export const PersonaCardStudio: React.FC = () => {
                 <img
                   src={card.imageUrl}
                   alt={card.handle}
+                  crossOrigin="anonymous"
                   style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top center', display: 'block' }}
                   onError={e => { e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(card.handle)}&background=0A0D0C&color=E5C365&size=400&bold=true`; }}
                 />
