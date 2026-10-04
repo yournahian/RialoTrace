@@ -662,38 +662,43 @@ export const XRayRoast: React.FC<{ initialHandle?: string }> = ({ initialHandle 
               </span>
             </div>
 
-            {/* === CENTER: HERO PFP === */}
+            {/* === HERO PFP: fills top of card from header to info block === */}
             <div
               style={{
                 position: 'absolute',
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -54%)',
-                zIndex: 6,
-                width: '175px',
-                height: '175px',
-                borderRadius: '18px',
+                top: '40px',          /* sits flush below the header strip */
+                left: '44px',         /* inside left RIALO bar */
+                right: '36px',        /* inside right tag bar */
+                bottom: '190px',      /* stops at top of info block */
+                zIndex: 4,
                 overflow: 'hidden',
-                border: `3px solid ${theme.color}`,
-                boxShadow: `0 0 40px ${theme.glow}, 0 0 80px rgba(0,0,0,0.9), 0 20px 40px rgba(0,0,0,0.8)`,
               }}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={
-                  result.handle.toLowerCase() === 'yournahin' || result.handle.toLowerCase() === 'yournahian'
-                    ? 'https://pbs.twimg.com/profile_images/1990106346264666112/pbBiIRET_400x400.png'
-                    : `https://unavatar.io/x/${result.handle}`
-                }
+                src={`https://unavatar.io/x/${result.handle}`}
                 alt={result.handle}
                 style={{
                   width: '100%',
                   height: '100%',
                   objectFit: 'cover',
+                  objectPosition: 'top center',
                   display: 'block',
                 }}
                 onError={(e) => {
-                  e.currentTarget.src = 'https://pbs.twimg.com/profile_images/1990106346264666112/pbBiIRET_400x400.png';
+                  e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(result.handle)}&background=0A0D0C&color=E5C365&size=400&bold=true`;
+                }}
+              />
+              {/* Fade gradient at the bottom of PFP so it bleeds into the info block */}
+              <div
+                style={{
+                  position: 'absolute',
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  height: '80px',
+                  background: 'linear-gradient(to bottom, transparent 0%, rgba(7,10,9,0.95) 100%)',
+                  pointerEvents: 'none',
                 }}
               />
             </div>
@@ -702,9 +707,9 @@ export const XRayRoast: React.FC<{ initialHandle?: string }> = ({ initialHandle 
             <div
               style={{
                 position: 'absolute',
-                top: '50%',
+                top: '42px',
                 left: '50%',
-                transform: 'translate(-10%, -115%) rotate(-7deg)',
+                transform: 'translateX(-40%) rotate(-7deg)',
                 zIndex: 7,
                 fontFamily: "'Caveat', 'Dancing Script', cursive",
                 fontSize: '28px',
