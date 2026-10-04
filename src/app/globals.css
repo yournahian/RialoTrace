@@ -4046,12 +4046,18 @@ body {
   z-index: 999999;
   cursor: pointer;
   user-select: none;
-  filter: drop-shadow(0 0 12px rgba(169, 221, 211, 0.85));
+  pointer-events: auto !important;
+  touch-action: manipulation;
+  padding: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 0 14px rgba(169, 221, 211, 0.9));
   transition: transform 0.15s ease, filter 0.15s ease;
   will-change: transform, opacity;
 }
 
 .shard-falling-item:hover {
-  transform: scale(1.4) !important;
-  filter: drop-shadow(0 0 24px #A9DDD3) drop-shadow(0 0 40px #10B981);
+  transform: scale(1.45) !important;
+  filter: drop-shadow(0 0 24px #A9DDD3) drop-shadow(0 0 45px #10B981);
 }

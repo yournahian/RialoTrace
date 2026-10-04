@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 ﻿import { NextRequest, NextResponse } from 'next/server';
 import { getOrCreateUser, saveUser, kvGet, kvSet } from '@/lib/db';
 import { ALL_30_CARDS } from '@/lib/cardsData';
@@ -141,9 +143,11 @@ export async function POST(req: NextRequest) {
     }
 
     if (action === 'CATCH_RAIN_SHARD') {
-      user.shards += 5; user.lifetimePoints += 5; user.updatedAt = new Date().toISOString();
+      user.shards = (user.shards || 0) + 15;
+      user.lifetimePoints = (user.lifetimePoints || 0) + 15;
+      user.updatedAt = new Date().toISOString();
       const saved = await saveUser(user);
-      return NextResponse.json({ success: true, user: saved });
+      return NextResponse.json({ success: true, earnedShards: 15, user: saved });
     }
 
     if (action === 'FUSE_CARDS') {
