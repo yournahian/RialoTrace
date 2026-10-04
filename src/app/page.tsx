@@ -3,6 +3,7 @@ import { sound } from '@/lib/soundFx';
 
 import React, { useState, useEffect } from 'react';
 import { NavigationDock, TabType } from '@/components/NavigationDock';
+import { BroadcastNoticeBanner } from '@/components/BroadcastNoticeBanner';
 import { ProofOfWork } from '@/components/ProofOfWork';
 import { RialoCards } from '@/components/RialoCards';
 import { DailyMissions } from '@/components/DailyMissions';
@@ -413,6 +414,12 @@ export default function HomePage() {
           transition: 'filter 0.3s ease',
         }}
       >
+        {/* Global Notice & Announcement Banner across every main section (persistent until dismissed) */}
+        <BroadcastNoticeBanner
+          currentUsername={currentUsername}
+          currentUser={currentUser}
+          onUserUpdate={(u) => setCurrentUser(u)}
+        />
         {activeTab === 'proof' && <ProofOfWork currentUsername={currentUsername} />}
         {activeTab === 'missions' && (
           <DailyMissions
