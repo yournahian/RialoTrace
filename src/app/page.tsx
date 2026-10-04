@@ -25,10 +25,12 @@ import { OnboardingModal } from '@/components/OnboardingModal';
 import { TrollboxChat } from '@/components/TrollboxChat';
 import { SoundToggle } from '@/components/SoundToggle';
 import { NotificationCenter } from '@/components/NotificationCenter';
-import { User } from 'lucide-react';
+import { MobileNavDrawer } from '@/components/MobileNavDrawer';
+import { User, Menu } from 'lucide-react';
 
 export default function HomePage() {
   const [activeTab, setActiveTab] = useState<TabType>('proof');
+  const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -400,8 +402,34 @@ export default function HomePage() {
             <span className="pulse-dot" />
             <span>rialo.io</span>
           </a>
+
+          {/* Mobile Hamburger Menu Toggle Button */}
+          <button
+            type="button"
+            onClick={() => {
+              sound.playTap();
+              setIsMobileNavOpen(true);
+            }}
+            className="mobile-hamburger-btn"
+            title="Open Navigation Menu"
+            aria-label="Open Navigation Menu"
+          >
+            <Menu size={20} color="#A9DDD3" />
+          </button>
         </div>
       </header>
+
+      {/* Slide-out Mobile Navigation Drawer */}
+      <MobileNavDrawer
+        isOpen={isMobileNavOpen}
+        onClose={() => setIsMobileNavOpen(false)}
+        activeTab={activeTab}
+        onSelectTab={!currentUsername ? () => setIsOnboardingOpen(true) : handleSelectTab}
+        user={currentUser}
+        currentUsername={currentUsername}
+        onSwitchAccount={() => setIsOnboardingOpen(true)}
+        onLogOut={handleLogOut}
+      />
 
       <NavigationDock activeTab={activeTab} onSelectTab={!currentUsername ? () => setIsOnboardingOpen(true) : handleSelectTab} />
 

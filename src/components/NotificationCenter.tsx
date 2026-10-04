@@ -261,21 +261,27 @@ export const NotificationCenter: React.FC<NotificationCenterProps> = ({
         )}
       </button>
 
-      {/* Floating Dropdown Panel */}
+      {/* Mobile Backdrop to prevent off-screen or stuck state */}
       {isOpen && (
         <div
+          className="notification-mobile-backdrop"
+          onClick={() => {
+            sound.playTap();
+            setIsOpen(false);
+          }}
+        />
+      )}
+
+      {/* Floating Dropdown Panel (Desktop anchored / Mobile fixed centered) */}
+      {isOpen && (
+        <div
+          className="notification-dropdown-panel"
           style={{
-            position: 'absolute',
-            top: '48px',
-            right: '0',
-            width: '360px',
-            maxWidth: '92vw',
             background: 'rgba(6, 10, 14, 0.98)',
             border: '1.5px solid rgba(169, 221, 211, 0.35)',
             borderRadius: '20px',
             boxShadow: '0 20px 50px rgba(0, 0, 0, 0.85), 0 0 25px rgba(169, 221, 211, 0.15)',
             backdropFilter: 'blur(20px)',
-            zIndex: 9999,
             overflow: 'hidden',
             animation: 'fadeIn 0.15s ease-out',
           }}
