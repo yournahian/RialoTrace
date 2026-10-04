@@ -462,16 +462,7 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onSelectTa
       {/* ========================================================
           USER IDENTITY PROFILE CARD (OFFICIAL BRAND THEME)
           ======================================================== */}
-      <div style={{
-        background: 'linear-gradient(135deg, rgba(8, 12, 18, 0.95) 0%, rgba(2, 4, 6, 0.98) 100%)',
-        border: '1.5px solid rgba(169, 221, 211, 0.28)',
-        borderRadius: '28px',
-        padding: '32px',
-        boxShadow: '0 20px 50px rgba(0, 0, 0, 0.9), 0 0 30px rgba(169, 221, 211, 0.08)',
-        marginBottom: '28px',
-        position: 'relative',
-        overflow: 'hidden',
-      }}>
+      <div className="profile-hero-card">
         {/* Subtle Brand Background Glow */}
         <div style={{
           position: 'absolute',
@@ -484,9 +475,9 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onSelectTa
           pointerEvents: 'none',
         }} />
 
-        <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '24px' }}>
+        <div className="profile-identity-main-row">
           {/* Avatar + Identity Details */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '24px', flexWrap: 'wrap' }}>
+          <div className="profile-identity-wrap">
             {/* Interactive Avatar with Halo */}
             <div style={{ position: 'relative' }}>
               <div style={{
@@ -551,7 +542,7 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onSelectTa
               </div>
 
               {/* Standing & Ticket Badge */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+              <div className="profile-badges-row">
                 <span style={{
                   fontSize: '12px',
                   fontWeight: 800,
@@ -582,7 +573,7 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onSelectTa
           </div>
 
           {/* Quick Action Shortcuts */}
-          <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
+          <div className="profile-actions-grid">
             {onSwitchAccount && (
               <button
                 type="button"
@@ -690,14 +681,7 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onSelectTa
         </div>
 
         {/* 4-Stat Overview Bar */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
-          gap: '14px',
-          marginTop: '28px',
-          paddingTop: '20px',
-          borderTop: '1px solid rgba(255, 255, 255, 0.08)',
-        }}>
+        <div className="profile-stats-grid">
           <div style={{ background: 'rgba(255,255,255,0.02)', padding: '12px 16px', borderRadius: '14px', border: '1px solid rgba(255,255,255,0.06)' }}>
             <div style={{ fontSize: '11px', color: '#8E9B97', fontWeight: 700 }}>ACTIVE SHARDS</div>
             <div style={{ fontSize: '20px', fontWeight: 900, color: '#A9DDD3', marginTop: '2px' }}>{shards.toLocaleString()} 💎</div>

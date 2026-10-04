@@ -534,7 +534,7 @@ export const TopRialoPosts: React.FC<TopRialoPostsProps> = ({ currentUsername })
             }}
           >
             <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#A9DDD3', boxShadow: '0 0 8px #A9DDD3' }} />
-            <span>VERIFIED PROTOCOL GEMS & ECOSYSTEM ALPHA</span>
+            <span>PROTOCOL GEMS & ALPHA</span>
           </div>
         </div>
 
@@ -564,18 +564,22 @@ export const TopRialoPosts: React.FC<TopRialoPostsProps> = ({ currentUsername })
         </p>
 
         {/* Live Ecosystem Stats Pill Grid */}
-        <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '14px' }}>
-          <div style={{ padding: '8px 18px', borderRadius: '9999px', background: 'rgba(9, 9, 9, 0.8)', border: '1px solid rgba(169, 221, 211, 0.2)', fontSize: '12px', fontWeight: 700, color: '#E8E3D5', display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <span style={{ color: '#A9DDD3', fontWeight: 900 }}>🌊 Testnet Phase</span> Active Developer Playground
+        <div className="gems-stats-grid">
+          <div className="gems-stat-item">
+            <span style={{ color: '#A9DDD3', fontWeight: 900 }}>🌊 Testnet Phase</span>
+            <span style={{ color: 'rgba(232, 227, 213, 0.85)' }}>Active Playground</span>
           </div>
-          <div style={{ padding: '8px 18px', borderRadius: '9999px', background: 'rgba(9, 9, 9, 0.8)', border: '1px solid rgba(169, 221, 211, 0.2)', fontSize: '12px', fontWeight: 700, color: '#E8E3D5', display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <span style={{ color: '#A9DDD3', fontWeight: 900 }}>⚡ Architecture</span> Sub-Second Deterministic Finality
+          <div className="gems-stat-item">
+            <span style={{ color: '#A9DDD3', fontWeight: 900 }}>⚡ Architecture</span>
+            <span style={{ color: 'rgba(232, 227, 213, 0.85)' }}>Sub-Second Finality</span>
           </div>
-          <div style={{ padding: '8px 18px', borderRadius: '9999px', background: 'rgba(9, 9, 9, 0.8)', border: '1px solid rgba(169, 221, 211, 0.2)', fontSize: '12px', fontWeight: 700, color: '#E8E3D5', display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <span style={{ color: '#A9DDD3', fontWeight: 900 }}>💎 Core Leads</span> Verified Ecosystem Builders
+          <div className="gems-stat-item">
+            <span style={{ color: '#A9DDD3', fontWeight: 900 }}>💎 Core Leads</span>
+            <span style={{ color: 'rgba(232, 227, 213, 0.85)' }}>Verified Builders</span>
           </div>
-          <div style={{ padding: '8px 18px', borderRadius: '9999px', background: 'rgba(9, 9, 9, 0.8)', border: '1px solid rgba(169, 221, 211, 0.2)', fontSize: '12px', fontWeight: 700, color: '#E8E3D5', display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <span style={{ color: '#A9DDD3', fontWeight: 900 }}>🔥 8 Verified Posts</span> Real-Time Proof Stream
+          <div className="gems-stat-item">
+            <span style={{ color: '#A9DDD3', fontWeight: 900 }}>🔥 Real-Time Feed</span>
+            <span style={{ color: 'rgba(232, 227, 213, 0.85)' }}>8 Verified Posts</span>
           </div>
         </div>
       </div>

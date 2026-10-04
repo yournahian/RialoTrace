@@ -124,15 +124,15 @@ export const MainnetRadar: React.FC = () => {
         {/* Pulsing Status Pill */}
         <div className="feature-pill-badge" style={{ borderColor: 'rgba(169, 221, 211, 0.4)', color: '#A9DDD3' }}>
           <span className="card-wave-dot" style={{ background: '#10B981', boxShadow: '0 0 10px #10B981' }} />
-          <span>CURRENT PHASE: ACTIVE PLAYGROUND TESTNET (playground.rialo.io)</span>
+          <span>CURRENT PHASE: PLAYGROUND TESTNET</span>
         </div>
 
         <h2 className="feature-title">
           Rialo Mainnet Launch <span className="gradient-text-amber">Coming Soon</span>
         </h2>
         <p className="feature-desc">
-          Rialo is the high-throughput network with configurable privacy built for real-world finance and intelligent systems.
-          Mainnet launch date has not yet been published — the network is currently live in active developer playground testnet.
+          Rialo is the high-throughput network with configurable privacy built for real-world finance.
+          Currently live in active developer playground testnet.
         </p>
 
         {/* Roadmap Stages Bar (Playground itself is Testnet) */}
