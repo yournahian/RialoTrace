@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import { CardArchetype, UserProfile } from '@/lib/types';
 import { ALL_30_CARDS } from '@/lib/cardsData';
 import { TheForge } from './TheForge';
-import { CardCreatorStudio } from './CardCreatorStudio';
+import { PersonaCardStudio } from './PersonaCardStudio';
 import { Palette } from 'lucide-react';
 import { sound } from '@/lib/soundFx';
 import { exportRialoCardPNG, exportRialoCardBackPNG } from './RialoCardCanvasExporter';
@@ -268,14 +268,14 @@ export const CardBinder: React.FC<CardBinderProps> = ({ user, onUserUpdate, onSe
             transition: 'all 0.2s',
           }}
         >
-          <Sparkles size={16} color="#A9DDD3" /> 🎨 Card & Meme Studio
+          <Sparkles size={16} color="#A9DDD3" /> 🎴 Persona Card Studio
         </button>
       </div>
 
       {binderMode === 'forge' ? (
         <TheForge user={user} onUserUpdate={onUserUpdate} onNavigateToAlbum={() => setBinderMode('album')} />
       ) : binderMode === 'studio' ? (
-        <CardCreatorStudio />
+        <PersonaCardStudio />
       ) : (
         <>
           {/* Top Header - Unified Centered Architecture */}

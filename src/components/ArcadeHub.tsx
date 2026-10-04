@@ -5,7 +5,6 @@ import { Zap, Sparkles, Search, Gamepad2, Rocket, Music } from 'lucide-react';
 import { QuantumWheel } from './QuantumWheel';
 import { SuperconductorRush } from './SuperconductorRush';
 import { ZeroFrictionGlide } from './ZeroFrictionGlide';
-import { XRayRoast } from './XRayRoast';
 import { CyberSoundboard } from './CyberSoundboard';
 import { UserProfile } from '@/lib/types';
 import { sound } from '@/lib/soundFx';
@@ -16,7 +15,7 @@ interface ArcadeHubProps {
   onNavigateToBinder?: () => void;
 }
 
-type ArcadeSubTab = 'wheel' | 'glide' | 'rush' | 'roast' | 'soundboard';
+type ArcadeSubTab = 'wheel' | 'glide' | 'rush' | 'soundboard';
 
 export const ArcadeHub: React.FC<ArcadeHubProps> = ({ user, onUserUpdate, onNavigateToBinder }) => {
   const [activeSubTab, setActiveSubTab] = useState<ArcadeSubTab>('wheel');
@@ -157,27 +156,6 @@ export const ArcadeHub: React.FC<ArcadeHubProps> = ({ user, onUserUpdate, onNavi
           <Music size={16} /> 🎹 Cyber DJ Soundboard
         </button>
 
-        <button
-          type="button"
-          onClick={() => handleSwitchTab('roast')}
-          style={{
-            padding: '7px 15px',
-            borderRadius: '9999px',
-            border: activeSubTab === 'roast' ? '1.5px solid #A9DDD3' : '1px solid rgba(255, 255, 255, 0.1)',
-            background: activeSubTab === 'roast' ? 'rgba(169, 221, 211, 0.18)' : 'rgba(255, 255, 255, 0.03)',
-            color: activeSubTab === 'roast' ? '#A9DDD3' : '#8E9B97',
-            fontWeight: '800',
-            fontSize: '12px',
-            cursor: 'pointer',
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '8px',
-            boxShadow: activeSubTab === 'roast' ? '0 0 16px rgba(169, 221, 211, 0.25)' : 'none',
-            whiteSpace: 'nowrap',
-          }}
-        >
-          <Search size={16} /> 🔮 X-Ray Persona Roast
-        </button>
       </div>
 
       {/* Active Tab Component */}
@@ -186,7 +164,6 @@ export const ArcadeHub: React.FC<ArcadeHubProps> = ({ user, onUserUpdate, onNavi
         {activeSubTab === 'glide' && <ZeroFrictionGlide user={user} onUserUpdate={onUserUpdate} />}
         {activeSubTab === 'rush' && <SuperconductorRush user={user} onUserUpdate={onUserUpdate} />}
         {activeSubTab === 'soundboard' && <CyberSoundboard />}
-        {activeSubTab === 'roast' && <XRayRoast initialHandle={user?.username || ''} />}
       </div>
     </div>
   );
