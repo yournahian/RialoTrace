@@ -84,7 +84,7 @@ export const CyberSoundboard: React.FC = () => {
   }, []);
 
   return (
-    <div style={{
+    <div className="soundboard-container" style={{
       background: 'linear-gradient(180deg, rgba(8, 14, 12, 0.95) 0%, rgba(2, 5, 4, 0.98) 100%)',
       border: '1px solid rgba(169, 221, 211, 0.25)',
       borderRadius: '24px',
@@ -145,7 +145,7 @@ export const CyberSoundboard: React.FC = () => {
       </div>
 
       {/* 4x4 MPC Drum Grid */}
-      <div style={{
+      <div className="mpc-drum-grid" style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(4, 1fr)',
         gap: '12px',
@@ -160,6 +160,7 @@ export const CyberSoundboard: React.FC = () => {
               key={pad.id}
               type="button"
               onClick={() => handlePadPress(pad)}
+              className="mpc-pad-btn"
               style={{
                 aspectRatio: '1.2 / 1',
                 borderRadius: '16px',

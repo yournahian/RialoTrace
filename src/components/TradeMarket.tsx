@@ -556,9 +556,9 @@ export const TradeMarket: React.FC<TradeMarketProps> = ({
         </div>
 
         {/* Filter Tabs & Rarity Pills */}
-        <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '12px', borderTop: '1px solid rgba(255, 255, 255, 0.08)', paddingTop: '14px' }}>
+        <div className="trade-filter-container" style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '12px', borderTop: '1px solid rgba(255, 255, 255, 0.08)', paddingTop: '14px' }}>
           {/* View Filter Tabs */}
-          <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+          <div className="trade-view-tabs" style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
             {[
               { id: 'ALL', label: `All Listings (${trades.length})` },
               { id: 'CAN_ACCEPT', label: `✨ Matches My Cards (${fulfillableCount})` },
@@ -586,7 +586,7 @@ export const TradeMarket: React.FC<TradeMarketProps> = ({
           </div>
 
           {/* Rarity Filter */}
-          <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', alignItems: 'center' }}>
+          <div className="trade-rarity-row" style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', alignItems: 'center' }}>
             <span style={{ fontSize: '11px', color: 'rgba(232, 227, 213, 0.45)' }}>Rarity:</span>
             {(['ALL', 'COMMON', 'RARE', 'EPIC', 'LEGENDARY', 'MYTHIC'] as const).map((r) => (
               <button
@@ -693,7 +693,7 @@ export const TradeMarket: React.FC<TradeMarketProps> = ({
             return (
               <div
                 key={t.id}
-                className="trade-row-glow"
+                className="trade-row-glow trade-listing-card"
                 style={{
                   display: 'flex',
                   flexWrap: 'wrap',

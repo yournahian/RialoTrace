@@ -175,7 +175,7 @@ export const CryoStreakVault: React.FC<CryoStreakVaultProps> = ({ user, onUserUp
       )}
 
       {/* 7-Day Cylinders Grid */}
-      <div style={{
+      <div className="cryo-streak-grid" style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fit, minmax(115px, 1fr))',
         gap: '12px',

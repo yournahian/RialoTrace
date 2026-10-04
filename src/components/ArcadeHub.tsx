@@ -60,14 +60,8 @@ export const ArcadeHub: React.FC<ArcadeHubProps> = ({ user, onUserUpdate, onNavi
         </div>
       </div>
 
-      {/* Sub-Navigation Pills - Centered & Compact */}
-      <div style={{
-        display: 'flex',
-        justifyContent: 'center',
-        gap: '6px',
-        marginBottom: '10px',
-        flexWrap: 'wrap',
-      }}>
+      {/* Sub-Navigation Pills - Centered & Compact (Horizontal scroll on mobile) */}
+      <div className="arcade-subnav-row">
         <button
           type="button"
           onClick={() => handleSwitchTab('wheel')}

@@ -620,6 +620,7 @@ export const CardBinder: React.FC<CardBinderProps> = ({ user, onUserUpdate, onSe
             type="button"
             onClick={() => setInspectedCardId(null)}
             aria-label="Close modal"
+            className="card-inspect-close-btn"
             style={{
               position: 'fixed',
               top: '24px',
@@ -652,6 +653,7 @@ export const CardBinder: React.FC<CardBinderProps> = ({ user, onUserUpdate, onSe
                 openCard(navCardList[currentNavIndex - 1]);
               }}
               title="Previous Card (Left Arrow)"
+              className="card-inspect-prev-btn"
               style={{
                 position: 'fixed',
                 left: '28px',
@@ -686,6 +688,7 @@ export const CardBinder: React.FC<CardBinderProps> = ({ user, onUserUpdate, onSe
                 openCard(navCardList[currentNavIndex + 1]);
               }}
               title="Next Card (Right Arrow)"
+              className="card-inspect-next-btn"
               style={{
                 position: 'fixed',
                 right: '28px',
@@ -713,6 +716,7 @@ export const CardBinder: React.FC<CardBinderProps> = ({ user, onUserUpdate, onSe
           {/* 3D Coverflow Stage for the ENTIRE CARD + DESCRIPTION SECTION */}
           <div
             onClick={(e) => e.stopPropagation()}
+            className="card-inspect-stage"
             style={{
               position: 'relative',
               width: '100%',
@@ -726,6 +730,7 @@ export const CardBinder: React.FC<CardBinderProps> = ({ user, onUserUpdate, onSe
             }}
           >
             <div
+              className="card-inspect-track"
               style={{
                 position: 'relative',
                 width: '840px',
@@ -755,6 +760,7 @@ export const CardBinder: React.FC<CardBinderProps> = ({ user, onUserUpdate, onSe
                 return (
                   <div
                     key={`coverflow-unit-${card.id}`}
+                    className={`card-inspect-card-box ${isActive ? "is-active-inspect" : "is-flanking-inspect"}`}
                     onClick={() => {
                       if (!isActive) {
                         sound.playTap();
@@ -789,7 +795,7 @@ export const CardBinder: React.FC<CardBinderProps> = ({ user, onUserUpdate, onSe
                     }}
                   >
                     {/* LEFT HALF: 3D Holographic Card Artwork */}
-                    <div style={{ flexShrink: 0, width: '310px', height: '490px' }}>
+                    <div className="card-inspect-art-wrap" style={{ flexShrink: 0, width: '310px', height: '490px' }}>
                       {isActive ? (
                         <div className="monad-perspective-wrapper" style={{ width: '100%', height: '100%' }}>
                           <div
@@ -941,7 +947,7 @@ export const CardBinder: React.FC<CardBinderProps> = ({ user, onUserUpdate, onSe
                     </div>
 
                     {/* RIGHT HALF: Complete Description & Action Buttons */}
-                    <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                    <div className="card-inspect-details-wrap" style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: '16px' }}>
                       {/* Counter & Hint */}
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                         <span style={{ fontSize: '12px', color: '#8E9B97', fontWeight: 700, letterSpacing: '0.05em' }}>

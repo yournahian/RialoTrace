@@ -213,7 +213,7 @@ export const RialoCards: React.FC<RialoCardsProps> = ({
       </div>
 
       {/* Card Stage with Navigation Arrows */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '24px', marginBottom: '28px', position: 'relative' }}>
+      <div className="pack-opening-stage" style={{ display: 'flex', alignItems: 'center', gap: '24px', marginBottom: '28px', position: 'relative' }}>
         {/* Left Arrow (Prev Revealed Card) */}
         <button
           type="button"
