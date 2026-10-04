@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { TabType } from '../NavigationDock';
 import { UserProfile, CardArchetype } from '@/lib/types';
 import { MobileHeader } from './MobileHeader';
-import { MobileTabBar } from './MobileTabBar';
+import { MobileBinderView } from './MobileBinderView';
 import { MobileNavDrawer } from '../MobileNavDrawer';
 import { MobileNotificationsSheet } from './MobileNotificationsSheet';
 
@@ -90,7 +90,7 @@ export const MobileAppRoot: React.FC<MobileAppRootProps> = ({
       <main
         style={{
           flex: 1,
-          padding: '12px 10px calc(76px + env(safe-area-inset-bottom, 0px)) 10px',
+          padding: '12px 10px 40px 10px',
           boxSizing: 'border-box',
           width: '100%',
           maxWidth: '100vw',
@@ -110,7 +110,7 @@ export const MobileAppRoot: React.FC<MobileAppRootProps> = ({
         )}
 
         {activeTab === 'binder' && (
-          <CardBinder
+          <MobileBinderView
             user={currentUser}
             onUserUpdate={onUserUpdate}
             onSelectForTrade={onSelectCardForTrade}
@@ -165,9 +165,6 @@ export const MobileAppRoot: React.FC<MobileAppRootProps> = ({
           />
         )}
       </main>
-
-      {/* 4. Mobile Bottom Tab Bar */}
-      <MobileTabBar activeTab={activeTab} onSelectTab={onSelectTab} />
 
       {/* 5. Mobile Drawer Menu */}
       <MobileNavDrawer

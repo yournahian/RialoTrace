@@ -4451,6 +4451,88 @@ body {
    ========================================================================== */
 
 @media (max-width: 639px) {
+  
+  /* ==========================================================================
+     COMPACT MOBILE QUEST / MISSION CARDS (Zero Bloat, Zero Awkward Linebreaks)
+     ========================================================================== */
+  .mission-list {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+  .mission-card {
+    padding: 10px 12px !important;
+    gap: 8px !important;
+    border-radius: 14px !important;
+    min-height: 52px !important;
+    align-items: center !important;
+  }
+  .mission-card-left {
+    gap: 10px !important;
+    min-width: 0 !important;
+    flex: 1 1 auto !important;
+    overflow: hidden !important;
+  }
+  .mission-card-left .mission-check-icon {
+    flex-shrink: 0 !important;
+  }
+  .mission-card-left .mission-check-icon svg {
+    width: 18px !important;
+    height: 18px !important;
+  }
+  .mission-card-left > div:last-child {
+    min-width: 0 !important;
+    flex: 1 !important;
+    overflow: hidden !important;
+  }
+  .mission-card-left h4 {
+    font-size: 12.5px !important;
+    font-weight: 700 !important;
+    line-height: 1.25 !important;
+    margin: 0 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    max-width: 100% !important;
+  }
+  .mission-card-left p {
+    font-size: 10.5px !important;
+    line-height: 1.2 !important;
+    margin: 2px 0 0 0 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    max-width: 100% !important;
+    opacity: 0.75 !important;
+  }
+  .mission-right {
+    flex-shrink: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+  }
+  .mission-reward-badge {
+    padding: 3px 7px !important;
+    font-size: 10px !important;
+    border-radius: 6px !important;
+  }
+  .mission-btn {
+    padding: 6px 10px !important;
+    font-size: 11px !important;
+    font-weight: 800 !important;
+    border-radius: 8px !important;
+    height: 32px !important;
+    min-width: 58px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  .mission-done-badge {
+    padding: 4px 8px !important;
+    font-size: 10px !important;
+    border-radius: 6px !important;
+  }
+
   /* 1. Arcade Subnav: Single swipeable horizontal row */
   .arcade-subnav-row {
     justify-content: flex-start !important;
