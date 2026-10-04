@@ -4018,3 +4018,40 @@ body {
   margin: auto !important;
 }
 
+
+/* ========================================
+   COMMUNITY SHARD RAIN ANIMATION
+   ======================================== */
+@keyframes shardFall {
+  0% {
+    transform: translateY(-80px) rotate(0deg) scale(0.85);
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+    transform: translateY(30px) rotate(25deg) scale(1.1);
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(105vh) rotate(360deg) scale(0.9);
+    opacity: 0;
+  }
+}
+
+.shard-falling-item {
+  position: fixed;
+  top: -60px;
+  z-index: 999999;
+  cursor: pointer;
+  user-select: none;
+  filter: drop-shadow(0 0 12px rgba(169, 221, 211, 0.85));
+  transition: transform 0.15s ease, filter 0.15s ease;
+  will-change: transform, opacity;
+}
+
+.shard-falling-item:hover {
+  transform: scale(1.4) !important;
+  filter: drop-shadow(0 0 24px #A9DDD3) drop-shadow(0 0 40px #10B981);
+}

@@ -9,6 +9,8 @@ interface FallingShard {
   id: number;
   x: number;
   speed: number;
+  delay: number;
+  size: number;
 }
 
 interface TrollboxChatProps {
@@ -48,6 +50,7 @@ export const TrollboxChat: React.FC<TrollboxChatProps> = ({
   const [input, setInput] = useState('');
   const [isSending, setIsSending] = useState(false);
   const [fallingShards, setFallingShards] = useState<FallingShard[]>([]);
+  const [caughtToast, setCaughtToast] = useState<{ id: number; x: number; y: number } | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const pendingMessagesRef = useRef<Map<string, ChatMessage>>(new Map());
 
@@ -165,8 +168,9 @@ export const TrollboxChat: React.FC<TrollboxChatProps> = ({
   };
 
   const triggerShardRain = async () => {
-    if (!user?.username) return;
-    if ((user.shards || 0) < 25) {
+    const sender = activeUsername;
+    if (!sender) return;
+    if ((user?.shards || 0) < 25) {
       alert('You need at least 25 Shards to trigger a Community Shard Rain!');
       return;
     }
@@ -177,7 +181,7 @@ export const TrollboxChat: React.FC<TrollboxChatProps> = ({
       const res = await fetch('/api/arcade', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'SHARD_RAIN', username: user.username }),
+        body: JSON.stringify({ action: 'SHARD_RAIN', username: sender }),
       });
       const data = await res.json();
       if (data.success && data.user && onUserUpdate) {
@@ -194,16 +198,19 @@ export const TrollboxChat: React.FC<TrollboxChatProps> = ({
       body: JSON.stringify({
         sender: 'SHARD RAIN 🌧️',
         avatar: 'https://pbs.twimg.com/profile_images/1950265537784926208/qbjSWMDP_400x400.jpg',
-        text: `🌊 @${user.username} made it rain! Free shards are falling on screen! Click them to catch!`,
+        text: `🌊 @${sender} made it rain! Free shards are falling on screen! Click them to catch!`,
         isSystem: true,
       }),
     }).catch(() => {});
 
-    // Spawn 14 falling shards on screen
-    const newShards = Array.from({ length: 14 }).map((_, i) => ({
-      id: Date.now() + i,
-      x: Math.random() * (window.innerWidth - 60) + 20,
-      speed: Math.random() * 2 + 3,
+    // Spawn 18 falling shards cascading dynamically on screen
+    const screenW = typeof window !== 'undefined' ? window.innerWidth : 1200;
+    const newShards: FallingShard[] = Array.from({ length: 18 }).map((_, i) => ({
+      id: Date.now() + i + Math.random(),
+      x: Math.random() * (screenW - 90) + 20,
+      speed: Math.random() * 1.8 + 3.2,
+      delay: Math.random() * 2.2,
+      size: Math.floor(Math.random() * 12) + 26,
     }));
     setFallingShards(newShards);
 
@@ -212,7 +219,7 @@ export const TrollboxChat: React.FC<TrollboxChatProps> = ({
       {
         id: String(Date.now()),
         sender: 'SHARD RAIN 🌧️',
-        text: `🌊 @${user.username} made it rain! Free shards are falling on screen! Click them to catch!`,
+        text: `🌊 @${sender} made it rain! Free shards are falling on screen! Click them to catch!`,
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         isSystem: true,
       },
@@ -223,15 +230,21 @@ export const TrollboxChat: React.FC<TrollboxChatProps> = ({
     }, 9000);
   };
 
-  const handleCatchShard = (id: number) => {
+  const handleCatchShard = (id: number, e?: React.MouseEvent) => {
     sound.playPickup();
     setFallingShards((prev) => prev.filter((s) => s.id !== id));
 
-    if (user?.username) {
+    if (e) {
+      setCaughtToast({ id, x: e.clientX, y: e.clientY });
+      setTimeout(() => setCaughtToast(null), 1200);
+    }
+
+    const catcher = activeUsername;
+    if (catcher) {
       fetch('/api/arcade', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'CATCH_RAIN_SHARD', username: user.username }),
+        body: JSON.stringify({ action: 'CATCH_RAIN_SHARD', username: catcher }),
       })
         .then((res) => res.json())
         .then((data) => {
@@ -247,22 +260,41 @@ export const TrollboxChat: React.FC<TrollboxChatProps> = ({
       {fallingShards.map((s) => (
         <div
           key={s.id}
-          onClick={() => handleCatchShard(s.id)}
+          onClick={(e) => handleCatchShard(s.id, e)}
+          className="shard-falling-item"
           style={{
-            position: 'fixed',
-            top: 0,
             left: `${s.x}px`,
-            zIndex: 999999,
-            cursor: 'pointer',
-            fontSize: '28px',
-            animation: `shardFall 4s linear infinite`,
-            userSelect: 'none',
-            filter: 'drop-shadow(0 0 10px #A9DDD3)',
+            fontSize: `${s.size}px`,
+            animation: `shardFall ${s.speed}s cubic-bezier(0.25, 0.46, 0.45, 0.94) ${s.delay}s forwards`,
           }}
+          title="Click to catch free shards!"
         >
           💎
         </div>
       ))}
+      {caughtToast && (
+        <div
+          style={{
+            position: 'fixed',
+            left: `${caughtToast.x}px`,
+            top: `${caughtToast.y - 20}px`,
+            transform: 'translate(-50%, -100%)',
+            zIndex: 9999999,
+            background: 'rgba(8, 12, 10, 0.95)',
+            border: '1.5px solid #A9DDD3',
+            color: '#A9DDD3',
+            padding: '6px 14px',
+            borderRadius: '9999px',
+            fontSize: '13px',
+            fontWeight: 800,
+            boxShadow: '0 0 20px rgba(169, 221, 211, 0.5)',
+            pointerEvents: 'none',
+            animation: 'slideUp 0.3s ease-out',
+          }}
+        >
+          +25 SHARDS! 💎
+        </div>
+      )}
 
       {/* Floating Trollbox Launcher Bar */}
       <div
