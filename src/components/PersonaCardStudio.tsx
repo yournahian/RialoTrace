@@ -1,8 +1,9 @@
 'use client';
 
 import React, { useState, useRef, useCallback } from 'react';
-import { Search, Sparkles, Share2, Copy, Check, RefreshCw, Upload, Palette, Edit3 } from 'lucide-react';
+import { Search, Sparkles, Share2, Copy, Check, RefreshCw, Upload, Palette, Edit3, Download, Image as ImageIcon } from 'lucide-react';
 import { sound } from '@/lib/soundFx';
+import { exportPersonaCardPNG } from './PersonaCardCanvasExporter';
 
 /* ─────────────────────────────────────────────
    TYPES
@@ -20,7 +21,7 @@ interface CardData {
 type Rarity = CardData['rarity'];
 
 /* ─────────────────────────────────────────────
-   AUTO-GEN TEMPLATES (same as XRayRoast)
+   AUTO-GEN TEMPLATES
 ───────────────────────────────────────────── */
 const TEMPLATES: Omit<CardData, 'handle' | 'imageUrl' | 'useCustomImage'>[] = [
   { title: 'Zero-Friction Superconductor Chad', rarity: 'MYTHIC',     finalitySpeed: '0.002s (Light-Speed)',  frictionRate: '0.0001% (Absolute Zero)' },
@@ -103,7 +104,11 @@ export const PersonaCardStudio: React.FC = () => {
   const [editMode, setEditMode]       = useState(false);
   const [isHovered, setIsHovered]     = useState(false);
   const [mousePos, setMousePos]       = useState({ x: 0.5, y: 0.5 });
-  const [copied, setCopied]           = useState(false);
+  
+  const [downloading, setDownloading] = useState(false);
+  const [copying, setCopying]         = useState(false);
+  const [copiedStatus, setCopiedStatus] = useState<'IMAGE' | 'TEXT' | null>(null);
+
   const cardRef                       = useRef<HTMLDivElement>(null);
   const fileInputRef                  = useRef<HTMLInputElement>(null);
 
@@ -166,21 +171,93 @@ export const PersonaCardStudio: React.FC = () => {
     setCard(prev => prev ? { ...prev, imageUrl: `https://unavatar.io/x/${prev.handle}`, useCustomImage: false } : prev);
   };
 
-  /* ── Share ── */
-  const handleShare = () => {
-    if (!card) return;
+  /* ── Download PNG Card ── */
+  const handleDownload = async () => {
+    if (!card || downloading) return;
     sound.playTap();
-    const txt = `Just got my Rialo Persona Card!\n\n"${card.title}" [${card.rarity}]\n⚡ ${card.finalitySpeed} · Friction: ${card.frictionRate}\n\n#RialoTrace #ZeroFriction @RialoHQ`;
-    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(txt)}`, '_blank', 'noopener,noreferrer');
+    setDownloading(true);
+    try {
+      const blob = await exportPersonaCardPNG(card);
+      if (blob) {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${card.handle}-rialo-persona-card.png`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+        sound.playSuccess?.();
+      }
+    } catch (e) {
+      console.error('Failed to export card PNG', e);
+    } finally {
+      setDownloading(false);
+    }
   };
 
-  /* ── Copy ── */
-  const handleCopy = () => {
+  /* ── Copy Card Image to Clipboard ── */
+  const handleCopyImage = async () => {
+    if (!card || copying) return;
+    sound.playTap();
+    setCopying(true);
+    try {
+      const blob = await exportPersonaCardPNG(card);
+      if (blob && navigator.clipboard && typeof ClipboardItem !== 'undefined') {
+        try {
+          await navigator.clipboard.write([
+            new ClipboardItem({ 'image/png': blob })
+          ]);
+          setCopiedStatus('IMAGE');
+          sound.playSuccess?.();
+          setTimeout(() => setCopiedStatus(null), 2500);
+          return;
+        } catch (clipErr) {
+          console.warn('Clipboard image write restricted, falling back to text', clipErr);
+        }
+      }
+      // Fallback if browser blocks image clipboard write
+      await navigator.clipboard.writeText(`@${card.handle} — "${card.title}" [${card.rarity}] on #RialoTrace`);
+      setCopiedStatus('TEXT');
+      setTimeout(() => setCopiedStatus(null), 2500);
+    } catch (e) {
+      console.error('Failed to copy card image', e);
+    } finally {
+      setCopying(false);
+    }
+  };
+
+  /* ── Share (Native File Share or Auto-Download + Tweet) ── */
+  const handleShare = async () => {
     if (!card) return;
     sound.playTap();
-    navigator.clipboard.writeText(`@${card.handle} — "${card.title}" [${card.rarity}] on #RialoTrace`);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    try {
+      const blob = await exportPersonaCardPNG(card);
+      if (blob) {
+        const file = new File([blob], `${card.handle}-rialo-persona.png`, { type: 'image/png' });
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          await navigator.share({
+            files: [file],
+            title: `${card.title} - Rialo Persona Card`,
+            text: `Just forged my official Rialo Persona Card! ⚡ Zero friction, light-speed finality on #RialoTrace @RialoHQ`,
+          });
+          return;
+        }
+        // Fallback: auto download card so user has it ready to attach to tweet
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${card.handle}-rialo-persona-card.png`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      }
+    } catch (e) {
+      console.warn('Share intent error', e);
+    }
+    const txt = `Just forged my official Rialo Persona Card! 🎴\n\n"${card.title}" [${card.rarity}]\n⚡ Finality: ${card.finalitySpeed}\n🧊 Friction: ${card.frictionRate}\n\nForge yours on #RialoTrace #ZeroFriction @RialoHQ`;
+    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(txt)}`, '_blank', 'noopener,noreferrer');
   };
 
   const theme = card ? rarityTheme(card.rarity) : rarityTheme('COMMON');
@@ -209,7 +286,7 @@ export const PersonaCardStudio: React.FC = () => {
           🎴 Persona Card Studio
         </h2>
         <p style={{ fontSize: '12px', color: '#8E9B97', marginTop: '6px', lineHeight: 1.5 }}>
-          Enter any X handle → AI generates your card → edit everything to make it yours
+          Enter any X handle → AI generates your card → download, copy image, or edit everything
         </p>
       </div>
 
@@ -354,29 +431,199 @@ export const PersonaCardStudio: React.FC = () => {
                 </div>
               </div>
 
-              {/* FOOTER */}
-              <div style={{ position: 'absolute', bottom: 0, left: '44px', right: '36px', height: '54px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 16px', zIndex: 5, background: 'rgba(0,0,0,0.7)', borderTop: '1px solid rgba(229,195,101,0.2)' }}>
-                <span style={{ fontFamily: "'Space Mono',monospace", fontSize: '7.5px', letterSpacing: '1.5px', color: 'rgba(229,195,101,0.5)', textTransform: 'uppercase' }}>
-                  WWW.RIALO.IO • ZERO-FRICTION PROTOCOL
+              {/* FOOTER IN-CARD ACTIONS */}
+              <div style={{ position: 'absolute', bottom: 0, left: '44px', right: '36px', height: '54px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 12px', zIndex: 5, background: 'rgba(0,0,0,0.75)', borderTop: '1px solid rgba(229,195,101,0.2)' }}>
+                <span style={{ fontFamily: "'Space Mono',monospace", fontSize: '7.5px', letterSpacing: '1px', color: 'rgba(229,195,101,0.5)', textTransform: 'uppercase' }}>
+                  WWW.RIALO.IO
                 </span>
-                <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
-                  <button type="button" onClick={handleShare} style={{ padding: '5px 12px', background: `linear-gradient(135deg, ${theme.color} 0%, ${theme.glow} 100%)`, color: '#010101', border: 'none', borderRadius: '9999px', fontSize: '9px', fontWeight: 900, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '4px', letterSpacing: '0.5px', boxShadow: `0 0 12px ${theme.glow}`, fontFamily: "'Space Mono',monospace" }}>
-                    <Share2 size={9} /> SHARE
+                <div style={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
+                  <button
+                    type="button"
+                    onClick={handleDownload}
+                    disabled={downloading}
+                    title="Download HD PNG Card"
+                    style={{
+                      padding: '5px 9px',
+                      background: `linear-gradient(135deg, ${theme.color} 0%, ${theme.glow} 100%)`,
+                      color: '#010101',
+                      border: 'none',
+                      borderRadius: '9999px',
+                      fontSize: '8.5px',
+                      fontWeight: 900,
+                      cursor: downloading ? 'wait' : 'pointer',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '4px',
+                      letterSpacing: '0.5px',
+                      boxShadow: `0 0 10px ${theme.glow}`,
+                      fontFamily: "'Space Mono',monospace",
+                    }}
+                  >
+                    <Download size={9} /> {downloading ? 'SAVING...' : 'SAVE'}
                   </button>
-                  <button type="button" onClick={handleCopy} style={{ padding: '5px 10px', background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.18)', color: '#FFFFFF', borderRadius: '9999px', fontSize: '9px', fontWeight: 700, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '4px', fontFamily: "'Space Mono',monospace" }}>
-                    {copied ? <Check size={9} color="#A9DDD3" /> : <Copy size={9} />} {copied ? 'COPIED' : 'COPY'}
+                  <button
+                    type="button"
+                    onClick={handleCopyImage}
+                    disabled={copying}
+                    title="Copy Card Image to Clipboard"
+                    style={{
+                      padding: '5px 9px',
+                      background: copiedStatus ? 'rgba(169, 221, 211, 0.25)' : 'rgba(255,255,255,0.07)',
+                      border: copiedStatus ? '1px solid #A9DDD3' : '1px solid rgba(255,255,255,0.18)',
+                      color: copiedStatus ? '#A9DDD3' : '#FFFFFF',
+                      borderRadius: '9999px',
+                      fontSize: '8.5px',
+                      fontWeight: 700,
+                      cursor: copying ? 'wait' : 'pointer',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '4px',
+                      fontFamily: "'Space Mono',monospace",
+                    }}
+                  >
+                    {copiedStatus ? <Check size={9} color="#A9DDD3" /> : <Copy size={9} />}
+                    {copiedStatus === 'IMAGE' ? 'COPIED!' : copiedStatus === 'TEXT' ? 'TEXT' : 'COPY'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleShare}
+                    title="Share Card"
+                    style={{
+                      padding: '5px 9px',
+                      background: 'rgba(255,255,255,0.07)',
+                      border: '1px solid rgba(255,255,255,0.18)',
+                      color: '#FFFFFF',
+                      borderRadius: '9999px',
+                      fontSize: '8.5px',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '4px',
+                      fontFamily: "'Space Mono',monospace",
+                    }}
+                  >
+                    <Share2 size={9} />
                   </button>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* ── ACTION ROW (below card) ── */}
-          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'center' }}>
-            <button type="button" onClick={handleReshuffle} style={{ padding: '8px 16px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.15)', color: '#E8E3D5', borderRadius: '9999px', fontSize: '12px', fontWeight: 800, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '6px', transition: 'all 0.2s' }}>
-              <RefreshCw size={13} /> Reshuffle Archetype
+          {/* ── PRIMARY PROMINENT ACTION CONTROLS ── */}
+          <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center', maxWidth: '440px' }}>
+            {/* Download Button */}
+            <button
+              type="button"
+              onClick={handleDownload}
+              disabled={downloading}
+              style={{
+                padding: '9px 18px',
+                background: 'linear-gradient(135deg, #A9DDD3 0%, #00F0FF 100%)',
+                color: '#010101',
+                border: 'none',
+                borderRadius: '9999px',
+                fontSize: '12px',
+                fontWeight: 900,
+                cursor: downloading ? 'wait' : 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                boxShadow: '0 0 16px rgba(169,221,211,0.3)',
+                transition: 'all 0.2s',
+              }}
+            >
+              <Download size={14} />
+              {downloading ? 'Generating PNG...' : 'Download Card (PNG)'}
             </button>
-            <button type="button" onClick={() => { setEditMode(v => !v); sound.playTap(); }} style={{ padding: '8px 16px', background: editMode ? 'rgba(169,221,211,0.15)' : 'rgba(255,255,255,0.05)', border: editMode ? '1px solid rgba(169,221,211,0.4)' : '1px solid rgba(255,255,255,0.15)', color: editMode ? '#A9DDD3' : '#E8E3D5', borderRadius: '9999px', fontSize: '12px', fontWeight: 800, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '6px', transition: 'all 0.2s' }}>
+
+            {/* Copy Card Image Button */}
+            <button
+              type="button"
+              onClick={handleCopyImage}
+              disabled={copying}
+              style={{
+                padding: '9px 16px',
+                background: copiedStatus ? 'rgba(169,221,211,0.2)' : 'rgba(255,255,255,0.05)',
+                border: copiedStatus ? '1px solid #A9DDD3' : '1px solid rgba(255,255,255,0.15)',
+                color: copiedStatus ? '#A9DDD3' : '#E8E3D5',
+                borderRadius: '9999px',
+                fontSize: '12px',
+                fontWeight: 800,
+                cursor: copying ? 'wait' : 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                transition: 'all 0.2s',
+              }}
+            >
+              {copiedStatus ? <Check size={14} color="#A9DDD3" /> : <Copy size={14} />}
+              {copiedStatus === 'IMAGE' ? 'Image Copied! (Ready to paste)' : copiedStatus === 'TEXT' ? 'Link Copied!' : 'Copy Card Image'}
+            </button>
+
+            {/* Share to X */}
+            <button
+              type="button"
+              onClick={handleShare}
+              style={{
+                padding: '9px 16px',
+                background: 'rgba(255,255,255,0.05)',
+                border: '1px solid rgba(255,255,255,0.15)',
+                color: '#E8E3D5',
+                borderRadius: '9999px',
+                fontSize: '12px',
+                fontWeight: 800,
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                transition: 'all 0.2s',
+              }}
+            >
+              <Share2 size={14} /> Share to X
+            </button>
+
+            {/* Reshuffle Archetype */}
+            <button
+              type="button"
+              onClick={handleReshuffle}
+              style={{
+                padding: '9px 16px',
+                background: 'rgba(255,255,255,0.05)',
+                border: '1px solid rgba(255,255,255,0.15)',
+                color: '#8E9B97',
+                borderRadius: '9999px',
+                fontSize: '12px',
+                fontWeight: 800,
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                transition: 'all 0.2s',
+              }}
+            >
+              <RefreshCw size={13} /> Reshuffle
+            </button>
+
+            {/* Edit Card Button */}
+            <button
+              type="button"
+              onClick={() => { setEditMode(v => !v); sound.playTap(); }}
+              style={{
+                padding: '9px 16px',
+                background: editMode ? 'rgba(169,221,211,0.15)' : 'rgba(255,255,255,0.05)',
+                border: editMode ? '1px solid rgba(169,221,211,0.4)' : '1px solid rgba(255,255,255,0.15)',
+                color: editMode ? '#A9DDD3' : '#E8E3D5',
+                borderRadius: '9999px',
+                fontSize: '12px',
+                fontWeight: 800,
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                transition: 'all 0.2s',
+              }}
+            >
               <Edit3 size={13} /> {editMode ? 'Hide Editor' : 'Edit Card'}
             </button>
           </div>
