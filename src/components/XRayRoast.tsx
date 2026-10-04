@@ -433,12 +433,13 @@ export const XRayRoast: React.FC<{ initialHandle?: string }> = ({ initialHandle 
           style={{
             perspective: '1200px',
             width: '100%',
-            maxWidth: '380px',
+            maxWidth: '360px',
             margin: '0 auto',
             position: 'relative',
             zIndex: 3,
           }}
         >
+          {/* ===================== GRAPHIC STREETWEAR TRADING CARD ===================== */}
           <div
             ref={cardRef}
             onMouseMove={handleMouseMove}
@@ -452,421 +453,412 @@ export const XRayRoast: React.FC<{ initialHandle?: string }> = ({ initialHandle 
               transition: isHovered ? 'transform 0.1s ease-out' : 'transform 0.4s ease',
               transformStyle: 'preserve-3d',
               position: 'relative',
-              borderRadius: '20px',
-              padding: '14px',
-              background: `
-                linear-gradient(
-                  165deg,
-                  #161B19 0%,
-                  #0E1412 40%,
-                  #050807 100%
-                )
-              `,
-              border: `3px solid ${
-                result.rarity === 'MYTHIC'
-                  ? '#FF85E1'
-                  : result.rarity === 'LEGENDARY'
-                  ? '#F59E0B'
-                  : result.rarity === 'EPIC'
-                  ? '#A855F7'
-                  : '#E5C365'
-              }`,
-              boxShadow: `
-                0 20px 50px rgba(0, 0, 0, 0.95),
-                0 0 35px ${theme.glow},
-                inset 0 0 15px rgba(229, 195, 101, 0.15)
-              `,
+              width: '100%',
+              height: '500px',
+              borderRadius: '22px',
               overflow: 'hidden',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '10px',
+              boxShadow: `
+                0 30px 80px rgba(0, 0, 0, 0.95),
+                0 0 40px ${theme.glow},
+                inset 0 0 0 2px ${theme.color}
+              `,
+              fontFamily: "'Inter', sans-serif",
+              cursor: 'default',
             }}
           >
-            {/* Holographic Iridescent Light Sheen Foil Overlay */}
+            {/* === BACKGROUND: Diagonal color blocks (gold + dark) === */}
             <div
               style={{
                 position: 'absolute',
                 inset: 0,
-                borderRadius: '18px',
-                pointerEvents: 'none',
-                opacity: isHovered ? 0.38 : 0.16,
-                background: `linear-gradient(${115 + mousePos.x * 50}deg, transparent 20%, rgba(229, 195, 101, 0.4) 35%, rgba(169,221,211,0.5) 50%, rgba(255,182,255,0.4) 65%, rgba(0,240,255,0.4) 80%, transparent 100%)`,
-                mixBlendMode: 'screen',
-                transition: 'opacity 0.3s ease',
+                background: 'linear-gradient(145deg, #E5C365 0%, #D4A813 38%, #0A0D0C 38%, #070A09 100%)',
+                zIndex: 0,
               }}
             />
 
-            {/* Cyber / Golden Pokémon Card Corner Accents */}
-            <div style={{ position: 'absolute', top: '7px', left: '7px', width: '8px', height: '8px', borderTop: `2px solid ${theme.color}`, borderLeft: `2px solid ${theme.color}`, pointerEvents: 'none', opacity: 0.9 }} />
-            <div style={{ position: 'absolute', top: '7px', right: '7px', width: '8px', height: '8px', borderTop: `2px solid ${theme.color}`, borderRight: `2px solid ${theme.color}`, pointerEvents: 'none', opacity: 0.9 }} />
-            <div style={{ position: 'absolute', bottom: '7px', left: '7px', width: '8px', height: '8px', borderBottom: `2px solid ${theme.color}`, borderLeft: `2px solid ${theme.color}`, pointerEvents: 'none', opacity: 0.9 }} />
-            <div style={{ position: 'absolute', bottom: '7px', right: '7px', width: '8px', height: '8px', borderBottom: `2px solid ${theme.color}`, borderRight: `2px solid ${theme.color}`, pointerEvents: 'none', opacity: 0.9 }} />
+            {/* Dark carbon texture overlay */}
+            <div
+              style={{
+                position: 'absolute',
+                inset: 0,
+                backgroundImage: `
+                  repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(0,0,0,0.06) 2px,
+                    rgba(0,0,0,0.06) 4px
+                  ),
+                  repeating-linear-gradient(
+                    90deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(0,0,0,0.04) 2px,
+                    rgba(0,0,0,0.04) 4px
+                  )
+                `,
+                zIndex: 1,
+                pointerEvents: 'none',
+              }}
+            />
 
-            {/* 1. TOP BAR: Pokemon Card Header (Stage + Name + HP + Rarity) */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', position: 'relative', zIndex: 2 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <span
-                  style={{
-                    background: '#F59E0B',
-                    color: '#000000',
-                    fontSize: '8.5px',
-                    fontWeight: 900,
-                    padding: '1px 6px',
-                    borderRadius: '4px',
-                    fontFamily: 'var(--font-mono, monospace)',
-                    letterSpacing: '0.5px',
-                  }}
-                >
-                  BASIC
-                </span>
-                <span
-                  style={{
-                    fontSize: '16px',
-                    fontWeight: 900,
-                    color: '#FFFFFF',
-                    fontFamily: 'var(--font-mono, monospace)',
-                    letterSpacing: '-0.02em',
-                    textShadow: `0 0 12px ${theme.glow}`,
-                  }}
-                >
-                  @{result.handle}
-                </span>
+            {/* Holographic iridescent sheen foil */}
+            <div
+              style={{
+                position: 'absolute',
+                inset: 0,
+                borderRadius: '22px',
+                pointerEvents: 'none',
+                opacity: isHovered ? 0.35 : 0.12,
+                background: `linear-gradient(${120 + mousePos.x * 60}deg, transparent 20%, rgba(229,195,101,0.5) 35%, rgba(169,221,211,0.55) 50%, rgba(200,180,255,0.45) 65%, transparent 100%)`,
+                mixBlendMode: 'screen',
+                transition: 'opacity 0.3s ease',
+                zIndex: 2,
+              }}
+            />
+
+            {/* === DIAGONAL ACCENT STRIPE (gold to dark separator) === */}
+            <div
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: '48px',
+                right: '48px',
+                height: '100%',
+                background: 'linear-gradient(145deg, rgba(229,195,101,0.15) 0%, transparent 45%)',
+                zIndex: 1,
+                pointerEvents: 'none',
+              }}
+            />
+
+            {/* === HAZARD / ACCENT STRIPES (bottom-left corner, like the reference) === */}
+            <div
+              style={{
+                position: 'absolute',
+                bottom: '54px',
+                left: 0,
+                width: '100%',
+                height: '36px',
+                background: `repeating-linear-gradient(
+                  -55deg,
+                  transparent,
+                  transparent 10px,
+                  rgba(229,195,101,0.22) 10px,
+                  rgba(229,195,101,0.22) 20px
+                )`,
+                zIndex: 3,
+                pointerEvents: 'none',
+              }}
+            />
+
+            {/* === LEFT EDGE: VERTICAL BIG TEXT === */}
+            <div
+              style={{
+                position: 'absolute',
+                left: 0,
+                top: 0,
+                bottom: 0,
+                width: '44px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                zIndex: 5,
+                background: 'rgba(0,0,0,0.55)',
+                borderRight: '1px solid rgba(229,195,101,0.25)',
+              }}
+            >
+              <span
+                style={{
+                  writingMode: 'vertical-rl',
+                  transform: 'rotate(180deg)',
+                  fontFamily: "'Bebas Neue', 'Impact', 'Arial Black', sans-serif",
+                  fontSize: '36px',
+                  fontWeight: 900,
+                  letterSpacing: '4px',
+                  color: theme.color,
+                  textShadow: `0 0 20px ${theme.glow}, 0 0 40px ${theme.glow}`,
+                  textTransform: 'uppercase',
+                  lineHeight: 1,
+                  userSelect: 'none',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                RIALO
+              </span>
+            </div>
+
+            {/* === RIGHT EDGE: VERTICAL DATE/CLASS TAG === */}
+            <div
+              style={{
+                position: 'absolute',
+                right: 0,
+                top: 0,
+                bottom: 0,
+                width: '36px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                zIndex: 5,
+                background: 'rgba(229,195,101,0.10)',
+                borderLeft: '1px solid rgba(229,195,101,0.25)',
+              }}
+            >
+              <span
+                style={{
+                  writingMode: 'vertical-rl',
+                  fontFamily: "'Space Mono', monospace",
+                  fontSize: '8px',
+                  fontWeight: 700,
+                  letterSpacing: '2px',
+                  color: 'rgba(229,195,101,0.75)',
+                  textTransform: 'uppercase',
+                  whiteSpace: 'nowrap',
+                  userSelect: 'none',
+                }}
+              >
+                OCT 2026 • RIALO PROTOCOL
+              </span>
+            </div>
+
+            {/* === TOP HEADER STRIP === */}
+            <div
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: '44px',
+                right: '36px',
+                height: '40px',
+                zIndex: 5,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                padding: '0 14px',
+                background: 'rgba(0,0,0,0.60)',
+                borderBottom: '1px solid rgba(229,195,101,0.2)',
+              }}
+            >
+              <span
+                style={{
+                  fontFamily: "'Space Mono', monospace",
+                  fontSize: '9px',
+                  fontWeight: 700,
+                  letterSpacing: '2.5px',
+                  color: 'rgba(229,195,101,0.8)',
+                  textTransform: 'uppercase',
+                }}
+              >
+                SPECIMEN // 2026 EDITION
+              </span>
+              <span
+                style={{
+                  fontFamily: "'Space Mono', monospace",
+                  fontSize: '9px',
+                  fontWeight: 700,
+                  color: theme.color,
+                  letterSpacing: '1px',
+                }}
+              >
+                {result.rarity}
+              </span>
+            </div>
+
+            {/* === CENTER: HERO PFP === */}
+            <div
+              style={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -54%)',
+                zIndex: 6,
+                width: '175px',
+                height: '175px',
+                borderRadius: '18px',
+                overflow: 'hidden',
+                border: `3px solid ${theme.color}`,
+                boxShadow: `0 0 40px ${theme.glow}, 0 0 80px rgba(0,0,0,0.9), 0 20px 40px rgba(0,0,0,0.8)`,
+              }}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={
+                  result.handle.toLowerCase() === 'yournahin' || result.handle.toLowerCase() === 'yournahian'
+                    ? 'https://pbs.twimg.com/profile_images/1990106346264666112/pbBiIRET_400x400.png'
+                    : `https://unavatar.io/x/${result.handle}`
+                }
+                alt={result.handle}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  display: 'block',
+                }}
+                onError={(e) => {
+                  e.currentTarget.src = 'https://pbs.twimg.com/profile_images/1990106346264666112/pbBiIRET_400x400.png';
+                }}
+              />
+            </div>
+
+            {/* === SIGNATURE (Cursive handle overlay) === */}
+            <div
+              style={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-10%, -115%) rotate(-7deg)',
+                zIndex: 7,
+                fontFamily: "'Caveat', 'Dancing Script', cursive",
+                fontSize: '28px',
+                fontWeight: 700,
+                color: '#FFFFFF',
+                textShadow: '0 2px 12px rgba(0,0,0,0.9), 0 0 20px rgba(229,195,101,0.6)',
+                whiteSpace: 'nowrap',
+                userSelect: 'none',
+                pointerEvents: 'none',
+              }}
+            >
+              @{result.handle}
+            </div>
+
+            {/* === BOTTOM INFO BLOCK === */}
+            <div
+              style={{
+                position: 'absolute',
+                bottom: '54px',
+                left: '44px',
+                right: '36px',
+                padding: '14px 16px 10px',
+                zIndex: 6,
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '8px',
+                background: 'rgba(7,10,9,0.85)',
+                backdropFilter: 'blur(10px)',
+              }}
+            >
+              {/* Title big bold */}
+              <div
+                style={{
+                  fontFamily: "'Bebas Neue', 'Impact', 'Arial Black', sans-serif",
+                  fontSize: '28px',
+                  fontWeight: 900,
+                  letterSpacing: '2px',
+                  color: '#FFFFFF',
+                  textTransform: 'uppercase',
+                  lineHeight: 1.0,
+                  textShadow: `0 0 20px ${theme.glow}`,
+                }}
+              >
+                {result.title}
               </div>
 
-              {/* HP & Type / Rarity */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <div style={{ display: 'flex', alignItems: 'baseline', gap: '2px' }}>
-                  <span style={{ fontSize: '9px', fontWeight: 900, color: '#A9DDD3', fontFamily: 'var(--font-mono)' }}>HP</span>
-                  <span style={{ fontSize: '15px', fontWeight: 900, color: '#FFFFFF', fontFamily: 'var(--font-mono)' }}>
-                    {result.rarity === 'MYTHIC' ? '999' : result.rarity === 'LEGENDARY' ? '450' : '280'}
+              {/* One-line stat pill */}
+              <div
+                style={{
+                  fontFamily: "'Space Mono', monospace",
+                  fontSize: '9.5px',
+                  fontWeight: 700,
+                  color: theme.color,
+                  letterSpacing: '1.5px',
+                  textTransform: 'uppercase',
+                  opacity: 0.9,
+                }}
+              >
+                {result.finalitySpeed} &nbsp;•&nbsp; FRICTION {result.frictionRate}
+              </div>
+
+              {/* Stars */}
+              <div style={{ display: 'flex', gap: '3px' }}>
+                {[...Array(5)].map((_, i) => (
+                  <span
+                    key={i}
+                    style={{
+                      fontSize: '14px',
+                      color: i < (result.rarity === 'MYTHIC' ? 5 : result.rarity === 'LEGENDARY' ? 4 : 3) ? '#F59E0B' : 'rgba(255,255,255,0.15)',
+                      textShadow: i < 4 ? '0 0 8px rgba(245,158,11,0.8)' : 'none',
+                    }}
+                  >
+                    ★
                   </span>
-                </div>
-                {/* Element / Rarity Gem */}
-                <div
+                ))}
+              </div>
+            </div>
+
+            {/* === FOOTER WATERMARK === */}
+            <div
+              style={{
+                position: 'absolute',
+                bottom: 0,
+                left: '44px',
+                right: '36px',
+                height: '54px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                padding: '0 16px',
+                zIndex: 5,
+                background: 'rgba(0,0,0,0.7)',
+                borderTop: '1px solid rgba(229,195,101,0.2)',
+              }}
+            >
+              <span
+                style={{
+                  fontFamily: "'Space Mono', monospace",
+                  fontSize: '7.5px',
+                  letterSpacing: '1.5px',
+                  color: 'rgba(229,195,101,0.5)',
+                  textTransform: 'uppercase',
+                }}
+              >
+                WWW.RIALO.IO • ZERO-FRICTION PROTOCOL
+              </span>
+              <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                {/* Share button */}
+                <button
+                  type="button"
+                  onClick={handleShareToX}
                   style={{
-                    padding: '3px 8px',
+                    padding: '6px 14px',
+                    background: `linear-gradient(135deg, ${theme.color} 0%, ${theme.glow.replace('rgba', 'rgb').replace(', 0.', ', 1')} 100%)`,
+                    color: '#010101',
+                    border: 'none',
                     borderRadius: '9999px',
-                    background: theme.badgeBg,
-                    border: `1px solid ${theme.badgeBorder}`,
-                    color: '#FFFFFF',
-                    fontSize: '9px',
+                    fontSize: '10px',
                     fontWeight: 900,
-                    letterSpacing: '0.8px',
-                    display: 'flex',
+                    cursor: 'pointer',
+                    display: 'inline-flex',
                     alignItems: 'center',
                     gap: '4px',
+                    letterSpacing: '0.5px',
+                    boxShadow: `0 0 12px ${theme.glow}`,
+                    transition: 'all 0.2s',
+                    fontFamily: "'Space Mono', monospace",
                   }}
                 >
-                  <Award size={10} color={theme.color} />
-                  <span>{result.rarity}</span>
-                </div>
-              </div>
-            </div>
-
-            {/* 2. CENTER HERO ART FRAME: THE USER PFP IS IN THE EXACT CENTER! */}
-            <div
-              style={{
-                position: 'relative',
-                width: '100%',
-                height: '180px',
-                borderRadius: '12px',
-                border: '2px solid rgba(229, 195, 101, 0.4)',
-                background: `
-                  radial-gradient(circle at center, rgba(169, 221, 211, 0.18) 0%, rgba(2, 6, 5, 0.95) 85%)
-                `,
-                overflow: 'hidden',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                boxShadow: 'inset 0 0 25px rgba(0, 0, 0, 0.9), 0 4px 15px rgba(0, 0, 0, 0.5)',
-              }}
-            >
-              {/* Concentric Hologram Tech Circles in Art Frame Background */}
-              <div
-                style={{
-                  position: 'absolute',
-                  top: '50%',
-                  left: '50%',
-                  transform: 'translate(-50%, -50%)',
-                  width: '150px',
-                  height: '150px',
-                  borderRadius: '50%',
-                  border: `1px dashed ${theme.color}`,
-                  opacity: 0.35,
-                  pointerEvents: 'none',
-                }}
-              />
-              <div
-                style={{
-                  position: 'absolute',
-                  top: '50%',
-                  left: '50%',
-                  transform: 'translate(-50%, -50%)',
-                  width: '120px',
-                  height: '120px',
-                  borderRadius: '50%',
-                  border: '1px solid rgba(255, 255, 255, 0.1)',
-                  pointerEvents: 'none',
-                }}
-              />
-
-              {/* Holographic Badge Foil Stamp (Top-Right of Art Window) */}
-              <div
-                style={{
-                  position: 'absolute',
-                  top: '8px',
-                  right: '8px',
-                  zIndex: 4,
-                  width: '32px',
-                  height: '32px',
-                  borderRadius: '50%',
-                  background: 'rgba(0, 0, 0, 0.7)',
-                  border: `1.5px solid ${theme.color}`,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '16px',
-                  boxShadow: `0 0 12px ${theme.glow}`,
-                }}
-                title={result.title}
-              >
-                {result.badgeEmoji}
-              </div>
-
-              {/* ========================================================
-                  THE HERO PFP: IN THE EXACT CENTER OF THE CARD!
-                  ======================================================== */}
-              <div
-                style={{
-                  position: 'relative',
-                  width: '118px',
-                  height: '118px',
-                  borderRadius: '20px',
-                  overflow: 'hidden',
-                  border: '2.5px solid #FFFFFF',
-                  boxShadow: `0 0 25px ${theme.glow}, 0 10px 20px rgba(0, 0, 0, 0.8)`,
-                  zIndex: 3,
-                  background: '#040706',
-                }}
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={
-                    result.handle.toLowerCase() === 'yournahin' || result.handle.toLowerCase() === 'yournahian'
-                      ? 'https://pbs.twimg.com/profile_images/1990106346264666112/pbBiIRET_400x400.png'
-                      : `https://unavatar.io/x/${result.handle}`
-                  }
-                  alt={result.handle}
+                  <Share2 size={10} /> SHARE
+                </button>
+                <button
+                  type="button"
+                  onClick={handleCopy}
                   style={{
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'cover',
-                    display: 'block',
-                  }}
-                  onError={(e) => {
-                    e.currentTarget.src = 'https://pbs.twimg.com/profile_images/1990106346264666112/pbBiIRET_400x400.png';
-                  }}
-                />
-              </div>
-
-              {/* Title Ribbon at Bottom of Art Window */}
-              <div
-                style={{
-                  position: 'absolute',
-                  bottom: '6px',
-                  left: '8px',
-                  right: '8px',
-                  padding: '4px 10px',
-                  background: 'rgba(2, 6, 5, 0.88)',
-                  backdropFilter: 'blur(8px)',
-                  border: '1px solid rgba(229, 195, 101, 0.35)',
-                  borderRadius: '8px',
-                  textAlign: 'center',
-                  zIndex: 4,
-                }}
-              >
-                <div
-                  style={{
-                    fontSize: '12px',
-                    fontWeight: 900,
+                    padding: '6px 12px',
+                    background: 'rgba(255,255,255,0.07)',
+                    border: '1px solid rgba(255,255,255,0.18)',
                     color: '#FFFFFF',
-                    letterSpacing: '-0.01em',
-                    textShadow: `0 0 10px ${theme.glow}`,
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
+                    borderRadius: '9999px',
+                    fontSize: '10px',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '4px',
+                    transition: 'all 0.2s',
+                    fontFamily: "'Space Mono', monospace",
                   }}
                 >
-                  {result.title}
-                </div>
+                  {copied ? <Check size={10} color="#A9DDD3" /> : <Copy size={10} />}
+                  {copied ? 'COPIED' : 'COPY'}
+                </button>
               </div>
-            </div>
-
-            {/* Pokédex Specimen Strip */}
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '8px',
-                padding: '2px 8px',
-                background: 'rgba(229, 195, 101, 0.08)',
-                border: '1px solid rgba(229, 195, 101, 0.25)',
-                borderRadius: '6px',
-                color: '#E5C365',
-                fontSize: '8.5px',
-                fontFamily: 'var(--font-mono, monospace)',
-                fontWeight: 800,
-              }}
-            >
-              <span>NO. 000</span>
-              <span>•</span>
-              <span>{result.classTag}</span>
-              <span>•</span>
-              <span>HT: {result.finalitySpeed}</span>
-              <span>•</span>
-              <span>WT: {result.frictionRate}</span>
-            </div>
-
-            {/* 3. POKÉMON ATTACKS / ABILITIES (Telemetry Metrics) */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              {/* Move 1: Zero-Friction Sprint */}
-              <div
-                style={{
-                  background: 'rgba(0, 0, 0, 0.45)',
-                  border: '1px solid rgba(169, 221, 211, 0.18)',
-                  borderRadius: '10px',
-                  padding: '7px 9px',
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-                    <span style={{ fontSize: '11px' }}>⚡</span>
-                    <span style={{ fontSize: '11px' }}>⏱️</span>
-                    <span style={{ fontSize: '12px', fontWeight: 900, color: '#FFFFFF' }}>
-                      Zero-Friction Sprint
-                    </span>
-                  </div>
-                  <span style={{ fontSize: '12px', fontWeight: 900, color: '#00F0FF', fontFamily: 'var(--font-mono)' }}>
-                    {result.finalitySpeed}
-                  </span>
-                </div>
-                <div style={{ fontSize: '9.5px', color: '#8E9B97', lineHeight: 1.35 }}>
-                  Friction reduced to <span style={{ color: result.frictionPct > 50 ? '#EF4444' : '#10B981', fontWeight: 800 }}>{result.frictionRate}</span>. Settles blocks at light-speed before coffee finishes brewing.
-                </div>
-              </div>
-
-              {/* Move 2: Shard Accelerator Surge */}
-              <div
-                style={{
-                  background: 'rgba(0, 0, 0, 0.45)',
-                  border: '1px solid rgba(169, 221, 211, 0.18)',
-                  borderRadius: '10px',
-                  padding: '7px 9px',
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-                    <span style={{ fontSize: '11px' }}>💎</span>
-                    <span style={{ fontSize: '11px' }}>🧪</span>
-                    <span style={{ fontSize: '12px', fontWeight: 900, color: '#FFFFFF' }}>
-                      Shard Vault Surge
-                    </span>
-                  </div>
-                  <span style={{ fontSize: '12px', fontWeight: 900, color: '#A9DDD3', fontFamily: 'var(--font-mono)' }}>
-                    {result.shardCapacity}
-                  </span>
-                </div>
-                <div style={{ fontSize: '9.5px', color: '#8E9B97', lineHeight: 1.35 }}>
-                  Degen Purity <span style={{ color: '#EC4899', fontWeight: 800 }}>{result.degenIndex}</span>. Maximizes quantum shard vault yield with 100% superconductivity.
-                </div>
-              </div>
-            </div>
-
-            {/* 4. POKÉDEX FLAVOR TEXT (Witty AI Roast Box) */}
-            <div
-              style={{
-                background: 'rgba(2, 6, 5, 0.85)',
-                border: '1px solid rgba(229, 195, 101, 0.22)',
-                borderRadius: '10px',
-                padding: '8px 10px',
-              }}
-            >
-              <p
-                style={{
-                  fontSize: '11px',
-                  fontStyle: 'italic',
-                  color: '#E8E3D5',
-                  lineHeight: '1.45',
-                  margin: '0 0 4px 0',
-                }}
-              >
-                &ldquo;{result.roast}&rdquo;
-              </p>
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  borderTop: '1px solid rgba(255, 255, 255, 0.08)',
-                  paddingTop: '4px',
-                  fontSize: '8px',
-                  color: '#8E9B97',
-                  fontFamily: 'var(--font-mono)',
-                }}
-              >
-                <span>Illus. Rialo Zero-Friction Engine</span>
-                <span style={{ color: '#E5C365', fontWeight: 800 }}>024/030 ★★★ Holo-Rare</span>
-              </div>
-            </div>
-
-            {/* 5. ACTION BUTTONS */}
-            <div style={{ display: 'flex', gap: '8px', width: '100%', marginTop: '2px' }}>
-              <button
-                type="button"
-                onClick={handleShareToX}
-                style={{
-                  flex: 1,
-                  padding: '9px 12px',
-                  background: 'linear-gradient(135deg, #A9DDD3 0%, #00F0FF 100%)',
-                  color: '#010101',
-                  border: 'none',
-                  borderRadius: '9999px',
-                  fontSize: '12px',
-                  fontWeight: 900,
-                  cursor: 'pointer',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '6px',
-                  boxShadow: '0 0 16px rgba(169, 221, 211, 0.4)',
-                  transition: 'all 0.2s',
-                }}
-              >
-                <Share2 size={13} /> SHARE TO X
-              </button>
-
-              <button
-                type="button"
-                onClick={handleCopy}
-                style={{
-                  padding: '9px 14px',
-                  background: 'rgba(255, 255, 255, 0.05)',
-                  border: '1px solid rgba(255, 255, 255, 0.2)',
-                  color: '#FFFFFF',
-                  borderRadius: '9999px',
-                  fontSize: '12px',
-                  fontWeight: 800,
-                  cursor: 'pointer',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '5px',
-                  transition: 'all 0.2s',
-                }}
-              >
-                {copied ? <Check size={13} color="#A9DDD3" /> : <Copy size={13} />}
-                <span>{copied ? 'Copied' : 'Copy'}</span>
-              </button>
             </div>
           </div>
         </div>
