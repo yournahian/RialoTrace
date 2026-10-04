@@ -35,10 +35,21 @@ export async function GET(req: NextRequest) {
     const timeUntilNextFree = Math.max(0, 24 * 60 * 60 * 1000 - (now - lastSpinTime));
     const arcadeHighscore = parseInt(await kvGet(`highscore_${user.username}`) || '0');
     const glideHighscore = parseInt(await kvGet(`glide_highscore_${user.username}`) || '0');
+    const clientDate = new URL(req.url).searchParams.get('date') || '';
     const currentStreakDay = parseInt(await kvGet(`streak_day_${user.username}`) || '1');
     const lastStreakTime = parseInt(await kvGet(`streak_last_${user.username}`) || '0');
+    const lastStreakDate = await kvGet(`streak_date_${user.username}`) || '';
     const streakElapsed = now - lastStreakTime;
-    const canClaimStreak = lastStreakTime === 0 || streakElapsed >= 20 * 60 * 60 * 1000;
+    
+    let canClaimStreak = true;
+    if (clientDate && lastStreakDate) {
+      canClaimStreak = lastStreakDate !== clientDate;
+    } else if (lastStreakDate) {
+      const todayUtc = new Date().toISOString().split('T')[0];
+      canClaimStreak = lastStreakDate !== todayUtc;
+    } else {
+      canClaimStreak = lastStreakTime === 0 || streakElapsed >= 20 * 60 * 60 * 1000;
+    }
     return NextResponse.json({ success: true, user, isFreeSpinAvailable, timeUntilNextFree, arcadeHighscore, glideHighscore, streakDay: currentStreakDay, canClaimStreak, streakElapsed });
   } catch (err: any) {
     return NextResponse.json({ success: false, error: err.message }, { status: 500 });
@@ -111,11 +122,31 @@ export async function POST(req: NextRequest) {
     }
 
     if (action === 'CLAIM_STREAK') {
+      const clientDate = body.date || new Date().toISOString().split('T')[0];
       let currentStreakDay = parseInt(await kvGet(`streak_day_${user.username}`) || '1');
       const lastStreakTime = parseInt(await kvGet(`streak_last_${user.username}`) || '0');
+      const lastStreakDate = await kvGet(`streak_date_${user.username}`) || '';
       const streakElapsed = now - lastStreakTime;
-      if (lastStreakTime > 0 && streakElapsed < 20 * 60 * 60 * 1000) return NextResponse.json({ success: false, error: 'Streak reward already claimed today.' }, { status: 400 });
-      if (lastStreakTime > 0 && streakElapsed > 48 * 60 * 60 * 1000) currentStreakDay = 1;
+
+      if (lastStreakDate && lastStreakDate === clientDate) {
+        return NextResponse.json({ success: false, error: 'Streak reward already claimed today. Resets daily with daily missions!' }, { status: 400 });
+      }
+      if (!lastStreakDate && lastStreakTime > 0 && streakElapsed < 20 * 60 * 60 * 1000) {
+        return NextResponse.json({ success: false, error: 'Streak reward already claimed today.' }, { status: 400 });
+      }
+
+      // Check if streak was broken (more than 1 calendar day gap)
+      if (lastStreakDate) {
+        const prev = new Date(lastStreakDate + 'T00:00:00Z').getTime();
+        const curr = new Date(clientDate + 'T00:00:00Z').getTime();
+        const diffDays = Math.round((curr - prev) / (1000 * 60 * 60 * 24));
+        if (diffDays > 1) {
+          currentStreakDay = 1;
+        }
+      } else if (lastStreakTime > 0 && streakElapsed > 48 * 60 * 60 * 1000) {
+        currentStreakDay = 1;
+      }
+
       const reward = STREAK_REWARDS[(currentStreakDay - 1) % STREAK_REWARDS.length];
       user.shards += reward.shards; user.lifetimePoints += reward.shards;
       let bonusCard = null;
@@ -128,6 +159,7 @@ export async function POST(req: NextRequest) {
         user.lifetimePoints += 100;
       }
       await kvSet(`streak_last_${user.username}`, String(now));
+      await kvSet(`streak_date_${user.username}`, clientDate);
       const nextDay = (currentStreakDay % 7) + 1;
       await kvSet(`streak_day_${user.username}`, String(nextDay));
       user.updatedAt = new Date().toISOString();

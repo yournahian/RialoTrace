@@ -19,6 +19,19 @@ interface TrollboxChatProps {
   onUserUpdate?: (u: UserProfile) => void;
 }
 
+
+function formatMessageLocalTime(m: ChatMessage): string {
+  if (m.createdAt) {
+    try {
+      const d = new Date(m.createdAt);
+      if (!isNaN(d.getTime())) {
+        return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      }
+    } catch {}
+  }
+  return m.time || '';
+}
+
 export const TrollboxChat: React.FC<TrollboxChatProps> = ({
   user,
   currentUsername,
@@ -172,12 +185,14 @@ export const TrollboxChat: React.FC<TrollboxChatProps> = ({
     }
 
     const tempId = 'temp-' + Date.now();
+    const now = new Date();
     const tempMsg: ChatMessage = {
       id: tempId,
       sender: effectiveSender,
       avatar: `https://unavatar.io/x/${effectiveSender}`,
       text: trimmedText,
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      time: now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      createdAt: now.toISOString(),
     };
 
     // Optimistic UI update - save to pending ref so polls never wipe it out!
@@ -611,7 +626,7 @@ export const TrollboxChat: React.FC<TrollboxChatProps> = ({
                       </span>
                     </div>
                     <span style={{ fontSize: '9px', color: '#667773', fontFamily: 'var(--font-mono)' }}>
-                      {m.time}
+                      {formatMessageLocalTime(m)}
                     </span>
                   </div>
                   <p style={{ margin: 0, fontSize: '12px', color: '#D4DDD9', lineHeight: 1.4, wordBreak: 'break-word' }}>

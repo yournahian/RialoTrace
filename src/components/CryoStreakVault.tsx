@@ -27,10 +27,16 @@ export const CryoStreakVault: React.FC<CryoStreakVaultProps> = ({ user, onUserUp
   const [claimedReward, setClaimedReward] = useState<any | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
+  const getLocalDateStr = () => {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  };
+
   const fetchStreakStatus = async () => {
     if (!user?.username) return;
     try {
-      const res = await fetch(`/api/arcade?username=${encodeURIComponent(user.username)}`);
+      const clientDate = getLocalDateStr();
+      const res = await fetch(`/api/arcade?username=${encodeURIComponent(user.username)}&date=${encodeURIComponent(clientDate)}`);
       const data = await res.json();
       if (data.success) {
         setStreakDay(data.streakDay || 1);
@@ -52,12 +58,14 @@ export const CryoStreakVault: React.FC<CryoStreakVaultProps> = ({ user, onUserUp
     sound.playTap();
 
     try {
+      const clientDate = getLocalDateStr();
       const res = await fetch('/api/arcade', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           action: 'CLAIM_STREAK',
           username: user.username,
+          date: clientDate,
         }),
       });
 
