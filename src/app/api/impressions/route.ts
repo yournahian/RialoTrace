@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+export const dynamic = 'force-dynamic';
+export const maxDuration = 60; // Allow Vercel functions up to 60s
+
 interface TwitterUserResponse {
   data?: {
     id: string;
@@ -68,18 +71,21 @@ async function handleImpressions(rawUsername: string, targetProject?: string) {
     const projectsToQuery = targetProject && targetProject !== 'all' ? [targetProject] : RIALO_PROJECTS;
 
     // 1. Fetch live real data across Rialo Ecosystem (RialoHQ, latch, agp)
-    // High timeout (18s) because heavy accounts with 250+ posts on Xerper take 9-12s
+    // Pass Xerper edge-cache headers (Origin & Referer) to get instant CDN-cached responses (<1s)
     try {
       const results = await Promise.all(
         projectsToQuery.map(async (prj) => {
           try {
             const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 18000);
+            const timeoutId = setTimeout(() => controller.abort(), 25000);
             const xerperRes = await fetch('https://www.xerper.com/api/impressions', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                'Accept': 'application/json',
+                'Origin': 'https://www.xerper.com',
+                'Referer': `https://www.xerper.com/project/${prj}`,
               },
               body: JSON.stringify({
                 username: cleanUsername,
@@ -105,6 +111,9 @@ async function handleImpressions(rawUsername: string, targetProject?: string) {
       const allPosts: any[] = [];
       const breakdown: Record<string, { impressions: number; posts: number }> = {};
       let hasValidData = false;
+
+      // Check if RialoHQ succeeded
+      const rialoHQResult = results.find((r) => r.project === 'RialoHQ')?.data;
 
       for (const res of results) {
         const d = res.data;
@@ -138,6 +147,11 @@ async function handleImpressions(rawUsername: string, targetProject?: string) {
           return true;
         });
 
+        // Always prioritize RialoHQ series for accurate date range (e.g. Mar 2026 - Oct 2026)
+        const primarySeries = (rialoHQResult?.series?.length ? rialoHQResult.series : null)
+          || results.find((r) => r.data?.series?.length)?.data.series
+          || [];
+
         const rawAvatar = bestProfile?.avatar?.replace('_normal', '_400x400');
         const responseData = {
           ok: true,
@@ -162,7 +176,7 @@ async function handleImpressions(rawUsername: string, targetProject?: string) {
           total_impressions: totalImpressions,
           post_count: totalPosts,
           breakdown,
-          series: results.find((r) => r.data?.series?.length)?.data.series || [],
+          series: primarySeries,
           posts: dedupedPosts,
         };
 
