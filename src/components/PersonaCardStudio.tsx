@@ -39,7 +39,7 @@ const TEMPLATES: Omit<CardData, 'handle' | 'imageUrl' | 'useCustomImage' | 'tota
 function autoGenCard(handle: string, realImpressions: number = 0, avatarUrl?: string): CardData {
   const hash = handle.split('').reduce((a, c) => a + c.charCodeAt(0), 0);
   const template = TEMPLATES[hash % TEMPLATES.length];
-  const finalImage = avatarUrl || `/api/avatar?handle=${encodeURIComponent(handle)}`;
+  const finalImage = avatarUrl || `/api/avatar/${encodeURIComponent(handle)}`;
   return {
     ...template,
     handle,
@@ -153,10 +153,10 @@ export const PersonaCardStudio: React.FC = () => {
         console.warn('Failed to fetch live data from API:', impErr);
       }
 
-      // Route through /api/avatar proxy to bypass CORS restrictions
+      // Distinct URL per handle so html-to-image and browser caches NEVER collide across users
       const finalAvatar = fetchedAvatar
-        ? `/api/avatar?url=${encodeURIComponent(fetchedAvatar)}`
-        : `/api/avatar?handle=${encodeURIComponent(h)}`;
+        ? `/api/avatar/${encodeURIComponent(h)}?url=${encodeURIComponent(fetchedAvatar)}`
+        : `/api/avatar/${encodeURIComponent(h)}`;
 
       setCard(autoGenCard(h, liveImpressions, finalAvatar));
       sound.playSuccess?.();
@@ -218,6 +218,7 @@ export const PersonaCardStudio: React.FC = () => {
         const b = await toBlob(cardRef.current, {
           pixelRatio: 2.5,
           cacheBust: true,
+          includeQueryParams: true,
           style: {
             transform: 'none',
             transformStyle: 'flat',
@@ -405,6 +406,7 @@ export const PersonaCardStudio: React.FC = () => {
           <div style={{ perspective: '1200px', width: '100%', maxWidth: '360px', margin: '0 auto', position: 'relative', zIndex: 3 }}>
             <div
               ref={cardRef}
+              key={`card-${card.handle}`}
               onMouseMove={handleMouseMove}
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => { setIsHovered(false); setMousePos({ x: 0.5, y: 0.5 }); }}
@@ -455,6 +457,7 @@ export const PersonaCardStudio: React.FC = () => {
               <div style={{ position: 'absolute', top: '40px', left: '44px', right: '36px', bottom: '180px', zIndex: 4, overflow: 'hidden' }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
+                  key={`pfp-${card.handle}`}
                   src={card.imageUrl}
                   alt={card.handle}
                   crossOrigin="anonymous"

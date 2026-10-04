@@ -16,13 +16,11 @@ function loadImage(src: string): Promise<HTMLImageElement | null> {
     img.crossOrigin = 'anonymous';
     img.onload = () => resolve(img);
     img.onerror = () => {
-      const fb = new Image();
-      fb.crossOrigin = 'anonymous';
-      fb.onload = () => resolve(fb);
-      fb.onerror = () => resolve(null);
-      fb.src = `https://ui-avatars.com/api/?name=User&background=0A0D0C&color=E5C365&size=400&bold=true`;
+      resolve(null);
     };
-    img.src = src;
+    const sep = src.includes('?') ? '&' : '?';
+    const cacheBusted = src.startsWith('data:') ? src : `${src}${sep}_cb=${Date.now()}`;
+    img.src = cacheBusted;
   });
 }
 
