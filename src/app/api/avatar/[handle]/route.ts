@@ -26,10 +26,12 @@ function generateFallbackSvg(name: string) {
   `.trim();
 }
 
-export async function GET(req: NextRequest, { params }: { params: { handle: string } }) {
+const RIALO_PROJECTS = ['RialoHQ', 'latch', 'agp'];
+
+export async function GET(req: NextRequest, context?: { params?: { handle?: string } }) {
   const { searchParams } = new URL(req.url);
   const targetUrl = searchParams.get('url');
-  const handle = (params.handle || searchParams.get('handle') || '').replace(/^@/, '').trim();
+  const handle = (context?.params?.handle || searchParams.get('handle') || '').replace(/^@/, '').trim();
 
   // 1. Direct URL proxy
   if (targetUrl) {
@@ -60,45 +62,51 @@ export async function GET(req: NextRequest, { params }: { params: { handle: stri
     }
   }
 
-  // 2. Fetch by handle
+  // 2. Fetch by handle across RialoHQ, latch, agp
   if (handle) {
     try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 6000);
-      const xerperRes = await fetch('https://www.xerper.com/api/impressions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-        },
-        body: JSON.stringify({
-          username: handle,
-          project: 'RialoHQ',
-        }),
-        signal: controller.signal,
-      }).finally(() => clearTimeout(timeoutId));
+      for (const prj of RIALO_PROJECTS) {
+        try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 4000);
+          const xerperRes = await fetch('https://www.xerper.com/api/impressions', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+            },
+            body: JSON.stringify({
+              username: handle,
+              project: prj,
+            }),
+            signal: controller.signal,
+          }).finally(() => clearTimeout(timeoutId));
 
-      if (xerperRes.ok) {
-        const xData = await xerperRes.json();
-        const avatarUrl = xData?.profile?.avatar?.replace('_normal', '_400x400');
-        if (avatarUrl) {
-          const imgRes = await fetch(avatarUrl, {
-            headers: { 'User-Agent': 'Mozilla/5.0' },
-          });
-          if (imgRes.ok) {
-            const buf = await imgRes.arrayBuffer();
-            return new NextResponse(buf, {
-              headers: {
-                'Content-Type': imgRes.headers.get('content-type') || 'image/jpeg',
-                'Access-Control-Allow-Origin': '*',
-                'Cache-Control': 'public, max-age=300, stale-while-revalidate=600',
-              },
-            });
+          if (xerperRes.ok) {
+            const xData = await xerperRes.json();
+            const avatarUrl = xData?.profile?.avatar?.replace('_normal', '_400x400');
+            if (avatarUrl) {
+              const imgRes = await fetch(avatarUrl, {
+                headers: { 'User-Agent': 'Mozilla/5.0' },
+              });
+              if (imgRes.ok) {
+                const buf = await imgRes.arrayBuffer();
+                return new NextResponse(buf, {
+                  headers: {
+                    'Content-Type': imgRes.headers.get('content-type') || 'image/jpeg',
+                    'Access-Control-Allow-Origin': '*',
+                    'Cache-Control': 'public, max-age=300, stale-while-revalidate=600',
+                  },
+                });
+              }
+            }
           }
+        } catch {
+          // Continue to next project
         }
       }
     } catch (e) {
-      console.warn('Xerper avatar lookup failed for handle:', handle, e);
+      console.warn('Ecosystem avatar lookup failed for handle:', handle, e);
     }
 
     try {
