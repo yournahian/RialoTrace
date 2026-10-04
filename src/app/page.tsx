@@ -26,6 +26,7 @@ import { TrollboxChat } from '@/components/TrollboxChat';
 import { SoundToggle } from '@/components/SoundToggle';
 import { NotificationCenter } from '@/components/NotificationCenter';
 import { MobileNavDrawer } from '@/components/MobileNavDrawer';
+import { MobileAppRoot } from '@/components/mobile/MobileAppRoot';
 import { User, Menu } from 'lucide-react';
 
 export default function HomePage() {
@@ -146,7 +147,12 @@ export default function HomePage() {
         onClose={() => setIsFollowGateOpen(false)}
       />
 
-      <header className="app-header">
+      {/* ========================================================
+          1. DESKTOP ENGINE ROOT (Active only on PC screens >= 768px)
+          100% UNTOUCHED PC EXPERIENCE
+          ======================================================== */}
+      <div className="desktop-engine-root">
+        <header className="app-header">
         <div className="brand-link">
           <div
             className="brand-badge"
@@ -502,6 +508,32 @@ export default function HomePage() {
           />
         )}
       </main>
+      </div>
+
+      {/* ========================================================
+          2. DEDICATED MOBILE ENGINE ROOT (Active on screens < 768px)
+          FRESH, PURPOSE-BUILT, FULLY RESPONSIVE MOBILE EXPERIENCE
+          ======================================================== */}
+      <div className="mobile-engine-root-wrap">
+        <MobileAppRoot
+          activeTab={activeTab}
+          onSelectTab={!currentUsername ? () => setIsOnboardingOpen(true) : handleSelectTab}
+          currentUser={currentUser}
+          currentUsername={currentUsername}
+          newlyPulledCards={newlyPulledCards}
+          onClearNewlyPulledCards={() => setNewlyPulledCards(null)}
+          onNavigateToBinder={() => {
+            handleSelectTab('binder');
+            setNewlyPulledCards(null);
+          }}
+          onOpenPackInRialoCards={handleOpenPackInRialoCards}
+          onSelectCardForTrade={handleSelectCardForTrade}
+          onUserUpdate={(u) => setCurrentUser(u)}
+          onSwitchAccount={() => setIsOnboardingOpen(true)}
+          onLogOut={handleLogOut}
+        />
+      </div>
+
       {/* Global Live Community Trollbox & Shard Rain */}
       <TrollboxChat
         user={currentUser}

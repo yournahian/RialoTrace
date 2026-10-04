@@ -4668,3 +4668,37 @@ body {
     overflow: hidden !important;
   }
 }
+
+/* ==========================================================================
+   DUAL ENGINE ARCHITECTURE: PC VS MOBILE SEPARATION
+   Guarantees 100% untouched PC performance and independent mobile engine
+   ========================================================================== */
+
+@media (min-width: 768px) {
+  .desktop-engine-root {
+    display: contents !important;
+  }
+  .mobile-engine-root-wrap {
+    display: none !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .desktop-engine-root {
+    display: none !important;
+  }
+  .mobile-engine-root-wrap {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+  }
+
+  /* Trollbox floating launcher on mobile sits cleanly above the bottom tab bar */
+  .trollbox-launcher-anchor {
+    position: fixed !important;
+    bottom: calc(68px + env(safe-area-inset-bottom, 0px)) !important;
+    right: 12px !important;
+    z-index: 45 !important;
+  }
+}
