@@ -15,6 +15,7 @@ interface CardData {
   rarity: 'MYTHIC' | 'LEGENDARY' | 'EPIC' | 'RARE' | 'COMMON';
   finalitySpeed: string;
   frictionRate: string;
+  totalImpressions: number; // Real user impressions from /api/impressions
   imageUrl: string;        // url or base64
   useCustomImage: boolean; // false = unavatar, true = uploaded
 }
@@ -24,7 +25,7 @@ type Rarity = CardData['rarity'];
 /* ─────────────────────────────────────────────
    AUTO-GEN TEMPLATES
 ───────────────────────────────────────────── */
-const TEMPLATES: Omit<CardData, 'handle' | 'imageUrl' | 'useCustomImage'>[] = [
+const TEMPLATES: Omit<CardData, 'handle' | 'imageUrl' | 'useCustomImage' | 'totalImpressions'>[] = [
   { title: 'Zero-Friction Superconductor Chad', rarity: 'MYTHIC',     finalitySpeed: '0.002s (Light-Speed)',  frictionRate: '0.0001% (Absolute Zero)' },
   { title: 'Quantum Shard Goblin',              rarity: 'LEGENDARY',  finalitySpeed: '0.018s (Instant)',      frictionRate: '0.012% (Near Zero)'      },
   { title: 'Finality Speedrunner',              rarity: 'EPIC',       finalitySpeed: '0.005s (Supersonic)',   frictionRate: '0.004% (Cryogenic)'      },
@@ -35,12 +36,13 @@ const TEMPLATES: Omit<CardData, 'handle' | 'imageUrl' | 'useCustomImage'>[] = [
   { title: 'Genesis Protocol Ghost',            rarity: 'MYTHIC',     finalitySpeed: '0.001s (Quantum)',      frictionRate: '0.0000% (Absolute)'      },
 ];
 
-function autoGenCard(handle: string): CardData {
+function autoGenCard(handle: string, realImpressions: number = 0): CardData {
   const hash = handle.split('').reduce((a, c) => a + c.charCodeAt(0), 0);
   const template = TEMPLATES[hash % TEMPLATES.length];
   return {
     ...template,
     handle,
+    totalImpressions: realImpressions,
     imageUrl: `https://unavatar.io/x/${handle}`,
     useCustomImage: false,
   };
@@ -123,19 +125,38 @@ export const PersonaCardStudio: React.FC = () => {
     setMousePos({ x: (e.clientX - rect.left) / rect.width, y: (e.clientY - rect.top) / rect.height });
   }, []);
 
-  /* ── Scan / Generate ── */
-  const handleScan = () => {
+  /* ── Scan / Generate with REAL Live Impressions ── */
+  const handleScan = async () => {
     const h = handle.replace(/^@/, '').trim();
     if (!h) return;
     sound.playTap();
     setIsScanning(true);
     setCard(null);
     setEditMode(false);
-    setTimeout(() => {
-      setCard(autoGenCard(h));
-      setIsScanning(false);
+
+    try {
+      // 1. Fetch real live impressions from /api/impressions
+      let liveImpressions = 0;
+      try {
+        const res = await fetch(`/api/impressions?handle=${encodeURIComponent(h)}`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data && typeof data.total_impressions === 'number') {
+            liveImpressions = data.total_impressions;
+          }
+        }
+      } catch (impErr) {
+        console.warn('Failed to fetch live impressions from API:', impErr);
+      }
+
+      // 2. Automatically generate card with real live user impressions (no dummy value)
+      setCard(autoGenCard(h, liveImpressions));
       sound.playSuccess?.();
-    }, 1800);
+    } catch (err) {
+      console.error('Scan error:', err);
+    } finally {
+      setIsScanning(false);
+    }
   };
 
   /* ── Reshuffle ── */
@@ -143,13 +164,21 @@ export const PersonaCardStudio: React.FC = () => {
     if (!card) return;
     sound.playTap();
     setIsScanning(true);
+    const savedImpressions = card.totalImpressions;
+    const savedCard = { ...card };
     setCard(null);
     setTimeout(() => {
-      const hash = card.handle.split('').reduce((a, c) => a + c.charCodeAt(0), 0) + Date.now();
+      const hash = savedCard.handle.split('').reduce((a, c) => a + c.charCodeAt(0), 0) + Date.now();
       const template = TEMPLATES[hash % TEMPLATES.length];
-      setCard({ ...template, handle: card.handle, imageUrl: card.imageUrl, useCustomImage: card.useCustomImage });
+      setCard({
+        ...template,
+        handle: savedCard.handle,
+        imageUrl: savedCard.imageUrl,
+        useCustomImage: savedCard.useCustomImage,
+        totalImpressions: savedImpressions,
+      });
       setIsScanning(false);
-    }, 900);
+    }, 700);
   };
 
   /* ── Image upload ── */
@@ -271,7 +300,7 @@ export const PersonaCardStudio: React.FC = () => {
     }
 
     // 2. Open Twitter/X composer directly (no OS share popup!)
-    const tweetText = `Just forged my official Rialo Persona Card! 🎴\n\n"${card.title}" [${card.rarity}]\n⚡ Finality: ${card.finalitySpeed}\n🧊 Friction: ${card.frictionRate}\n\nForge yours on #RialoTrace #ZeroFriction @RialoHQ`;
+    const tweetText = `Just forged my official Rialo Persona Card! 🎴\n\n"${card.title}" [${card.rarity}]\n👁️ Total Impressions: ${card.totalImpressions.toLocaleString()}\n⚡ Finality: ${card.finalitySpeed}\n🧊 Friction: ${card.frictionRate}\n\nForge yours on #RialoTrace #ZeroFriction @RialoHQ`;
     const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`;
     window.open(url, '_blank', 'noopener,noreferrer');
   };
@@ -441,10 +470,17 @@ export const PersonaCardStudio: React.FC = () => {
                 <div style={{ fontFamily: "'Space Mono',monospace", fontSize: '9px', fontWeight: 700, color: theme.color, letterSpacing: '1.5px', textTransform: 'uppercase', opacity: 0.9 }}>
                   {card.finalitySpeed} &nbsp;•&nbsp; FRICTION {card.frictionRate}
                 </div>
-                <div style={{ display: 'flex', gap: '3px' }}>
-                  {[...Array(5)].map((_, i) => (
-                    <span key={i} style={{ fontSize: '14px', color: i < theme.stars ? '#F59E0B' : 'rgba(255,255,255,0.15)', textShadow: i < theme.stars ? '0 0 8px rgba(245,158,11,0.8)' : 'none' }}>★</span>
-                  ))}
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '2px' }}>
+                  <div style={{ display: 'flex', gap: '3px' }}>
+                    {[...Array(5)].map((_, i) => (
+                      <span key={i} style={{ fontSize: '13px', color: i < theme.stars ? '#F59E0B' : 'rgba(255,255,255,0.15)', textShadow: i < theme.stars ? '0 0 8px rgba(245,158,11,0.8)' : 'none' }}>★</span>
+                    ))}
+                  </div>
+                  {/* REAL USER IMPRESSION BADGE */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '5px', background: 'rgba(169,221,211,0.12)', border: '1px solid rgba(169,221,211,0.35)', padding: '2px 8px', borderRadius: '6px' }}>
+                    <span style={{ fontSize: '8px', fontWeight: 900, color: '#8E9B97', fontFamily: "'Space Mono',monospace", letterSpacing: '1px' }}>IMPRESSIONS</span>
+                    <span style={{ fontSize: '11px', fontWeight: 900, color: '#A9DDD3', fontFamily: "'Space Mono',monospace" }}>{card.totalImpressions.toLocaleString()}</span>
+                  </div>
                 </div>
               </div>
 
@@ -606,6 +642,17 @@ export const PersonaCardStudio: React.FC = () => {
                   })}
                 </div>
               </div>
+
+              {/* Total Impressions */}
+              <EditField
+                label="Total Impressions (Live)"
+                value={String(card.totalImpressions)}
+                onChange={v => {
+                  const n = parseInt(v.replace(/,/g, ''), 10);
+                  setCard(prev => prev ? { ...prev, totalImpressions: isNaN(n) ? 0 : n } : prev);
+                }}
+                monospace
+              />
 
               {/* Finality speed */}
               <EditField label="Finality Speed" value={card.finalitySpeed} onChange={v => setCard(prev => prev ? { ...prev, finalitySpeed: v } : prev)} monospace />

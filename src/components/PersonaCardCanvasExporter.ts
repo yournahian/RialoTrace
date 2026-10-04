@@ -6,6 +6,7 @@ export interface PersonaCardData {
   rarity: 'MYTHIC' | 'LEGENDARY' | 'EPIC' | 'RARE' | 'COMMON';
   finalitySpeed: string;
   frictionRate: string;
+  totalImpressions?: number;
   imageUrl: string;
 }
 
@@ -288,6 +289,28 @@ export async function exportPersonaCardPNG(data: PersonaCardData): Promise<Blob 
     starX += 26;
   }
   ctx.shadowBlur = 0;
+
+  // Real Impressions Badge
+  const imps = (data.totalImpressions ?? 0).toLocaleString();
+  const badgeText = `${imps} IMPRESSIONS`;
+  ctx.font = '900 16px "Space Mono", monospace';
+  const badgeW = ctx.measureText(badgeText).width + 24;
+  const badgeH = 28;
+  const badgeX = width - rightBarW - 28 - badgeW;
+  const badgeY = infoY + 102;
+  
+  ctx.fillStyle = 'rgba(169, 221, 211, 0.12)';
+  ctx.beginPath();
+  ctx.roundRect(badgeX, badgeY, badgeW, badgeH, 6);
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(169, 221, 211, 0.4)';
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+
+  ctx.fillStyle = '#A9DDD3';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(badgeText, badgeX + badgeW / 2, badgeY + badgeH / 2);
 
   // 9. FOOTER BAR
   const footerY = height - 100;
