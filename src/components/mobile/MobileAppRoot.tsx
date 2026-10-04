@@ -5,6 +5,7 @@ import { TabType } from '../NavigationDock';
 import { UserProfile, CardArchetype } from '@/lib/types';
 import { MobileHeader } from './MobileHeader';
 import { MobileBinderView } from './MobileBinderView';
+import { MobileQuickTabs } from './MobileQuickTabs';
 import { MobileNavDrawer } from '../MobileNavDrawer';
 import { MobileNotificationsSheet } from './MobileNotificationsSheet';
 
@@ -78,6 +79,9 @@ export const MobileAppRoot: React.FC<MobileAppRootProps> = ({
         onOpenDrawer={() => setIsDrawerOpen(true)}
         onOpenProfile={() => onSelectTab('profile')}
       />
+
+      {/* 2. Top Quick-Tab Scroller (Instant 1-Tap Switching) */}
+      <MobileQuickTabs activeTab={activeTab} onSelectTab={onSelectTab} />
 
       {/* 2. Global Persistent Notice Banner */}
       <BroadcastNoticeBanner
