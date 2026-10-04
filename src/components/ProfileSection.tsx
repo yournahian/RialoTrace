@@ -458,11 +458,11 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onSelectTa
   const activeBroadcast = broadcasts.find((b) => !dismissedBroadcasts[b.id]);
 
   return (
-    <div style={{ maxWidth: '1160px', margin: '0 auto', padding: '16px 8px 60px 8px', width: '100%', boxSizing: 'border-box', overflowX: 'hidden' }}>
+    <div style={{ maxWidth: '100%', width: '100%', margin: '0 auto', padding: '16px 8px 60px 8px', boxSizing: 'border-box', overflowX: 'hidden' }}>
       {/* ========================================================
           USER IDENTITY PROFILE CARD (OFFICIAL BRAND THEME)
           ======================================================== */}
-      <div className="profile-hero-card">
+      <div className="profile-hero-card" style={{ overflow: 'hidden', position: 'relative', width: '100%', boxSizing: 'border-box' }}>
         {/* Subtle Brand Background Glow */}
         <div style={{
           position: 'absolute',
@@ -572,14 +572,14 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onSelectTa
             </div>
           </div>
 
-          {/* Quick Action Shortcuts */}
-          <div className="profile-actions-grid">
+          {/* Quick Action Shortcuts: Row 1 = Switch Account + Sign Out, Row 2 = Completed Missions (100% full width single line) */}
+          <div className="profile-actions-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', width: '100%', marginTop: '12px' }}>
             {onSwitchAccount && (
               <button
                 type="button"
                 onClick={() => { sound.playTap(); onSwitchAccount(); }}
                 style={{
-                  padding: '10px 16px',
+                  padding: '10px 14px',
                   borderRadius: '12px',
                   background: 'rgba(169, 221, 211, 0.1)',
                   border: '1px solid rgba(169, 221, 211, 0.3)',
@@ -589,7 +589,9 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onSelectTa
                   cursor: 'pointer',
                   display: 'inline-flex',
                   alignItems: 'center',
+                  justifyContent: 'center',
                   gap: '6px',
+                  width: '100%',
                 }}
               >
                 <span>🔄 Switch Account</span>
@@ -600,7 +602,7 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onSelectTa
                 type="button"
                 onClick={() => { sound.playTap(); onLogOut(); }}
                 style={{
-                  padding: '10px 16px',
+                  padding: '10px 14px',
                   borderRadius: '12px',
                   background: 'rgba(239, 68, 68, 0.12)',
                   border: '1px solid rgba(239, 68, 68, 0.35)',
@@ -610,57 +612,23 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onSelectTa
                   cursor: 'pointer',
                   display: 'inline-flex',
                   alignItems: 'center',
+                  justifyContent: 'center',
                   gap: '6px',
+                  width: '100%',
                 }}
               >
                 <span>🚪 Sign Out</span>
               </button>
             )}
-            <button
-              type="button"
-              onClick={() => { sound.playTap(); onSelectTab('missions'); }}
-              style={{
-                padding: '10px 18px',
-                background: 'rgba(255, 255, 255, 0.05)',
-                border: '1px solid rgba(169, 221, 211, 0.3)',
-                borderRadius: '12px',
-                color: '#A9DDD3',
-                fontSize: '12px',
-                fontWeight: 800,
-                cursor: 'pointer',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '6px',
-              }}
-            >
-              Daily Quests <ArrowRight size={14} />
-            </button>
-            <button
-              type="button"
-              onClick={() => { sound.playTap(); onSelectTab('binder'); }}
-              style={{
-                padding: '10px 18px',
-                background: '#A9DDD3',
-                border: 'none',
-                borderRadius: '12px',
-                color: '#010101',
-                fontSize: '12px',
-                fontWeight: 900,
-                cursor: 'pointer',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '6px',
-                boxShadow: '0 0 15px rgba(169, 221, 211, 0.3)',
-              }}
-            >
-              Card Binder (30 Cards) <ArrowRight size={14} />
-            </button>
 
             <button
               type="button"
+              className="full-span"
               onClick={() => { sound.playTap(); setIsMissionsHistoryOpen(true); }}
               style={{
-                padding: '10px 18px',
+                gridColumn: '1 / -1',
+                width: '100%',
+                padding: '12px 18px',
                 background: 'rgba(169, 221, 211, 0.12)',
                 border: '1px solid rgba(169, 221, 211, 0.45)',
                 borderRadius: '12px',
@@ -668,14 +636,15 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onSelectTa
                 fontSize: '12px',
                 fontWeight: 900,
                 cursor: 'pointer',
-                display: 'inline-flex',
+                display: 'flex',
                 alignItems: 'center',
+                justifyContent: 'center',
                 gap: '8px',
                 transition: 'all 0.2s',
               }}
             >
-              <CheckCircle2 size={14} color="#A9DDD3" />
-              Completed Missions ({user?.completedMissions?.length || (user?.completedMissionsHistory?.length || 0)})
+              <CheckCircle2 size={16} color="#A9DDD3" />
+              <span>Completed Missions ({user?.completedMissions?.length || (user?.completedMissionsHistory?.length || 0)})</span>
             </button>
           </div>
         </div>
