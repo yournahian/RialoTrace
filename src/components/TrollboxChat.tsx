@@ -11,10 +11,22 @@ interface FallingShard {
   speed: number;
 }
 
-export const TrollboxChat: React.FC<{ user: UserProfile | null; onUserUpdate?: (u: UserProfile) => void }> = ({
+interface TrollboxChatProps {
+  user: UserProfile | null;
+  currentUsername?: string;
+  onUserUpdate?: (u: UserProfile) => void;
+}
+
+export const TrollboxChat: React.FC<TrollboxChatProps> = ({
   user,
+  currentUsername,
   onUserUpdate,
 }) => {
+  const activeUsername = (
+    user?.username ||
+    currentUsername ||
+    (typeof window !== 'undefined' ? localStorage.getItem('rialo_active_user') || '' : '')
+  ).replace(/^@/, '').trim();
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
@@ -37,18 +49,45 @@ export const TrollboxChat: React.FC<{ user: UserProfile | null; onUserUpdate?: (
   const [isSending, setIsSending] = useState(false);
   const [fallingShards, setFallingShards] = useState<FallingShard[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const pendingMessagesRef = useRef<Map<string, ChatMessage>>(new Map());
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  // Sync messages globally from /api/trollbox
+  // Sync messages globally from /api/trollbox without dropping pending local messages
   const fetchGlobalMessages = async () => {
     try {
       const res = await fetch('/api/trollbox');
       const data = await res.json();
       if (data.success && Array.isArray(data.messages) && data.messages.length > 0) {
-        setMessages(data.messages);
+        setMessages(() => {
+          const serverMessages: ChatMessage[] = data.messages;
+          const serverIds = new Set(serverMessages.map((m) => m.id));
+          const serverSignatures = new Set(
+            serverMessages.map((m) => `${m.sender.toLowerCase().trim()}:${m.text.trim()}`)
+          );
+
+          // Clean up pending messages that have now been confirmed by the server
+          pendingMessagesRef.current.forEach((pendingMsg, id) => {
+            if (
+              serverIds.has(id) ||
+              serverSignatures.has(`${pendingMsg.sender.toLowerCase().trim()}:${pendingMsg.text.trim()}`)
+            ) {
+              pendingMessagesRef.current.delete(id);
+            }
+          });
+
+          // Keep any optimistic messages that the server hasn't saved or returned yet
+          const stillPending = Array.from(pendingMessagesRef.current.values());
+          const combined = [...serverMessages];
+          stillPending.forEach((p) => {
+            if (!serverIds.has(p.id)) {
+              combined.push(p);
+            }
+          });
+          return combined;
+        });
       }
     } catch (err) {
       console.error('Failed to sync global trollbox:', err);
@@ -68,15 +107,16 @@ export const TrollboxChat: React.FC<{ user: UserProfile | null; onUserUpdate?: (
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!input.trim() || !user?.username || isSending) return;
+    const effectiveSender = activeUsername;
+    if (!input.trim() || !effectiveSender || isSending) return;
 
     const trimmedText = input.trim();
     setInput('');
     sound.playTap();
 
     // Track sent message count for mission verification & profile achievements
-    if (typeof window !== 'undefined' && user?.username) {
-      const cleanUser = user.username.replace('@', '').toLowerCase();
+    if (typeof window !== 'undefined') {
+      const cleanUser = effectiveSender.toLowerCase();
       const currentSent = parseInt(localStorage.getItem(`rialo_trollbox_sent_${cleanUser}`) || '0') + 1;
       localStorage.setItem(`rialo_trollbox_sent_${cleanUser}`, String(currentSent));
       window.dispatchEvent(new CustomEvent('rialo_trollbox_msg_sent', { detail: { count: currentSent } }));
@@ -85,13 +125,14 @@ export const TrollboxChat: React.FC<{ user: UserProfile | null; onUserUpdate?: (
     const tempId = 'temp-' + Date.now();
     const tempMsg: ChatMessage = {
       id: tempId,
-      sender: user.username,
-      avatar: `https://unavatar.io/x/${user.username}`,
+      sender: effectiveSender,
+      avatar: `https://unavatar.io/x/${effectiveSender}`,
       text: trimmedText,
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     };
 
-    // Optimistic UI update
+    // Optimistic UI update - save to pending ref so polls never wipe it out!
+    pendingMessagesRef.current.set(tempId, tempMsg);
     setMessages((prev) => [...prev, tempMsg]);
 
     try {
@@ -100,14 +141,21 @@ export const TrollboxChat: React.FC<{ user: UserProfile | null; onUserUpdate?: (
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          sender: user.username,
+          sender: effectiveSender,
           text: trimmedText,
-          avatar: `https://unavatar.io/x/${user.username}`,
+          avatar: `https://unavatar.io/x/${effectiveSender}`,
         }),
       });
       const data = await res.json();
       if (data.success && data.message) {
-        setMessages((prev) => prev.map((m) => (m.id === tempId ? data.message : m)));
+        pendingMessagesRef.current.delete(tempId);
+        setMessages((prev) => {
+          const alreadyExists = prev.some((m) => m.id === data.message.id);
+          if (alreadyExists) {
+            return prev.filter((m) => m.id !== tempId);
+          }
+          return prev.map((m) => (m.id === tempId ? data.message : m));
+        });
       }
     } catch (err) {
       console.error('Failed to broadcast global message:', err);
@@ -487,8 +535,8 @@ export const TrollboxChat: React.FC<{ user: UserProfile | null; onUserUpdate?: (
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 maxLength={300}
-                placeholder={user?.username ? 'Broadcast message to everyone...' : 'Enter X handle to chat...'}
-                disabled={!user?.username || isSending}
+                placeholder="Broadcast message to everyone..."
+                disabled={!activeUsername || isSending}
                 style={{
                   flex: 1,
                   background: 'rgba(255, 255, 255, 0.05)',
@@ -502,9 +550,9 @@ export const TrollboxChat: React.FC<{ user: UserProfile | null; onUserUpdate?: (
               />
               <button
                 type="submit"
-                disabled={!input.trim() || !user?.username || isSending}
+                disabled={!input.trim() || !activeUsername || isSending}
                 style={{
-                  background: input.trim() && user?.username && !isSending ? '#A9DDD3' : 'rgba(255, 255, 255, 0.1)',
+                  background: input.trim() && activeUsername && !isSending ? '#A9DDD3' : 'rgba(255, 255, 255, 0.1)',
                   color: '#010101',
                   border: 'none',
                   borderRadius: '12px',
@@ -513,7 +561,7 @@ export const TrollboxChat: React.FC<{ user: UserProfile | null; onUserUpdate?: (
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  cursor: input.trim() && user?.username && !isSending ? 'pointer' : 'not-allowed',
+                  cursor: input.trim() && activeUsername && !isSending ? 'pointer' : 'not-allowed',
                   transition: 'all 0.2s',
                   flexShrink: 0,
                 }}

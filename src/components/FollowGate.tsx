@@ -5,22 +5,35 @@ import { RialoLogo } from './RialoLogo';
 import { X } from 'lucide-react';
 import { sound } from '@/lib/soundFx';
 
-export const FollowGate: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false);
+export interface FollowGateProps {
+  isOpen?: boolean;
+  onClose?: () => void;
+}
+
+export const FollowGate: React.FC<FollowGateProps> = ({
+  isOpen: propIsOpen,
+  onClose: propOnClose,
+}) => {
+  const [internalOpen, setInternalOpen] = useState(false);
   const [step, setStep] = useState<'prompt' | 'detecting' | 'unlocked'>('prompt');
 
+  const isControlled = typeof propIsOpen === 'boolean';
+  const isOpen = isControlled ? propIsOpen : internalOpen;
+
   useEffect(() => {
-    // Check if user already dismissed or unlocked the gate
-    const dismissed = localStorage.getItem('rialo_follow_gate_dismissed');
-    if (!dismissed) {
-      setIsOpen(true);
+    if (!isControlled) {
+      const dismissed = localStorage.getItem('rialo_follow_gate_dismissed');
+      if (!dismissed) {
+        setInternalOpen(true);
+      }
     }
-  }, []);
+  }, [isControlled]);
 
   const handleDismiss = () => {
     sound.playTap();
     localStorage.setItem('rialo_follow_gate_dismissed', 'true');
-    setIsOpen(false);
+    if (propOnClose) propOnClose();
+    setInternalOpen(false);
   };
 
   const handleFollowClick = (url: string = 'https://x.com/yournahin') => {
@@ -36,7 +49,8 @@ export const FollowGate: React.FC = () => {
   const handleEnter = () => {
     sound.playSuccess();
     localStorage.setItem('rialo_follow_gate_dismissed', 'true');
-    setIsOpen(false);
+    if (propOnClose) propOnClose();
+    setInternalOpen(false);
   };
 
   if (!isOpen) return null;

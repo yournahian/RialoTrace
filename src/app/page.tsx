@@ -51,6 +51,7 @@ export default function HomePage() {
   const [newlyPulledCards, setNewlyPulledCards] = useState<CardArchetype[] | null>(null);
   const [inspectedCardId, setInspectedCardId] = useState<string | null>(null);
   const [isOnboardingOpen, setIsOnboardingOpen] = useState<boolean>(false);
+  const [isFollowGateOpen, setIsFollowGateOpen] = useState<boolean>(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState<boolean>(false);
 
   const fetchUserData = async (uname: string) => {
@@ -114,6 +115,9 @@ export default function HomePage() {
       } catch (e) {}
     }
     fetchUserData(user.username);
+
+    // After entering X handle -> show the screen to follow @yournahin on X!
+    setIsFollowGateOpen(true);
   };
 
   const handleSelectCardForTrade = (cardId: string) => {
@@ -134,7 +138,10 @@ export default function HomePage() {
 
   return (
     <div className="app-viewport">
-      <FollowGate />
+      <FollowGate
+        isOpen={isFollowGateOpen}
+        onClose={() => setIsFollowGateOpen(false)}
+      />
 
       <header className="app-header">
         <div className="brand-link">
@@ -461,7 +468,11 @@ export default function HomePage() {
         )}
       </main>
       {/* Global Live Community Trollbox & Shard Rain */}
-      <TrollboxChat user={currentUser} onUserUpdate={(u) => setCurrentUser(u)} />
+      <TrollboxChat
+        user={currentUser}
+        currentUsername={currentUsername}
+        onUserUpdate={(u) => setCurrentUser(u)}
+      />
       {/* Interactive PIN-Protected Onboarding & Account Switcher Modal */}
       <OnboardingModal
         isOpen={isOnboardingOpen || !currentUsername}
