@@ -723,7 +723,7 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onSelectTa
       {activeBroadcast && (
         <div style={{
           background: 'linear-gradient(135deg, rgba(169, 221, 211, 0.12) 0%, rgba(6, 12, 16, 0.96) 100%)',
-          border: activeBroadcast.broadcastType === 'system_notice' ? '1.5px solid #FBBF24' : '1.5px solid #A9DDD3',
+          border: activeBroadcast.broadcastType === 'system_notice' ? (activeBroadcast.noticeSeverity === 'maintenance' ? '1.5px solid #FBBF24' : activeBroadcast.noticeSeverity === 'event' ? '1.5px solid #E879F9' : '1.5px solid #A9DDD3') : '1.5px solid #A9DDD3',
           borderRadius: '20px',
           padding: '20px 24px',
           marginBottom: '28px',
@@ -783,7 +783,14 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onSelectTa
                     alignItems: 'center',
                     gap: '4px',
                   }}>
-                    <Radio size={12} className="animate-pulse" /> {activeBroadcast.broadcastType === 'system_notice' ? '⚠️ SYSTEM & PROTOCOL NOTICE' : activeBroadcast.broadcastType === 'achievement' ? 'PROTOCOL ACHIEVEMENT' : 'PROTOCOL MISSION'}
+                    <Radio size={12} className="animate-pulse" /> {activeBroadcast.broadcastType === 'system_notice'
+  ? (activeBroadcast.noticeSeverity === 'announcement' ? '📢 OFFICIAL ANNOUNCEMENT'
+     : activeBroadcast.noticeSeverity === 'update' ? '🚀 PLATFORM UPDATE'
+     : activeBroadcast.noticeSeverity === 'feature_guide' ? '📖 NEW FEATURE GUIDE'
+     : activeBroadcast.noticeSeverity === 'event' ? '🎁 COMMUNITY EVENT'
+     : activeBroadcast.noticeSeverity === 'maintenance' ? '⚠️ SYSTEM MAINTENANCE'
+     : '📢 PROTOCOL NOTICE')
+  : activeBroadcast.broadcastType === 'achievement' ? 'PROTOCOL ACHIEVEMENT' : 'PROTOCOL MISSION'}
                   </span>
 
                   <span style={{
@@ -836,8 +843,8 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onSelectTa
                 </div>
 
                 {activeBroadcast.desc && (
-                  <div style={{ fontSize: '12px', color: 'rgba(232, 227, 213, 0.65)', marginTop: '2px' }}>
-                    Criteria: {activeBroadcast.desc}
+                  <div style={{ fontSize: '12px', color: 'rgba(232, 227, 213, 0.75)', marginTop: '2px' }}>
+                    {activeBroadcast.broadcastType === 'system_notice' ? activeBroadcast.desc : `Criteria: ${activeBroadcast.desc}`}
                   </div>
                 )}
 
@@ -872,7 +879,7 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onSelectTa
           </div>
 
           {/* Interactive Mission Verification Bar (Only for Missions) */}
-          {activeBroadcast.broadcastType !== 'achievement' && (
+          {activeBroadcast.broadcastType === 'mission' && (
             <div style={{
               background: 'rgba(0, 0, 0, 0.35)',
               border: '1px solid rgba(169, 221, 211, 0.2)',

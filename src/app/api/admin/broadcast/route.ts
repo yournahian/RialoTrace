@@ -6,7 +6,7 @@ const ADMIN_KEY = process.env.ADMIN_PASSWORD || process.env.ADMIN_SECRET_KEY || 
 
 export async function GET() {
   try {
-    const broadcasts = getBroadcastEvents();
+    const broadcasts = await getBroadcastEvents();
     return NextResponse.json({ success: true, broadcasts });
   } catch (error) {
     console.error('Failed to get broadcasts:', error);
@@ -45,12 +45,12 @@ export async function POST(req: NextRequest) {
       createdAt: new Date().toISOString(),
     };
 
-    addBroadcastEvent(event);
+    await addBroadcastEvent(event);
 
     // If recipient is a specific user, shards > 0, and broadcastType is achievement, award shards directly
     const cleanHandle = recipient.replace('@', '').trim();
     if (event.broadcastType === 'achievement' && cleanHandle && cleanHandle.toUpperCase() !== 'ALL' && cleanHandle.toUpperCase() !== 'ALL PLAYERS' && event.shardsReward > 0) {
-      awardUserShards(cleanHandle, event.shardsReward);
+      await awardUserShards(cleanHandle, event.shardsReward);
     }
 
     return NextResponse.json({ success: true, broadcast: event });
@@ -74,7 +74,7 @@ export async function DELETE(req: NextRequest) {
       return NextResponse.json({ success: false, error: 'Broadcast ID is required' }, { status: 400 });
     }
 
-    const deleted = deleteBroadcastEvent(id);
+    const deleted = await deleteBroadcastEvent(id);
     return NextResponse.json({ success: deleted });
   } catch (error) {
     console.error('Failed to delete broadcast:', error);

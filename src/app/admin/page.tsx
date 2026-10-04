@@ -172,7 +172,7 @@ export default function AdminPage() {
   const [isBroadcasting, setIsBroadcasting] = useState<boolean>(false);
   const [bcastActionMsg, setBcastActionMsg] = useState<string>('');
   const [broadcastType, setBroadcastType] = useState<'mission' | 'achievement' | 'system_notice'>('mission');
-  const [noticeSeverity, setNoticeSeverity] = useState<'maintenance' | 'critical' | 'upgrade' | 'announcement'>('maintenance');
+  const [noticeSeverity, setNoticeSeverity] = useState<'maintenance' | 'critical' | 'upgrade' | 'announcement' | 'update' | 'feature_guide' | 'event' | 'custom' | string>('announcement');
   const [missionCategory, setMissionCategory] = useState<string>('trollbox');
   const [targetCount, setTargetCount] = useState<number>(10);
 
@@ -2428,13 +2428,14 @@ const handleCreateMission = async (e: React.FormEvent) => {
                       type="button"
                       onClick={() => {
                         setBroadcastType('system_notice');
-                        setNoticeSeverity('maintenance');
-                        setBcastTitle('Scheduled System Maintenance');
-                        setBcastDesc('Scheduled infrastructure upgrade in progress. Sub-second cluster optimization.');
-                        setBcastIcon('⚠️');
+                        setNoticeSeverity('announcement');
+                        setBcastTitle('Official Community Announcement');
+                        setBcastDesc('Important protocol milestone and upcoming ecosystem events.');
+                        setBcastIcon('📢');
+                        setBcastTier('Mythic');
                         setBcastShards(0);
                         setBcastRecipient('ALL PLAYERS');
-                        setBcastMessage('Estimated Downtime: 30 minutes. All card states and shard vaults remain 100% secure.');
+                        setBcastMessage('We are thrilled to unveil our latest development roadmap and testnet rewards!');
                       }}
                       style={{
                         padding: '12px',
@@ -2451,7 +2452,7 @@ const handleCreateMission = async (e: React.FormEvent) => {
                         gap: '6px',
                       }}
                     >
-                      ⚠️ System Notice
+                      📢 Notice & Announcement
                     </button>
                   </div>
                 </div>
@@ -2487,50 +2488,103 @@ const handleCreateMission = async (e: React.FormEvent) => {
                     </div>
                   </div>
                 ) : null}
-                {/* Preset Dropdown */}
-                <div>
-                  <label style={{ fontSize: '11px', fontWeight: 800, color: '#A9DDD3', display: 'block', marginBottom: '6px', letterSpacing: '0.04em' }}>
-                    1. SELECT PRESET ACHIEVEMENT (OR CUSTOM FEAT)
-                  </label>
-                  <select
-                    value={selectedPresetId}
-                    onChange={(e) => handleSelectPreset(e.target.value)}
-                    className="admin-input"
-                    style={{ width: '100%', background: 'rgba(2, 4, 6, 0.95)', cursor: 'pointer', padding: '10px 14px' }}
-                  >
-                    <option value="custom">✨ Custom Special Protocol Honor / Feat</option>
-                    <optgroup label="🚀 Quests & Genesis (6)">
-                      {PLATFORM_ACHIEVEMENTS.filter(a => a.category === 'quests').map(a => (
-                        <option key={a.id} value={a.id}>{a.icon} {a.title} ({a.tier} - {a.shardsReward} Shards)</option>
+                {/* Notice & Announcement Purpose & Presets */}
+                {broadcastType === 'system_notice' && (
+                  <div>
+                    <label style={{ fontSize: '11px', fontWeight: 800, color: '#FBBF24', display: 'block', marginBottom: '8px', letterSpacing: '0.04em' }}>
+                      1. SELECT NOTICE PURPOSE / PRESET TEMPLATE
+                    </label>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '8px', marginBottom: '6px' }}>
+                      {[
+                        { id: 'announcement', label: '📢 Announcement', icon: '📢', title: 'Official Community Announcement', desc: 'Important protocol milestone and upcoming ecosystem events.', tier: 'Mythic', shards: 0, msg: 'We are thrilled to unveil our latest development roadmap and testnet rewards!' },
+                        { id: 'update', label: '🚀 Platform Update', icon: '🚀', title: 'Platform Update: New Features Released', desc: 'Sub-second speed upgrades, new card mechanics, and UX enhancements.', tier: 'Diamond', shards: 0, msg: 'Check out the newly added binder filters, instant sound effects, and enhanced performance.' },
+                        { id: 'feature_guide', label: '📖 Feature Guide', icon: '📖', title: 'Feature Guide: How to Use New Feature', desc: 'Step-by-step instructions on transmuting duplicate cards into higher tier archetypes.', tier: 'Gold', shards: 25, msg: 'Learn how to maximize your shards and craft higher tier Genesis cards!' },
+                        { id: 'event', label: '🎁 Community Event', icon: '🎁', title: 'Community Celebration & Shard Drop', desc: 'Limited-time protocol bonus for all active community members and chat participants.', tier: 'Platinum', shards: 50, msg: "Join the Trollbox and complete today's missions to claim bonus shards!" },
+                        { id: 'maintenance', label: '⚠️ Maintenance', icon: '⚠️', title: 'Scheduled System Maintenance', desc: 'Scheduled infrastructure upgrade in progress. Sub-second cluster optimization.', tier: 'Silver', shards: 0, msg: 'Estimated Downtime: 30 minutes. All card states and shard vaults remain 100% secure.' },
+                        { id: 'custom', label: '💡 Custom Notice', icon: '💡', title: 'Special Protocol Notice', desc: 'Important notice for all Rialo community members.', tier: 'Gold', shards: 0, msg: '' },
+                      ].map((tpl) => (
+                        <button
+                          key={tpl.id}
+                          type="button"
+                          onClick={() => {
+                            setNoticeSeverity(tpl.id as any);
+                            setBcastTitle(tpl.title);
+                            setBcastDesc(tpl.desc);
+                            setBcastIcon(tpl.icon);
+                            setBcastTier(tpl.tier as any);
+                            setBcastShards(tpl.shards);
+                            setBcastRecipient('ALL PLAYERS');
+                            setBcastMessage(tpl.msg);
+                          }}
+                          style={{
+                            padding: '10px 8px',
+                            borderRadius: '10px',
+                            background: noticeSeverity === tpl.id ? 'rgba(251, 191, 36, 0.25)' : 'rgba(255, 255, 255, 0.03)',
+                            border: noticeSeverity === tpl.id ? '1.5px solid #FBBF24' : '1px solid rgba(255, 255, 255, 0.08)',
+                            color: noticeSeverity === tpl.id ? '#FBBF24' : '#8E9B97',
+                            cursor: 'pointer',
+                            fontSize: '11px',
+                            fontWeight: 800,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: '4px',
+                            transition: 'all 0.15s',
+                          }}
+                        >
+                          {tpl.label}
+                        </button>
                       ))}
-                    </optgroup>
-                    <optgroup label="🎴 Cards & Collecting (6)">
-                      {PLATFORM_ACHIEVEMENTS.filter(a => a.category === 'cards').map(a => (
-                        <option key={a.id} value={a.id}>{a.icon} {a.title} ({a.tier} - {a.shardsReward} Shards)</option>
-                      ))}
-                    </optgroup>
-                    <optgroup label="🧪 The Superconducting Forge (4)">
-                      {PLATFORM_ACHIEVEMENTS.filter(a => a.category === 'forge').map(a => (
-                        <option key={a.id} value={a.id}>{a.icon} {a.title} ({a.tier} - {a.shardsReward} Shards)</option>
-                      ))}
-                    </optgroup>
-                    <optgroup label="🔄 P2P Trading (4)">
-                      {PLATFORM_ACHIEVEMENTS.filter(a => a.category === 'trading').map(a => (
-                        <option key={a.id} value={a.id}>{a.icon} {a.title} ({a.tier} - {a.shardsReward} Shards)</option>
-                      ))}
-                    </optgroup>
-                    <optgroup label="🕹️ Arcade & Sound Lab (4)">
-                      {PLATFORM_ACHIEVEMENTS.filter(a => a.category === 'arcade').map(a => (
-                        <option key={a.id} value={a.id}>{a.icon} {a.title} ({a.tier} - {a.shardsReward} Shards)</option>
-                      ))}
-                    </optgroup>
-                    <optgroup label="👑 Prestige & Community (6)">
-                      {PLATFORM_ACHIEVEMENTS.filter(a => a.category === 'prestige' || a.category === 'community').map(a => (
-                        <option key={a.id} value={a.id}>{a.icon} {a.title} ({a.tier} - {a.shardsReward} Shards)</option>
-                      ))}
-                    </optgroup>
-                  </select>
-                </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Preset Achievement Dropdown (Only for Achievements) */}
+                {broadcastType === 'achievement' && (
+                  <div>
+                    <label style={{ fontSize: '11px', fontWeight: 800, color: '#A9DDD3', display: 'block', marginBottom: '6px', letterSpacing: '0.04em' }}>
+                      1. SELECT PRESET ACHIEVEMENT (OR CUSTOM FEAT)
+                    </label>
+                    <select
+                      value={selectedPresetId}
+                      onChange={(e) => handleSelectPreset(e.target.value)}
+                      className="admin-input"
+                      style={{ width: '100%', background: 'rgba(2, 4, 6, 0.95)', cursor: 'pointer', padding: '10px 14px' }}
+                    >
+                      <option value="custom">✨ Custom Special Protocol Honor / Feat</option>
+                      <optgroup label="🚀 Quests & Genesis (6)">
+                        {PLATFORM_ACHIEVEMENTS.filter(a => a.category === 'quests').map(a => (
+                          <option key={a.id} value={a.id}>{a.icon} {a.title} ({a.tier} - {a.shardsReward} Shards)</option>
+                        ))}
+                      </optgroup>
+                      <optgroup label="🎴 Cards & Collecting (6)">
+                        {PLATFORM_ACHIEVEMENTS.filter(a => a.category === 'cards').map(a => (
+                          <option key={a.id} value={a.id}>{a.icon} {a.title} ({a.tier} - {a.shardsReward} Shards)</option>
+                        ))}
+                      </optgroup>
+                      <optgroup label="🧪 The Superconducting Forge (4)">
+                        {PLATFORM_ACHIEVEMENTS.filter(a => a.category === 'forge').map(a => (
+                          <option key={a.id} value={a.id}>{a.icon} {a.title} ({a.tier} - {a.shardsReward} Shards)</option>
+                        ))}
+                      </optgroup>
+                      <optgroup label="🔄 P2P Trading (4)">
+                        {PLATFORM_ACHIEVEMENTS.filter(a => a.category === 'trading').map(a => (
+                          <option key={a.id} value={a.id}>{a.icon} {a.title} ({a.tier} - {a.shardsReward} Shards)</option>
+                        ))}
+                      </optgroup>
+                      <optgroup label="🕹️ Arcade & Sound Lab (4)">
+                        {PLATFORM_ACHIEVEMENTS.filter(a => a.category === 'arcade').map(a => (
+                          <option key={a.id} value={a.id}>{a.icon} {a.title} ({a.tier} - {a.shardsReward} Shards)</option>
+                        ))}
+                      </optgroup>
+                      <optgroup label="👑 Prestige & Community (6)">
+                        {PLATFORM_ACHIEVEMENTS.filter(a => a.category === 'prestige' || a.category === 'community').map(a => (
+                          <option key={a.id} value={a.id}>{a.icon} {a.title} ({a.tier} - {a.shardsReward} Shards)</option>
+                        ))}
+                      </optgroup>
+                    </select>
+                  </div>
+                )}
 
                 {/* Recipient Handle */}
                 <div>
@@ -2590,7 +2644,7 @@ const handleCreateMission = async (e: React.FormEvent) => {
                   </div>
                   <div>
                     <label style={{ fontSize: '11px', fontWeight: 800, color: '#A9DDD3', display: 'block', marginBottom: '6px' }}>
-                      ACHIEVEMENT TITLE
+                      {broadcastType === 'system_notice' ? 'NOTICE / ANNOUNCEMENT TITLE' : broadcastType === 'mission' ? 'MISSION TITLE' : 'ACHIEVEMENT TITLE'}
                     </label>
                     <input
                       type="text"
@@ -2606,7 +2660,7 @@ const handleCreateMission = async (e: React.FormEvent) => {
 
                 {/* Quick Emoji Bar */}
                 <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-                  {['🏆', '👑', '💎', '⚡', '🚀', '🎴', '🧪', '🔥', '🌟', '🤝', '🕹️', '🎹'].map((em) => (
+                  {['📢', '🚀', '📖', '🎁', '⚠️', '💡', '🔔', '⚡', '🏆', '👑', '💎', '🌟', '🎴', '🧪', '🔥'].map((em) => (
                     <button
                       key={em}
                       type="button"
@@ -2628,7 +2682,7 @@ const handleCreateMission = async (e: React.FormEvent) => {
                 {/* Description */}
                 <div>
                   <label style={{ fontSize: '11px', fontWeight: 800, color: '#A9DDD3', display: 'block', marginBottom: '6px' }}>
-                    DESCRIPTION / CRITERIA
+                    {broadcastType === 'system_notice' ? 'NOTICE SUMMARY / DETAILS' : broadcastType === 'mission' ? 'MISSION INSTRUCTIONS' : 'DESCRIPTION / CRITERIA'}
                   </label>
                   <input
                     type="text"
@@ -2713,7 +2767,7 @@ const handleCreateMission = async (e: React.FormEvent) => {
                   }}
                 >
                   <Megaphone size={18} />
-                  <span>{isBroadcasting ? 'Dispatching Broadcast...' : broadcastType === 'mission' ? '📢 Broadcast Mission to Community' : broadcastType === 'system_notice' ? '📢 Broadcast System Notice to Community' : '📢 Broadcast Achievement to Community'}</span>
+                  <span>{isBroadcasting ? 'Dispatching Broadcast...' : broadcastType === 'mission' ? '📢 Broadcast Mission to Community' : broadcastType === 'system_notice' ? '📢 Broadcast Notice / Announcement to Community' : '📢 Broadcast Achievement to Community'}</span>
                 </button>
               </form>
             </div>
@@ -2767,7 +2821,14 @@ const handleCreateMission = async (e: React.FormEvent) => {
                           padding: '2px 6px',
                           borderRadius: '4px',
                         }}>
-                          {broadcastType === 'system_notice' ? 'SYSTEM & PROTOCOL ALERT' : broadcastType === 'mission' ? 'PROTOCOL MISSION' : 'PROTOCOL ACHIEVEMENT'}
+                          {broadcastType === 'system_notice' 
+  ? (noticeSeverity === 'announcement' ? '📢 OFFICIAL ANNOUNCEMENT' 
+     : noticeSeverity === 'update' ? '🚀 PLATFORM UPDATE' 
+     : noticeSeverity === 'feature_guide' ? '📖 NEW FEATURE GUIDE' 
+     : noticeSeverity === 'event' ? '🎁 COMMUNITY EVENT' 
+     : noticeSeverity === 'maintenance' ? '⚠️ SYSTEM MAINTENANCE' 
+     : '📢 PROTOCOL NOTICE')
+  : broadcastType === 'mission' ? 'PROTOCOL MISSION' : 'PROTOCOL ACHIEVEMENT'}
                         </span>
                         <span style={{
                           fontSize: '10px',

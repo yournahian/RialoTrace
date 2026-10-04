@@ -116,7 +116,7 @@ export interface Season {
 export interface BroadcastEvent {
   id: string;
   broadcastType?: 'mission' | 'achievement' | 'system_notice';
-  noticeSeverity?: 'maintenance' | 'critical' | 'upgrade' | 'announcement';
+  noticeSeverity?: 'maintenance' | 'critical' | 'upgrade' | 'announcement' | 'update' | 'feature_guide' | 'event' | 'custom' | string;
   achievementId?: string;
   title: string;
   desc: string;

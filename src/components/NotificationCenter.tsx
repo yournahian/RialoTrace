@@ -66,16 +66,33 @@ export const NotificationCenter: React.FC<NotificationCenterProps> = ({
           const rec = (b.recipient || '').toLowerCase().replace('@', '').trim();
           if (rec === 'all' || rec === 'all players' || rec === userHandle) {
             const isMission = b.broadcastType === 'mission';
+            const isNotice = b.broadcastType === 'system_notice';
+            let notifTitle = `🏆 Protocol Achievement: ${b.title}`;
+            let actionText = 'Inspect in Trophy Cabinet';
+            if (isMission) {
+              notifTitle = `🎯 New Mission: ${b.title}`;
+              actionText = 'View & Complete Mission';
+            } else if (isNotice) {
+              const prefix = b.noticeSeverity === 'announcement' ? '📢 Announcement'
+                : b.noticeSeverity === 'update' ? '🚀 Platform Update'
+                : b.noticeSeverity === 'feature_guide' ? '📖 Guide'
+                : b.noticeSeverity === 'event' ? '🎁 Event'
+                : b.noticeSeverity === 'maintenance' ? '⚠️ Maintenance'
+                : '📢 Notice';
+              notifTitle = `${prefix}: ${b.title}`;
+              actionText = 'Read Notice in Profile';
+            }
+
             items.push({
               id: 'notif-' + b.id,
               type: isMission ? 'mission' : 'broadcast',
-              title: isMission ? `🎯 New Mission: ${b.title}` : `📢 Protocol Broadcast: ${b.title}`,
-              message: b.message ? `"${b.message}" (+${b.shardsReward} Shards Reward)` : b.desc,
+              title: notifTitle,
+              message: b.message ? `"${b.message}"${b.shardsReward > 0 ? ` (+${b.shardsReward} Shards Drop)` : ''}` : b.desc,
               time: formatRelativeTime(b.createdAt),
-              icon: b.icon || (isMission ? '🎯' : '📢'),
+              icon: b.icon || (isMission ? '🎯' : isNotice ? '📢' : '🏆'),
               read: false,
-              actionTab: isMission ? 'profile' : 'profile',
-              actionText: isMission ? 'View & Complete Mission' : 'Inspect in Trophy Cabinet',
+              actionTab: 'profile',
+              actionText: actionText,
               data: b,
             });
           }
