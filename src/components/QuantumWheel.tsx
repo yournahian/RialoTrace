@@ -135,7 +135,7 @@ export const QuantumWheel: React.FC<QuantumWheelProps> = ({ user, onUserUpdate, 
       background: 'linear-gradient(180deg, rgba(8, 12, 11, 0.95) 0%, rgba(2, 4, 3, 0.98) 100%)',
       border: '1px solid rgba(169, 221, 211, 0.22)',
       borderRadius: '24px',
-      padding: '14px 20px',
+      padding: '32px 24px',
       color: '#FFFFFF',
       boxShadow: '0 20px 50px rgba(0, 0, 0, 0.7)',
       position: 'relative',
@@ -166,25 +166,31 @@ export const QuantumWheel: React.FC<QuantumWheelProps> = ({ user, onUserUpdate, 
         pointerEvents: 'none',
       }} />
 
-      {/* Compact Status Header */}
-      <div style={{ textAlign: 'center', marginBottom: '10px', position: 'relative', zIndex: 1 }}>
+      {/* Header */}
+      <div style={{ textAlign: 'center', marginBottom: '24px', position: 'relative', zIndex: 1 }}>
         <div style={{
           display: 'inline-flex',
           alignItems: 'center',
           gap: '8px',
-          padding: '4px 14px',
+          padding: '6px 16px',
           background: 'rgba(169, 221, 211, 0.08)',
-          border: '1px solid rgba(169, 221, 211, 0.28)',
+          border: '1px solid rgba(169, 221, 211, 0.3)',
           borderRadius: '9999px',
           color: '#A9DDD3',
-          fontSize: '11px',
-          fontWeight: '800',
-          letterSpacing: '0.8px',
-          fontFamily: 'var(--font-mono, monospace)',
+          fontSize: '12px',
+          fontWeight: '700',
+          textTransform: 'uppercase',
+          letterSpacing: '1px',
+          marginBottom: '10px',
         }}>
-          <Sparkles size={13} />
-          <span>QUANTUM ACCELERATOR • {isFreeAvailable ? 'FREE DAILY SPIN READY' : 'RECHARGE WITH 25 SHARDS'}</span>
+          <Sparkles size={14} /> Quantum Rotary Engine
         </div>
+        <h2 style={{ fontSize: '28px', fontWeight: '900', letterSpacing: '-0.5px', margin: '0 0 8px 0', color: '#E8E3D5' }}>
+          Daily Quantum <span className="gradient-text-rialo">Shard Wheel</span>
+        </h2>
+        <p style={{ color: '#8E9B97', fontSize: '14px', maxWidth: '520px', margin: '0 auto' }}>
+          Harness absolute zero superconductivity for daily rewards. 1 free spin every 24 hours or fuel the accelerator with 25 Shards.
+        </p>
       </div>
 
       {errorMsg && (
@@ -213,7 +219,7 @@ export const QuantumWheel: React.FC<QuantumWheelProps> = ({ user, onUserUpdate, 
         alignItems: 'center',
         justifyContent: 'center',
         position: 'relative',
-        margin: '8px 0',
+        margin: '16px 0',
       }}>
         {/* Top Pointer Needle */}
         <div style={{
@@ -222,16 +228,16 @@ export const QuantumWheel: React.FC<QuantumWheelProps> = ({ user, onUserUpdate, 
           zIndex: 30,
           width: '0',
           height: '0',
-          borderLeft: '11px solid transparent',
-          borderRight: '11px solid transparent',
-          borderTop: '18px solid #A9DDD3',
+          borderLeft: '14px solid transparent',
+          borderRight: '14px solid transparent',
+          borderTop: '24px solid #A9DDD3',
           filter: 'drop-shadow(0 4px 8px rgba(169, 221, 211, 0.8))',
         }} />
 
         {/* Outer Glowing Bezel */}
         <div style={{
-          width: '260px',
-          height: '260px',
+          width: '330px',
+          height: '330px',
           borderRadius: '50%',
           border: '3px solid rgba(169, 221, 211, 0.4)',
           boxShadow: '0 0 35px rgba(169, 221, 211, 0.25), inset 0 0 30px rgba(0, 0, 0, 0.8)',
@@ -244,8 +250,8 @@ export const QuantumWheel: React.FC<QuantumWheelProps> = ({ user, onUserUpdate, 
           {/* Rotating Wheel Container */}
           <div
             style={{
-              width: '248px',
-              height: '248px',
+              width: '316px',
+              height: '316px',
               borderRadius: '50%',
               position: 'relative',
               overflow: 'hidden',
@@ -313,8 +319,8 @@ export const QuantumWheel: React.FC<QuantumWheelProps> = ({ user, onUserUpdate, 
           {/* Center Hub */}
           <div style={{
             position: 'absolute',
-            width: '50px',
-            height: '50px',
+            width: '64px',
+            height: '64px',
             borderRadius: '50%',
             background: 'radial-gradient(circle, #0e201b 0%, #020403 100%)',
             border: '2px solid #A9DDD3',
@@ -324,7 +330,7 @@ export const QuantumWheel: React.FC<QuantumWheelProps> = ({ user, onUserUpdate, 
             justifyContent: 'center',
             zIndex: 10,
           }}>
-            <Zap size={18} color="#A9DDD3" />
+            <Zap size={22} color="#A9DDD3" />
           </div>
         </div>
       </div>
@@ -359,7 +365,7 @@ export const QuantumWheel: React.FC<QuantumWheelProps> = ({ user, onUserUpdate, 
         display: 'flex',
         justifyContent: 'center',
         gap: '14px',
-        marginTop: '12px',
+        marginTop: '24px',
         flexWrap: 'wrap',
       }}>
         {isFreeAvailable ? (
@@ -368,12 +374,12 @@ export const QuantumWheel: React.FC<QuantumWheelProps> = ({ user, onUserUpdate, 
             disabled={isSpinning}
             onClick={() => handleSpin(false)}
             style={{
-              padding: '10px 28px',
+              padding: '14px 32px',
               background: 'linear-gradient(135deg, #A9DDD3 0%, #76c0b2 100%)',
               color: '#010101',
               border: 'none',
               borderRadius: '9999px',
-              fontSize: '13px',
+              fontSize: '15px',
               fontWeight: '900',
               cursor: isSpinning ? 'not-allowed' : 'pointer',
               display: 'inline-flex',
@@ -393,14 +399,14 @@ export const QuantumWheel: React.FC<QuantumWheelProps> = ({ user, onUserUpdate, 
             disabled={isSpinning || (user?.shards || 0) < 25}
             onClick={() => handleSpin(true)}
             style={{
-              padding: '10px 28px',
+              padding: '14px 32px',
               background: (user?.shards || 0) >= 25
                 ? 'linear-gradient(135deg, #A9DDD3 0%, #76c0b2 100%)'
                 : 'rgba(255, 255, 255, 0.08)',
               color: (user?.shards || 0) >= 25 ? '#010101' : '#666666',
               border: 'none',
               borderRadius: '9999px',
-              fontSize: '13px',
+              fontSize: '15px',
               fontWeight: '900',
               cursor: isSpinning || (user?.shards || 0) < 25 ? 'not-allowed' : 'pointer',
               display: 'inline-flex',
@@ -559,7 +565,7 @@ export const QuantumWheel: React.FC<QuantumWheelProps> = ({ user, onUserUpdate, 
                 padding: '12px',
                 background: 'linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.4) 60%, transparent 100%)',
               }}>
-                <div style={{ fontSize: '13px', fontWeight: 900, color: '#FFFFFF', textShadow: '0 2px 4px rgba(0,0,0,0.9)' }}>
+                <div style={{ fontSize: '15px', fontWeight: 900, color: '#FFFFFF', textShadow: '0 2px 4px rgba(0,0,0,0.9)' }}>
                   {wonBonusCard.title}
                 </div>
               </div>

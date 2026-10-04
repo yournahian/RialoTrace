@@ -27,7 +27,7 @@ export const ArcadeHub: React.FC<ArcadeHubProps> = ({ user, onUserUpdate, onNavi
   };
 
   return (
-    <div style={{ maxWidth: '1160px', margin: '0 auto', padding: '8px 12px' }}>
+    <div style={{ maxWidth: '1160px', width: '100%', margin: '0 auto', padding: '10px 0 70px 0', boxSizing: 'border-box' }}>
       {/* Top Banner - Unified Centered Architecture */}
       <div className="tcg-header" style={{ marginBottom: '10px', paddingBottom: '8px' }}>
         <div className="tcg-eyebrow">

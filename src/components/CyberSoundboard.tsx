@@ -93,46 +93,44 @@ export const CyberSoundboard: React.FC = () => {
       boxShadow: '0 20px 50px rgba(0, 0, 0, 0.7)',
       position: 'relative',
     }}>
-      {/* Title */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '14px', marginBottom: '24px' }}>
-        <div>
-          <div style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '8px',
-            padding: '4px 14px',
-            background: 'rgba(169, 221, 211, 0.08)',
-            border: '1px solid rgba(169, 221, 211, 0.3)',
-            borderRadius: '9999px',
-            color: '#A9DDD3',
-            fontSize: '11px',
-            fontWeight: '800',
-            textTransform: 'uppercase',
-            letterSpacing: '1px',
-            marginBottom: '8px',
-          }}>
-            <Music size={13} /> Cyberpunk DJ Station
-          </div>
-          <h2 style={{ fontSize: '26px', fontWeight: '900', color: '#E8E3D5', margin: 0 }}>
-            Rialo DJ Soundboard & <span className="gradient-text-rialo">Beat Pad</span>
-          </h2>
-          <p style={{ color: '#8E9B97', fontSize: '13px', margin: '4px 0 0 0' }}>
-            Tap the 16 MPC pads to drop cryogenic bass, sub-zero beats, and laser zaps.
-          </p>
+      {/* Title - Unified Centered Architecture */}
+      <div style={{ textAlign: 'center', marginBottom: '24px' }}>
+        <div style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: '8px',
+          padding: '4px 14px',
+          background: 'rgba(169, 221, 211, 0.08)',
+          border: '1px solid rgba(169, 221, 211, 0.3)',
+          borderRadius: '9999px',
+          color: '#A9DDD3',
+          fontSize: '11px',
+          fontWeight: '800',
+          textTransform: 'uppercase',
+          letterSpacing: '1px',
+          marginBottom: '8px',
+        }}>
+          <Music size={13} /> Cyberpunk DJ Station
         </div>
+        <h2 style={{ fontSize: '26px', fontWeight: '900', color: '#E8E3D5', margin: '0 0 6px 0' }}>
+          Rialo DJ Soundboard & <span className="gradient-text-rialo">Beat Pad</span>
+        </h2>
+        <p style={{ color: '#8E9B97', fontSize: '13px', margin: '0 auto 12px auto', maxWidth: '520px' }}>
+          Tap the 16 MPC pads to drop cryogenic bass, sub-zero beats, and laser zaps.
+        </p>
 
         {/* Loop Sequencer Toggle */}
         <button
           type="button"
           onClick={toggleLoop}
           style={{
-            padding: '12px 24px',
+            padding: '10px 22px',
             borderRadius: '9999px',
             border: isLooping ? '1.5px solid #A9DDD3' : '1px solid rgba(255, 255, 255, 0.15)',
             background: isLooping ? 'rgba(169, 221, 211, 0.2)' : 'rgba(255, 255, 255, 0.04)',
             color: isLooping ? '#A9DDD3' : '#FFFFFF',
             fontWeight: 800,
-            fontSize: '13px',
+            fontSize: '12px',
             cursor: 'pointer',
             display: 'inline-flex',
             alignItems: 'center',

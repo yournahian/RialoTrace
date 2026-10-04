@@ -257,14 +257,18 @@ export const XRayRoast: React.FC<{ initialHandle?: string }> = ({ initialHandle 
 
   return (
     <div style={{
-      width: '100%',
-      maxWidth: '860px',
-      margin: '0 auto',
+      background: 'linear-gradient(180deg, rgba(8, 12, 11, 0.95) 0%, rgba(2, 4, 3, 0.98) 100%)',
+      border: '1px solid rgba(169, 221, 211, 0.22)',
+      borderRadius: '24px',
+      padding: '32px 24px',
       color: '#FFFFFF',
+      boxShadow: '0 20px 50px rgba(0, 0, 0, 0.7)',
       position: 'relative',
+      width: '100%',
+      boxSizing: 'border-box',
     }}>
       {/* Header - Unified Centered Architecture */}
-      <div style={{ textAlign: 'center', marginBottom: '14px', position: 'relative', zIndex: 2 }}>
+      <div style={{ textAlign: 'center', marginBottom: '20px', position: 'relative', zIndex: 2 }}>
         <div style={{
           display: 'inline-flex',
           alignItems: 'center',
@@ -275,17 +279,17 @@ export const XRayRoast: React.FC<{ initialHandle?: string }> = ({ initialHandle 
           borderRadius: '9999px',
           color: '#A9DDD3',
           fontSize: '11px',
-          fontWeight: '800',
+          fontWeight: 800,
           textTransform: 'uppercase',
           letterSpacing: '1px',
-          marginBottom: '4px',
+          marginBottom: '6px',
         }}>
           <Sparkles size={13} /> Viral Community Diagnostic
         </div>
-        <h2 style={{ fontSize: '26px', fontWeight: '900', color: '#E8E3D5', margin: '0 0 4px 0', letterSpacing: '-0.02em', lineHeight: 1.2 }}>
+        <h2 style={{ fontSize: '28px', fontWeight: '900', color: '#E8E3D5', margin: '0 0 6px 0', letterSpacing: '-0.02em', lineHeight: 1.2 }}>
           Rialo X-Ray & <span className="gradient-text-rialo">Persona Roast</span>
         </h2>
-        <p style={{ color: '#8E9B97', fontSize: '13px', maxWidth: '540px', margin: '0 auto', lineHeight: '1.45' }}>
+        <p style={{ color: '#8E9B97', fontSize: '13.5px', maxWidth: '540px', margin: '0 auto', lineHeight: '1.45' }}>
           Scan any X handle or wallet to generate their official Web3 Holographic Persona Card with physics telemetry and witty roast.
         </p>
       </div>
@@ -293,7 +297,7 @@ export const XRayRoast: React.FC<{ initialHandle?: string }> = ({ initialHandle 
       {/* Input Box - Compact Centered */}
       <div style={{
         maxWidth: '440px',
-        margin: '0 auto 10px auto',
+        margin: '0 auto 12px auto',
         display: 'flex',
         gap: '6px',
         background: '#040706',
@@ -304,7 +308,7 @@ export const XRayRoast: React.FC<{ initialHandle?: string }> = ({ initialHandle 
         position: 'relative',
         zIndex: 2,
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', color: '#A9DDD3', fontWeight: '900', fontSize: '15px', fontFamily: 'var(--font-mono)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', color: '#A9DDD3', fontWeight: 900, fontSize: '15px', fontFamily: 'var(--font-mono)' }}>
           @
         </div>
         <input
@@ -334,7 +338,7 @@ export const XRayRoast: React.FC<{ initialHandle?: string }> = ({ initialHandle 
             border: 'none',
             borderRadius: '9999px',
             fontSize: '12px',
-            fontWeight: '900',
+            fontWeight: 900,
             cursor: isScanning || !handle.trim() ? 'not-allowed' : 'pointer',
             display: 'inline-flex',
             alignItems: 'center',
@@ -349,7 +353,7 @@ export const XRayRoast: React.FC<{ initialHandle?: string }> = ({ initialHandle 
       </div>
 
       {/* Preset Chips - Compact */}
-      <div style={{ display: 'flex', justifyContent: 'center', gap: '6px', flexWrap: 'wrap', marginBottom: '14px', position: 'relative', zIndex: 2 }}>
+      <div style={{ display: 'flex', justifyContent: 'center', gap: '6px', flexWrap: 'wrap', marginBottom: '20px', position: 'relative', zIndex: 2 }}>
         {presetHandles.map((preset) => (
           <button
             key={preset}
@@ -359,7 +363,7 @@ export const XRayRoast: React.FC<{ initialHandle?: string }> = ({ initialHandle 
               sound.playTap();
             }}
             style={{
-              padding: '3px 10px',
+              padding: '4px 12px',
               borderRadius: '9999px',
               background: handle.toLowerCase() === preset.toLowerCase() ? 'rgba(169,221,211,0.2)' : 'rgba(255,255,255,0.03)',
               border: handle.toLowerCase() === preset.toLowerCase() ? '1.5px solid #A9DDD3' : '1px solid rgba(255,255,255,0.08)',
@@ -375,7 +379,55 @@ export const XRayRoast: React.FC<{ initialHandle?: string }> = ({ initialHandle 
         ))}
       </div>
 
-      {/* Persona Result Card Container - Authentic Vertical Trading Card (Portrait TCG Layout) */}
+      {/* Scanning Radar Progress Animation */}
+      {isScanning && (
+        <div
+          style={{
+            maxWidth: '380px',
+            margin: '20px auto',
+            padding: '30px 20px',
+            background: 'rgba(2, 6, 5, 0.9)',
+            border: '1.5px solid rgba(169, 221, 211, 0.4)',
+            borderRadius: '20px',
+            textAlign: 'center',
+            boxShadow: '0 0 35px rgba(169, 221, 211, 0.25)',
+          }}
+        >
+          <div style={{ position: 'relative', width: '64px', height: '64px', margin: '0 auto 16px auto' }}>
+            <div
+              style={{
+                position: 'absolute',
+                inset: 0,
+                borderRadius: '50%',
+                border: '2px solid rgba(169, 221, 211, 0.3)',
+                animation: 'ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite',
+              }}
+            />
+            <div
+              style={{
+                width: '100%',
+                height: '100%',
+                borderRadius: '50%',
+                background: 'radial-gradient(circle, rgba(169, 221, 211, 0.2) 0%, transparent 70%)',
+                border: '2px solid #A9DDD3',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <Search size={24} color="#A9DDD3" style={{ animation: 'pulse 1s infinite' }} />
+            </div>
+          </div>
+          <div style={{ fontSize: '14px', fontWeight: 900, color: '#A9DDD3', fontFamily: 'var(--font-mono)' }}>
+            DIAGNOSING @{handle.replace(/^@/, '')}...
+          </div>
+          <div style={{ fontSize: '11px', color: '#8E9B97', marginTop: '6px' }}>
+            Auditing on-chain friction telemetry & calculating roast velocity
+          </div>
+        </div>
+      )}
+
+      {/* Authentic Pokémon Card (Portrait TCG Layout with PFP in the Center) */}
       {result && !isScanning && (
         <div
           style={{
@@ -401,25 +453,33 @@ export const XRayRoast: React.FC<{ initialHandle?: string }> = ({ initialHandle 
               transformStyle: 'preserve-3d',
               position: 'relative',
               borderRadius: '20px',
-              padding: '16px',
+              padding: '14px',
               background: `
-                radial-gradient(
-                  circle at ${mousePos.x * 100}% ${mousePos.y * 100}%,
-                  ${theme.glow} 0%,
-                  rgba(10, 18, 15, 0.96) 50%,
-                  rgba(2, 6, 5, 0.99) 100%
+                linear-gradient(
+                  165deg,
+                  #161B19 0%,
+                  #0E1412 40%,
+                  #050807 100%
                 )
               `,
-              border: `2px solid ${theme.border}`,
+              border: `3px solid ${
+                result.rarity === 'MYTHIC'
+                  ? '#FF85E1'
+                  : result.rarity === 'LEGENDARY'
+                  ? '#F59E0B'
+                  : result.rarity === 'EPIC'
+                  ? '#A855F7'
+                  : '#E5C365'
+              }`,
               boxShadow: `
                 0 20px 50px rgba(0, 0, 0, 0.95),
                 0 0 35px ${theme.glow},
-                inset 0 0 20px rgba(169, 221, 211, 0.08)
+                inset 0 0 15px rgba(229, 195, 101, 0.15)
               `,
               overflow: 'hidden',
               display: 'flex',
               flexDirection: 'column',
-              gap: '12px',
+              gap: '10px',
             }}
           >
             {/* Holographic Iridescent Light Sheen Foil Overlay */}
@@ -427,320 +487,340 @@ export const XRayRoast: React.FC<{ initialHandle?: string }> = ({ initialHandle 
               style={{
                 position: 'absolute',
                 inset: 0,
-                borderRadius: '20px',
+                borderRadius: '18px',
                 pointerEvents: 'none',
-                opacity: isHovered ? 0.35 : 0.15,
-                background: `linear-gradient(${115 + mousePos.x * 50}deg, transparent 20%, rgba(169,221,211,0.5) 40%, rgba(255,182,255,0.4) 60%, rgba(0,240,255,0.5) 80%, transparent 100%)`,
+                opacity: isHovered ? 0.38 : 0.16,
+                background: `linear-gradient(${115 + mousePos.x * 50}deg, transparent 20%, rgba(229, 195, 101, 0.4) 35%, rgba(169,221,211,0.5) 50%, rgba(255,182,255,0.4) 65%, rgba(0,240,255,0.4) 80%, transparent 100%)`,
                 mixBlendMode: 'screen',
                 transition: 'opacity 0.3s ease',
               }}
             />
 
-            {/* Cyberpunk Neon Corner Brackets */}
-            <div style={{ position: 'absolute', top: '8px', left: '8px', width: '9px', height: '9px', borderTop: `2px solid ${theme.color}`, borderLeft: `2px solid ${theme.color}`, pointerEvents: 'none', opacity: 0.85 }} />
-            <div style={{ position: 'absolute', top: '8px', right: '8px', width: '9px', height: '9px', borderTop: `2px solid ${theme.color}`, borderRight: `2px solid ${theme.color}`, pointerEvents: 'none', opacity: 0.85 }} />
-            <div style={{ position: 'absolute', bottom: '8px', left: '8px', width: '9px', height: '9px', borderBottom: `2px solid ${theme.color}`, borderLeft: `2px solid ${theme.color}`, pointerEvents: 'none', opacity: 0.85 }} />
-            <div style={{ position: 'absolute', bottom: '8px', right: '8px', width: '9px', height: '9px', borderBottom: `2px solid ${theme.color}`, borderRight: `2px solid ${theme.color}`, pointerEvents: 'none', opacity: 0.85 }} />
+            {/* Cyber / Golden Pokémon Card Corner Accents */}
+            <div style={{ position: 'absolute', top: '7px', left: '7px', width: '8px', height: '8px', borderTop: `2px solid ${theme.color}`, borderLeft: `2px solid ${theme.color}`, pointerEvents: 'none', opacity: 0.9 }} />
+            <div style={{ position: 'absolute', top: '7px', right: '7px', width: '8px', height: '8px', borderTop: `2px solid ${theme.color}`, borderRight: `2px solid ${theme.color}`, pointerEvents: 'none', opacity: 0.9 }} />
+            <div style={{ position: 'absolute', bottom: '7px', left: '7px', width: '8px', height: '8px', borderBottom: `2px solid ${theme.color}`, borderLeft: `2px solid ${theme.color}`, pointerEvents: 'none', opacity: 0.9 }} />
+            <div style={{ position: 'absolute', bottom: '7px', right: '7px', width: '8px', height: '8px', borderBottom: `2px solid ${theme.color}`, borderRight: `2px solid ${theme.color}`, pointerEvents: 'none', opacity: 0.9 }} />
 
-            {/* Top Bar: Specimen Identity + Rarity Badge */}
+            {/* 1. TOP BAR: Pokemon Card Header (Stage + Name + HP + Rarity) */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', position: 'relative', zIndex: 2 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <div style={{ position: 'relative', width: '36px', height: '36px', flexShrink: 0 }}>
-                  <div
-                    style={{
-                      position: 'absolute',
-                      inset: '-2px',
-                      borderRadius: '50%',
-                      background: `conic-gradient(from 0deg, ${theme.color}, transparent 60%, ${theme.color})`,
-                      animation: 'pulseHalo 4s linear infinite',
-                      opacity: 0.7,
-                    }}
-                  />
-                  <div
-                    style={{
-                      position: 'relative',
-                      width: '100%',
-                      height: '100%',
-                      borderRadius: '50%',
-                      overflow: 'hidden',
-                      border: '1.5px solid #FFFFFF',
-                      background: '#040706',
-                      boxShadow: `0 0 10px ${theme.glow}`,
-                    }}
-                  >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={
-                        result.handle.toLowerCase() === 'yournahin' || result.handle.toLowerCase() === 'yournahian'
-                          ? 'https://pbs.twimg.com/profile_images/1990106346264666112/pbBiIRET_400x400.png'
-                          : `https://unavatar.io/x/${result.handle}`
-                      }
-                      alt={result.handle}
-                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                      onError={(e) => {
-                        e.currentTarget.src = 'https://pbs.twimg.com/profile_images/1990106346264666112/pbBiIRET_400x400.png';
-                      }}
-                    />
-                  </div>
-                </div>
-
-                <div style={{ textAlign: 'left', minWidth: 0 }}>
-                  <div style={{ fontSize: '8.5px', color: '#A9DDD3', fontFamily: 'var(--font-mono)', fontWeight: 800, letterSpacing: '0.5px' }}>
-                    SPECIMEN SCAN
-                  </div>
-                  <div style={{ fontSize: '15px', fontWeight: '900', color: '#FFFFFF', display: 'flex', alignItems: 'center', gap: '4px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                    <span>@{result.handle}</span>
-                    <span style={{ fontSize: '11px', color: '#A9DDD3' }}>⚡</span>
-                  </div>
-                </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <span
+                  style={{
+                    background: '#F59E0B',
+                    color: '#000000',
+                    fontSize: '8.5px',
+                    fontWeight: 900,
+                    padding: '1px 6px',
+                    borderRadius: '4px',
+                    fontFamily: 'var(--font-mono, monospace)',
+                    letterSpacing: '0.5px',
+                  }}
+                >
+                  BASIC
+                </span>
+                <span
+                  style={{
+                    fontSize: '16px',
+                    fontWeight: 900,
+                    color: '#FFFFFF',
+                    fontFamily: 'var(--font-mono, monospace)',
+                    letterSpacing: '-0.02em',
+                    textShadow: `0 0 12px ${theme.glow}`,
+                  }}
+                >
+                  @{result.handle}
+                </span>
               </div>
 
-              {/* Rarity Pill Badge */}
-              <div
-                style={{
-                  padding: '3px 9px',
-                  borderRadius: '9999px',
-                  background: theme.badgeBg,
-                  border: `1.5px solid ${theme.badgeBorder}`,
-                  color: '#FFFFFF',
-                  fontSize: '9.5px',
-                  fontWeight: '900',
-                  letterSpacing: '0.8px',
-                  boxShadow: `0 0 10px ${theme.glow}`,
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '4px',
-                  flexShrink: 0,
-                }}
-              >
-                <Award size={11} color={theme.color} />
-                <span>{result.rarity}</span>
+              {/* HP & Type / Rarity */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: '2px' }}>
+                  <span style={{ fontSize: '9px', fontWeight: 900, color: '#A9DDD3', fontFamily: 'var(--font-mono)' }}>HP</span>
+                  <span style={{ fontSize: '15px', fontWeight: 900, color: '#FFFFFF', fontFamily: 'var(--font-mono)' }}>
+                    {result.rarity === 'MYTHIC' ? '999' : result.rarity === 'LEGENDARY' ? '450' : '280'}
+                  </span>
+                </div>
+                {/* Element / Rarity Gem */}
+                <div
+                  style={{
+                    padding: '3px 8px',
+                    borderRadius: '9999px',
+                    background: theme.badgeBg,
+                    border: `1px solid ${theme.badgeBorder}`,
+                    color: '#FFFFFF',
+                    fontSize: '9px',
+                    fontWeight: 900,
+                    letterSpacing: '0.8px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '4px',
+                  }}
+                >
+                  <Award size={10} color={theme.color} />
+                  <span>{result.rarity}</span>
+                </div>
               </div>
             </div>
 
-            {/* Central Holographic Art Frame Pedestal */}
+            {/* 2. CENTER HERO ART FRAME: THE USER PFP IS IN THE EXACT CENTER! */}
             <div
               style={{
-                padding: '12px 10px 10px 10px',
-                background: 'radial-gradient(ellipse at center, rgba(169, 221, 211, 0.1) 0%, rgba(4, 9, 7, 0.7) 80%)',
-                border: '1px solid rgba(169, 221, 211, 0.15)',
-                borderRadius: '16px',
                 position: 'relative',
-                textAlign: 'center',
+                width: '100%',
+                height: '180px',
+                borderRadius: '12px',
+                border: '2px solid rgba(229, 195, 101, 0.4)',
+                background: `
+                  radial-gradient(circle at center, rgba(169, 221, 211, 0.18) 0%, rgba(2, 6, 5, 0.95) 85%)
+                `,
                 overflow: 'hidden',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: 'inset 0 0 25px rgba(0, 0, 0, 0.9), 0 4px 15px rgba(0, 0, 0, 0.5)',
               }}
             >
-              {/* Concentric Hologram Rings */}
+              {/* Concentric Hologram Tech Circles in Art Frame Background */}
               <div
                 style={{
                   position: 'absolute',
-                  top: '42%',
+                  top: '50%',
                   left: '50%',
                   transform: 'translate(-50%, -50%)',
-                  width: '90px',
-                  height: '90px',
+                  width: '150px',
+                  height: '150px',
                   borderRadius: '50%',
                   border: `1px dashed ${theme.color}`,
                   opacity: 0.35,
                   pointerEvents: 'none',
                 }}
               />
-
-              {/* Floating Hologram Icon */}
               <div
                 style={{
-                  fontSize: '40px',
-                  margin: '0 auto 6px auto',
-                  display: 'inline-block',
-                  animation: 'floatBadge 3s ease-in-out infinite',
-                  filter: `drop-shadow(0 0 16px ${theme.glow})`,
-                  userSelect: 'none',
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  width: '120px',
+                  height: '120px',
+                  borderRadius: '50%',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  pointerEvents: 'none',
                 }}
+              />
+
+              {/* Holographic Badge Foil Stamp (Top-Right of Art Window) */}
+              <div
+                style={{
+                  position: 'absolute',
+                  top: '8px',
+                  right: '8px',
+                  zIndex: 4,
+                  width: '32px',
+                  height: '32px',
+                  borderRadius: '50%',
+                  background: 'rgba(0, 0, 0, 0.7)',
+                  border: `1.5px solid ${theme.color}`,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '16px',
+                  boxShadow: `0 0 12px ${theme.glow}`,
+                }}
+                title={result.title}
               >
                 {result.badgeEmoji}
               </div>
 
-              <h3
-                style={{
-                  fontSize: '16px',
-                  fontWeight: '900',
-                  color: '#FFFFFF',
-                  margin: '0 0 4px 0',
-                  letterSpacing: '-0.02em',
-                  textShadow: `0 0 18px ${theme.glow}`,
-                  lineHeight: 1.2,
-                }}
-              >
-                {result.title}
-              </h3>
-
+              {/* ========================================================
+                  THE HERO PFP: IN THE EXACT CENTER OF THE CARD!
+                  ======================================================== */}
               <div
                 style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '4px',
-                  padding: '2px 8px',
-                  borderRadius: '9999px',
-                  background: 'rgba(0, 0, 0, 0.6)',
-                  border: '1px solid rgba(169, 221, 211, 0.25)',
-                  color: '#A9DDD3',
-                  fontSize: '9px',
-                  fontWeight: '800',
-                  fontFamily: 'var(--font-mono)',
+                  position: 'relative',
+                  width: '118px',
+                  height: '118px',
+                  borderRadius: '20px',
+                  overflow: 'hidden',
+                  border: '2.5px solid #FFFFFF',
+                  boxShadow: `0 0 25px ${theme.glow}, 0 10px 20px rgba(0, 0, 0, 0.8)`,
+                  zIndex: 3,
+                  background: '#040706',
                 }}
               >
-                <Cpu size={10} />
-                <span>{result.classTag}</span>
-              </div>
-            </div>
-
-            {/* 4 HUD Telemetry Pods (2x2 Matrix) */}
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(2, 1fr)',
-                gap: '6px',
-              }}
-            >
-              {/* Pod 1: Friction */}
-              <div className="persona-hud-pod" style={{ padding: '7px 9px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2px' }}>
-                  <span style={{ fontSize: '8.5px', color: '#8E9B97', fontWeight: 800, textTransform: 'uppercase', fontFamily: 'var(--font-mono)' }}>
-                    ⚡ Friction
-                  </span>
-                  <span style={{
-                    fontSize: '8px',
-                    fontWeight: 800,
-                    color: result.frictionPct > 50 ? '#EF4444' : '#10B981',
-                    background: result.frictionPct > 50 ? 'rgba(239, 68, 68, 0.15)' : 'rgba(16, 185, 129, 0.15)',
-                    padding: '1px 4px',
-                    borderRadius: '3px',
-                  }}>
-                    {result.frictionPct > 50 ? 'WARM' : 'COLD'}
-                  </span>
-                </div>
-                <div style={{ fontSize: '11px', fontWeight: '900', color: '#FFFFFF', marginBottom: '4px' }}>
-                  {result.frictionRate}
-                </div>
-                <div style={{ height: '3px', background: 'rgba(255,255,255,0.1)', borderRadius: '9999px', overflow: 'hidden' }}>
-                  <div
-                    style={{
-                      height: '100%',
-                      width: `${result.frictionPct}%`,
-                      background: result.frictionPct > 50 ? 'linear-gradient(90deg, #F59E0B, #EF4444)' : 'linear-gradient(90deg, #A9DDD3, #10B981)',
-                    }}
-                  />
-                </div>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={
+                    result.handle.toLowerCase() === 'yournahin' || result.handle.toLowerCase() === 'yournahian'
+                      ? 'https://pbs.twimg.com/profile_images/1990106346264666112/pbBiIRET_400x400.png'
+                      : `https://unavatar.io/x/${result.handle}`
+                  }
+                  alt={result.handle}
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                    display: 'block',
+                  }}
+                  onError={(e) => {
+                    e.currentTarget.src = 'https://pbs.twimg.com/profile_images/1990106346264666112/pbBiIRET_400x400.png';
+                  }}
+                />
               </div>
 
-              {/* Pod 2: Finality */}
-              <div className="persona-hud-pod" style={{ padding: '7px 9px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2px' }}>
-                  <span style={{ fontSize: '8.5px', color: '#8E9B97', fontWeight: 800, textTransform: 'uppercase', fontFamily: 'var(--font-mono)' }}>
-                    ⏱️ Finality
-                  </span>
-                  <span style={{ fontSize: '8px', fontWeight: 800, color: '#00F0FF', background: 'rgba(0, 240, 255, 0.15)', padding: '1px 4px', borderRadius: '3px' }}>
-                    SPEED
-                  </span>
-                </div>
-                <div style={{ fontSize: '11px', fontWeight: '900', color: '#00F0FF', marginBottom: '4px' }}>
-                  {result.finalitySpeed}
-                </div>
-                <div style={{ height: '3px', background: 'rgba(255,255,255,0.1)', borderRadius: '9999px', overflow: 'hidden' }}>
-                  <div style={{ height: '100%', width: `${result.speedPct}%`, background: 'linear-gradient(90deg, #00F0FF, #A9DDD3)' }} />
-                </div>
-              </div>
-
-              {/* Pod 3: Shards */}
-              <div className="persona-hud-pod" style={{ padding: '7px 9px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2px' }}>
-                  <span style={{ fontSize: '8.5px', color: '#8E9B97', fontWeight: 800, textTransform: 'uppercase', fontFamily: 'var(--font-mono)' }}>
-                    💎 Shards
-                  </span>
-                  <span style={{ fontSize: '8px', fontWeight: 800, color: '#A9DDD3', background: 'rgba(169, 221, 211, 0.15)', padding: '1px 4px', borderRadius: '3px' }}>
-                    VAULT
-                  </span>
-                </div>
-                <div style={{ fontSize: '11px', fontWeight: '900', color: '#A9DDD3', marginBottom: '4px' }}>
-                  {result.shardCapacity}
-                </div>
-                <div style={{ height: '3px', background: 'rgba(255,255,255,0.1)', borderRadius: '9999px', overflow: 'hidden' }}>
-                  <div style={{ height: '100%', width: `${result.capacityPct}%`, background: 'linear-gradient(90deg, #A9DDD3, #E8E3D5)' }} />
-                </div>
-              </div>
-
-              {/* Pod 4: Degen */}
-              <div className="persona-hud-pod" style={{ padding: '7px 9px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2px' }}>
-                  <span style={{ fontSize: '8.5px', color: '#8E9B97', fontWeight: 800, textTransform: 'uppercase', fontFamily: 'var(--font-mono)' }}>
-                    🧪 Degen
-                  </span>
-                  <span style={{ fontSize: '8px', fontWeight: 800, color: '#EC4899', background: 'rgba(236, 72, 153, 0.15)', padding: '1px 4px', borderRadius: '3px' }}>
-                    PURITY
-                  </span>
-                </div>
-                <div style={{ fontSize: '11px', fontWeight: '900', color: '#FFFFFF', marginBottom: '4px' }}>
-                  {result.degenIndex}
-                </div>
-                <div style={{ height: '3px', background: 'rgba(255,255,255,0.1)', borderRadius: '9999px', overflow: 'hidden' }}>
-                  <div style={{ height: '100%', width: `${result.degenPct}%`, background: 'linear-gradient(90deg, #A855F7, #EC4899)' }} />
+              {/* Title Ribbon at Bottom of Art Window */}
+              <div
+                style={{
+                  position: 'absolute',
+                  bottom: '6px',
+                  left: '8px',
+                  right: '8px',
+                  padding: '4px 10px',
+                  background: 'rgba(2, 6, 5, 0.88)',
+                  backdropFilter: 'blur(8px)',
+                  border: '1px solid rgba(229, 195, 101, 0.35)',
+                  borderRadius: '8px',
+                  textAlign: 'center',
+                  zIndex: 4,
+                }}
+              >
+                <div
+                  style={{
+                    fontSize: '12px',
+                    fontWeight: 900,
+                    color: '#FFFFFF',
+                    letterSpacing: '-0.01em',
+                    textShadow: `0 0 10px ${theme.glow}`,
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                  }}
+                >
+                  {result.title}
                 </div>
               </div>
             </div>
 
-            {/* Roasted Verdict Cyber Terminal Box */}
+            {/* Pokédex Specimen Strip */}
             <div
               style={{
-                background: 'rgba(2, 6, 5, 0.88)',
-                border: '1.5px solid rgba(169, 221, 211, 0.22)',
-                borderRadius: '12px',
-                padding: '10px 12px',
-                position: 'relative',
-                overflow: 'hidden',
-                boxShadow: 'inset 0 0 14px rgba(0, 0, 0, 0.8)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px',
+                padding: '2px 8px',
+                background: 'rgba(229, 195, 101, 0.08)',
+                border: '1px solid rgba(229, 195, 101, 0.25)',
+                borderRadius: '6px',
+                color: '#E5C365',
+                fontSize: '8.5px',
+                fontFamily: 'var(--font-mono, monospace)',
+                fontWeight: 800,
               }}
             >
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '5px', borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: '3px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                  <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#EF4444' }} />
-                  <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#F59E0B' }} />
-                  <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#10B981' }} />
-                  <span style={{ fontSize: '8.5px', fontFamily: 'var(--font-mono)', color: '#8E9B97', marginLeft: '3px' }}>
-                    AI_DIAGNOSTIC_VERDICT.log
+              <span>NO. 000</span>
+              <span>•</span>
+              <span>{result.classTag}</span>
+              <span>•</span>
+              <span>HT: {result.finalitySpeed}</span>
+              <span>•</span>
+              <span>WT: {result.frictionRate}</span>
+            </div>
+
+            {/* 3. POKÉMON ATTACKS / ABILITIES (Telemetry Metrics) */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              {/* Move 1: Zero-Friction Sprint */}
+              <div
+                style={{
+                  background: 'rgba(0, 0, 0, 0.45)',
+                  border: '1px solid rgba(169, 221, 211, 0.18)',
+                  borderRadius: '10px',
+                  padding: '7px 9px',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                    <span style={{ fontSize: '11px' }}>⚡</span>
+                    <span style={{ fontSize: '11px' }}>⏱️</span>
+                    <span style={{ fontSize: '12px', fontWeight: 900, color: '#FFFFFF' }}>
+                      Zero-Friction Sprint
+                    </span>
+                  </div>
+                  <span style={{ fontSize: '12px', fontWeight: 900, color: '#00F0FF', fontFamily: 'var(--font-mono)' }}>
+                    {result.finalitySpeed}
                   </span>
                 </div>
-                <span style={{ fontSize: '8px', color: '#10B981', fontFamily: 'var(--font-mono)', fontWeight: 800 }}>
-                  [ONLINE]
-                </span>
+                <div style={{ fontSize: '9.5px', color: '#8E9B97', lineHeight: 1.35 }}>
+                  Friction reduced to <span style={{ color: result.frictionPct > 50 ? '#EF4444' : '#10B981', fontWeight: 800 }}>{result.frictionRate}</span>. Settles blocks at light-speed before coffee finishes brewing.
+                </div>
               </div>
 
+              {/* Move 2: Shard Accelerator Surge */}
+              <div
+                style={{
+                  background: 'rgba(0, 0, 0, 0.45)',
+                  border: '1px solid rgba(169, 221, 211, 0.18)',
+                  borderRadius: '10px',
+                  padding: '7px 9px',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                    <span style={{ fontSize: '11px' }}>💎</span>
+                    <span style={{ fontSize: '11px' }}>🧪</span>
+                    <span style={{ fontSize: '12px', fontWeight: 900, color: '#FFFFFF' }}>
+                      Shard Vault Surge
+                    </span>
+                  </div>
+                  <span style={{ fontSize: '12px', fontWeight: 900, color: '#A9DDD3', fontFamily: 'var(--font-mono)' }}>
+                    {result.shardCapacity}
+                  </span>
+                </div>
+                <div style={{ fontSize: '9.5px', color: '#8E9B97', lineHeight: 1.35 }}>
+                  Degen Purity <span style={{ color: '#EC4899', fontWeight: 800 }}>{result.degenIndex}</span>. Maximizes quantum shard vault yield with 100% superconductivity.
+                </div>
+              </div>
+            </div>
+
+            {/* 4. POKÉDEX FLAVOR TEXT (Witty AI Roast Box) */}
+            <div
+              style={{
+                background: 'rgba(2, 6, 5, 0.85)',
+                border: '1px solid rgba(229, 195, 101, 0.22)',
+                borderRadius: '10px',
+                padding: '8px 10px',
+              }}
+            >
               <p
                 style={{
-                  fontSize: '11.5px',
+                  fontSize: '11px',
                   fontStyle: 'italic',
                   color: '#E8E3D5',
                   lineHeight: '1.45',
-                  margin: '0 0 6px 0',
+                  margin: '0 0 4px 0',
                 }}
               >
                 &ldquo;{result.roast}&rdquo;
               </p>
-
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '5px' }}>
-                <span style={{ fontSize: '8px', fontFamily: 'var(--font-mono)', color: '#8E9B97' }}>
-                  RIALO ZERO-FRICTION PROTOCOL AUTHENTICATED
-                </span>
-                <div style={{ display: 'flex', gap: '2px', alignItems: 'center', opacity: 0.6 }}>
-                  <span style={{ width: '2px', height: '7px', background: '#A9DDD3' }} />
-                  <span style={{ width: '1px', height: '7px', background: '#A9DDD3' }} />
-                  <span style={{ width: '3px', height: '7px', background: '#A9DDD3' }} />
-                  <span style={{ width: '1px', height: '7px', background: '#A9DDD3' }} />
-                  <span style={{ width: '2px', height: '7px', background: '#A9DDD3' }} />
-                </div>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  borderTop: '1px solid rgba(255, 255, 255, 0.08)',
+                  paddingTop: '4px',
+                  fontSize: '8px',
+                  color: '#8E9B97',
+                  fontFamily: 'var(--font-mono)',
+                }}
+              >
+                <span>Illus. Rialo Zero-Friction Engine</span>
+                <span style={{ color: '#E5C365', fontWeight: 800 }}>024/030 ★★★ Holo-Rare</span>
               </div>
             </div>
 
-            {/* Vertical Card Action Buttons */}
+            {/* 5. ACTION BUTTONS */}
             <div style={{ display: 'flex', gap: '8px', width: '100%', marginTop: '2px' }}>
               <button
                 type="button"
@@ -753,7 +833,7 @@ export const XRayRoast: React.FC<{ initialHandle?: string }> = ({ initialHandle 
                   border: 'none',
                   borderRadius: '9999px',
                   fontSize: '12px',
-                  fontWeight: '900',
+                  fontWeight: 900,
                   cursor: 'pointer',
                   display: 'inline-flex',
                   alignItems: 'center',
@@ -776,7 +856,7 @@ export const XRayRoast: React.FC<{ initialHandle?: string }> = ({ initialHandle 
                   color: '#FFFFFF',
                   borderRadius: '9999px',
                   fontSize: '12px',
-                  fontWeight: '800',
+                  fontWeight: 800,
                   cursor: 'pointer',
                   display: 'inline-flex',
                   alignItems: 'center',
