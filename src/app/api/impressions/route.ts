@@ -84,7 +84,9 @@ async function handleImpressions(rawUsername: string) {
 
     // 1. Try fetching live real data from Xerper for RialoHQ
     try {
-      const xerperRes = await fetch('https://xerper.com/api/impressions', {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 6500);
+      const xerperRes = await fetch('https://www.xerper.com/api/impressions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -94,12 +96,13 @@ async function handleImpressions(rawUsername: string) {
           username: cleanUsername,
           project: 'RialoHQ',
         }),
-        next: { revalidate: 60 },
-      });
+        signal: controller.signal,
+      }).finally(() => clearTimeout(timeoutId));
 
       if (xerperRes.ok) {
         const xerperData = await xerperRes.json();
-        if (xerperData.ok && typeof xerperData.total_impressions === 'number' && xerperData.total_impressions > 0) {
+        if (xerperData && (xerperData.ok || typeof xerperData.total_impressions === 'number')) {
+          const rawAvatar = xerperData.profile?.avatar?.replace('_normal', '_400x400');
           return NextResponse.json({
             ok: true,
             username: xerperData.username || cleanUsername,
@@ -107,9 +110,7 @@ async function handleImpressions(rawUsername: string) {
             profile: {
               name: xerperData.profile?.name || cleanUsername,
               screen_name: xerperData.profile?.screen_name || cleanUsername,
-              avatar:
-                xerperData.profile?.avatar?.replace('_normal', '_400x400') ||
-                `https://unavatar.io/x/${cleanUsername}`,
+              avatar: rawAvatar || `https://unavatar.io/x/${cleanUsername}`,
               banner: xerperData.profile?.banner || null,
               bio: xerperData.profile?.bio || '',
               followers: xerperData.profile?.followers || 0,
@@ -122,7 +123,7 @@ async function handleImpressions(rawUsername: string) {
               handle: 'RialoHQ',
               avatar: null,
             },
-            total_impressions: xerperData.total_impressions,
+            total_impressions: typeof xerperData.total_impressions === 'number' ? xerperData.total_impressions : 0,
             post_count: xerperData.post_count || 0,
             series: xerperData.series || [],
             posts: xerperData.posts || [],

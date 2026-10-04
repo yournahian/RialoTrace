@@ -36,14 +36,15 @@ const TEMPLATES: Omit<CardData, 'handle' | 'imageUrl' | 'useCustomImage' | 'tota
   { title: 'Genesis Protocol Ghost',            rarity: 'MYTHIC',     finalitySpeed: '0.001s (Quantum)',      frictionRate: '0.0000% (Absolute)'      },
 ];
 
-function autoGenCard(handle: string, realImpressions: number = 0): CardData {
+function autoGenCard(handle: string, realImpressions: number = 0, avatarUrl?: string): CardData {
   const hash = handle.split('').reduce((a, c) => a + c.charCodeAt(0), 0);
   const template = TEMPLATES[hash % TEMPLATES.length];
+  const finalImage = avatarUrl || `/api/avatar?handle=${encodeURIComponent(handle)}`;
   return {
     ...template,
     handle,
     totalImpressions: realImpressions,
-    imageUrl: `https://unavatar.io/x/${handle}`,
+    imageUrl: finalImage,
     useCustomImage: false,
   };
 }
@@ -125,7 +126,7 @@ export const PersonaCardStudio: React.FC = () => {
     setMousePos({ x: (e.clientX - rect.left) / rect.width, y: (e.clientY - rect.top) / rect.height });
   }, []);
 
-  /* ── Scan / Generate with REAL Live Impressions ── */
+  /* ── Scan / Generate with REAL Live Impressions & Avatar ── */
   const handleScan = async () => {
     const h = handle.replace(/^@/, '').trim();
     if (!h) return;
@@ -135,8 +136,8 @@ export const PersonaCardStudio: React.FC = () => {
     setEditMode(false);
 
     try {
-      // 1. Fetch real live impressions from /api/impressions
       let liveImpressions = 0;
+      let fetchedAvatar = '';
       try {
         const res = await fetch(`/api/impressions?handle=${encodeURIComponent(h)}`);
         if (res.ok) {
@@ -144,13 +145,20 @@ export const PersonaCardStudio: React.FC = () => {
           if (data && typeof data.total_impressions === 'number') {
             liveImpressions = data.total_impressions;
           }
+          if (data?.profile?.avatar) {
+            fetchedAvatar = data.profile.avatar;
+          }
         }
       } catch (impErr) {
-        console.warn('Failed to fetch live impressions from API:', impErr);
+        console.warn('Failed to fetch live data from API:', impErr);
       }
 
-      // 2. Automatically generate card with real live user impressions (no dummy value)
-      setCard(autoGenCard(h, liveImpressions));
+      // Route through /api/avatar proxy to bypass CORS restrictions
+      const finalAvatar = fetchedAvatar
+        ? `/api/avatar?url=${encodeURIComponent(fetchedAvatar)}`
+        : `/api/avatar?handle=${encodeURIComponent(h)}`;
+
+      setCard(autoGenCard(h, liveImpressions, finalAvatar));
       sound.playSuccess?.();
     } catch (err) {
       console.error('Scan error:', err);
