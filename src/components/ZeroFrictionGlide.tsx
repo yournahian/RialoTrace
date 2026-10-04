@@ -274,7 +274,7 @@ export const ZeroFrictionGlide: React.FC<ZeroFrictionGlideProps> = ({ user, onUs
               setEarnedShards(data.earnedShards);
               if (data.highscore) setHighscore(data.highscore);
               if (typeof window !== 'undefined') {
-                const clean = (user?.username || 'yournahian').toLowerCase().replace('@', '');
+                const clean = (user?.username || '').toLowerCase().replace('@', '');
                 const cur = parseInt(localStorage.getItem(`rialo_glide_highscore_${clean}`) || '0');
                 if (finalScore > cur) {
                   localStorage.setItem(`rialo_glide_highscore_${clean}`, String(finalScore));

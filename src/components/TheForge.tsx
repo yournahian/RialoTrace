@@ -109,7 +109,7 @@ export const TheForge: React.FC<TheForgeProps> = ({ user, onUserUpdate, onNaviga
         setSelectedCards([]);
         sound.playJackpot();
         if (typeof window !== 'undefined') {
-          const clean = (user.username || 'yournahian').toLowerCase().replace('@', '');
+          const clean = (user.username || '').toLowerCase().replace('@', '');
           const cur = parseInt(localStorage.getItem(`rialo_forged_count_${clean}`) || '0') + 1;
           localStorage.setItem(`rialo_forged_count_${clean}`, String(cur));
           if (data.forgedCard?.rarity && ['RARE', 'EPIC', 'LEGENDARY', 'MYTHIC'].includes(data.forgedCard.rarity.toUpperCase())) {

@@ -47,7 +47,7 @@ export const CyberSoundboard: React.FC = () => {
     setActivePad(pad.id);
     pad.action();
     if (typeof window !== 'undefined') {
-      const clean = (localStorage.getItem('rialo_active_user') || 'yournahian').toLowerCase().replace('@', '');
+      const clean = (localStorage.getItem('rialo_active_user') || '').toLowerCase().replace('@', '');
       localStorage.setItem(`rialo_dj_pad_used_${clean}`, 'true');
       window.dispatchEvent(new Event('rialo_arcade_activity'));
     }
@@ -62,7 +62,7 @@ export const CyberSoundboard: React.FC = () => {
     } else {
       setIsLooping(true);
       if (typeof window !== 'undefined') {
-        const clean = (localStorage.getItem('rialo_active_user') || 'yournahian').toLowerCase().replace('@', '');
+        const clean = (localStorage.getItem('rialo_active_user') || '').toLowerCase().replace('@', '');
         localStorage.setItem(`rialo_arpeggiator_loop_used_${clean}`, 'true');
         window.dispatchEvent(new Event('rialo_arcade_activity'));
       }

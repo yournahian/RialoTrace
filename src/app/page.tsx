@@ -44,7 +44,7 @@ export default function HomePage() {
       localStorage.setItem('rialo_active_tab', tab);
     }
   };
-  const [currentUsername, setCurrentUsername] = useState<string>('yournahian');
+  const [currentUsername, setCurrentUsername] = useState<string>('');
   const [headerAvatarUrl, setHeaderAvatarUrl] = useState<string>('');
   const [currentUser, setCurrentUser] = useState<UserProfile | null>(null);
   const [preselectedTradeCardId, setPreselectedTradeCardId] = useState<string>('');
@@ -73,9 +73,9 @@ export default function HomePage() {
         setCurrentUsername(activeUser);
         fetchUserData(activeUser);
       } else {
-        // Fallback default preview for demonstration or prompt
-        setCurrentUsername('yournahian');
-        fetchUserData('yournahian');
+        // First-time visitor / unauthenticated user:
+        setCurrentUsername('');
+        setCurrentUser(null);
       }
       const savedAvatar = localStorage.getItem('rialo_user_avatar');
       if (savedAvatar) setHeaderAvatarUrl(savedAvatar);
@@ -397,6 +397,7 @@ export default function HomePage() {
             onUserDataUpdate={(u) => setCurrentUser(u)}
             onOpenPackInRialoCards={handleOpenPackInRialoCards}
             onNavigateToBinder={() => handleSelectTab('binder')}
+            onRequireConnect={() => setIsOnboardingOpen(true)}
           />
         )}
         {activeTab === 'binder' && (

@@ -226,7 +226,7 @@ export const ArcadeHub: React.FC<ArcadeHubProps> = ({ user, onUserUpdate, onNavi
         {activeSubTab === 'glide' && <ZeroFrictionGlide user={user} onUserUpdate={onUserUpdate} />}
         {activeSubTab === 'rush' && <SuperconductorRush user={user} onUserUpdate={onUserUpdate} />}
         {activeSubTab === 'soundboard' && <CyberSoundboard />}
-        {activeSubTab === 'roast' && <XRayRoast initialHandle={user?.username || 'yournahian'} />}
+        {activeSubTab === 'roast' && <XRayRoast initialHandle={user?.username || ''} />}
       </div>
     </div>
   );

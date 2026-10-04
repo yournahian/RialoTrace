@@ -21,7 +21,7 @@ export const TrophyCabinet: React.FC<TrophyCabinetProps> = ({ user }) => {
   const inventoryCount = user?.uniqueCardsCount || 0;
   const completedMissionsCount = user?.completedMissions?.length || 0;
   const shards = user?.shards || 0;
-  const cleanU = (user?.username || 'yournahian').toLowerCase().replace('@', '');
+  const cleanU = (user?.username || '').toLowerCase().replace('@', '');
 
   const [glideScore, setGlideScore] = React.useState<number>(0);
   const [forgedCount, setForgedCount] = React.useState<number>(0);

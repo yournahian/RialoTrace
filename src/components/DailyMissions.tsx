@@ -28,6 +28,7 @@ interface DailyMissionsProps {
   onUserDataUpdate?: (user: UserProfile) => void;
   onOpenPackInRialoCards?: (pulledCards: CardArchetype[]) => void;
   onNavigateToBinder?: () => void;
+  onRequireConnect?: () => void;
 }
 
 function getLocalClientDate(): string {
@@ -43,6 +44,7 @@ export const DailyMissions: React.FC<DailyMissionsProps> = ({
   onUserDataUpdate,
   onOpenPackInRialoCards,
   onNavigateToBinder,
+  onRequireConnect,
 }) => {
   const [missions, setMissions] = useState<Mission[]>([]);
   const [completedIds, setCompletedIds] = useState<string[]>([]);
@@ -140,17 +142,23 @@ export const DailyMissions: React.FC<DailyMissionsProps> = ({
   };
 
   useEffect(() => {
+    fetchMissions();
     if (username) {
-      fetchMissions();
       fetchUser();
       const interval = setInterval(() => {
         fetchUser();
       }, 8000);
       return () => clearInterval(interval);
+    } else {
+      setUser(null);
     }
   }, [username]);
 
   const handleCompleteMission = async (m: Mission) => {
+    if (!username) {
+      if (onRequireConnect) onRequireConnect();
+      return;
+    }
     if (completedIds.includes(m.id)) return;
 
     // If quiz type, open quiz modal for interactive answering!

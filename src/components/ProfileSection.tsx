@@ -21,8 +21,8 @@ interface ComputedAchievement extends PlatformAchievement {
 }
 
 export const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onSelectTab, onLogOut, onSwitchAccount, onUserUpdate }) => {
-  const twitterAvatar = `https://unavatar.io/x/${user?.username || 'yournahian'}`;
   const fallbackAvatar = 'https://pbs.twimg.com/profile_images/1990106346264666112/pbBiIRET_400x400.png';
+  const twitterAvatar = user?.username ? `https://unavatar.io/x/${user.username}` : fallbackAvatar;
 
   const [filterMode, setFilterMode] = useState<'all' | 'unlocked' | 'locked' | 'quests' | 'cards' | 'forge' | 'trading' | 'arcade' | 'prestige'>('all');
   const [claimedTrophies, setClaimedTrophies] = useState<Record<string, boolean>>({});
@@ -49,7 +49,7 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onSelectTa
   // Sync real gameplay activity and achievements state
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const cleanU = (user?.username || 'yournahian').replace('@', '').toLowerCase();
+      const cleanU = (user?.username || '').replace('@', '').toLowerCase();
 
       const refreshLocalStats = () => {
         setTrollboxSentCount(parseInt(localStorage.getItem(`rialo_trollbox_sent_${cleanU}`) || '0'));
@@ -143,7 +143,7 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onSelectTa
     sound.playTap();
     setIsVerifyingMission(true);
     try {
-      const username = user?.username || 'yournahian';
+      const username = user?.username || '';
       const res = await fetch('/api/missions/verify-broadcast', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -201,7 +201,7 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onSelectTa
   });
 
   // Check if admin broadcasted any achievement specifically to current user or ALL
-  const userHandle = (user?.username || 'yournahian').toLowerCase().replace('@', '');
+  const userHandle = (user?.username || '').toLowerCase().replace('@', '');
   const broadcastedAchievementIds = new Set(
     broadcasts
       .filter((b) => {
@@ -532,7 +532,7 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onSelectTa
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap', marginBottom: '6px' }}>
                 <h1 style={{ fontSize: '26px', fontWeight: 900, color: '#E8E3D5', margin: 0, letterSpacing: '-0.02em' }}>
-                  @{user?.username || 'yournahian'}
+                  @{user?.username || 'Guest'}
                 </h1>
                 <span style={{
                   background: 'rgba(169, 221, 211, 0.15)',

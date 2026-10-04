@@ -69,7 +69,7 @@ const ROAST_TEMPLATES = [
   },
 ];
 
-export const XRayRoast: React.FC<{ initialHandle?: string }> = ({ initialHandle = 'yournahian' }) => {
+export const XRayRoast: React.FC<{ initialHandle?: string }> = ({ initialHandle = '' }) => {
   const [handle, setHandle] = useState<string>(initialHandle);
   const [isScanning, setIsScanning] = useState<boolean>(false);
   const [result, setResult] = useState<PersonaResult | null>(null);

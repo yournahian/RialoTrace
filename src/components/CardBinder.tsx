@@ -161,7 +161,7 @@ export const CardBinder: React.FC<CardBinderProps> = ({ user, onUserUpdate, onSe
     if (!inspectedCard) return;
     setIsDownloading(true);
     try {
-      const handle = user?.username || 'yournahian';
+      const handle = user?.username || 'collector';
       const blob = await exportRialoCardPNG({
         handle, name: handle, avatar: `https://unavatar.io/x/${handle}`,
         cardImage: inspectedCard.image, archetypeId: inspectedCard.id,
