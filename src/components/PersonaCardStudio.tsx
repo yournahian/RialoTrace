@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useCallback } from 'react';
-import { Search, Sparkles, Share2, Copy, Check, RefreshCw, Upload, Palette, Edit3, Download, Image as ImageIcon } from 'lucide-react';
+import { Search, Sparkles, Share2, Copy, Check, RefreshCw, Upload, Palette, Edit3, Download } from 'lucide-react';
 import { sound } from '@/lib/soundFx';
 import { exportPersonaCardPNG } from './PersonaCardCanvasExporter';
 
@@ -227,37 +227,29 @@ export const PersonaCardStudio: React.FC = () => {
     }
   };
 
-  /* ── Share (Native File Share or Auto-Download + Tweet) ── */
-  const handleShare = async () => {
+  /* ── Direct Share to X (Opens Twitter composer directly with image copied to clipboard) ── */
+  const handleShareToX = async () => {
     if (!card) return;
     sound.playTap();
+
+    // 1. Silently copy image to clipboard so user can just Ctrl+V into Twitter/X
     try {
       const blob = await exportPersonaCardPNG(card);
-      if (blob) {
-        const file = new File([blob], `${card.handle}-rialo-persona.png`, { type: 'image/png' });
-        if (navigator.canShare && navigator.canShare({ files: [file] })) {
-          await navigator.share({
-            files: [file],
-            title: `${card.title} - Rialo Persona Card`,
-            text: `Just forged my official Rialo Persona Card! ⚡ Zero friction, light-speed finality on #RialoTrace @RialoHQ`,
-          });
-          return;
-        }
-        // Fallback: auto download card so user has it ready to attach to tweet
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `${card.handle}-rialo-persona-card.png`;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        URL.revokeObjectURL(url);
+      if (blob && navigator.clipboard && typeof ClipboardItem !== 'undefined') {
+        await navigator.clipboard.write([
+          new ClipboardItem({ 'image/png': blob })
+        ]);
+        setCopiedStatus('IMAGE');
+        setTimeout(() => setCopiedStatus(null), 3500);
       }
-    } catch (e) {
-      console.warn('Share intent error', e);
+    } catch {
+      // fallback
     }
-    const txt = `Just forged my official Rialo Persona Card! 🎴\n\n"${card.title}" [${card.rarity}]\n⚡ Finality: ${card.finalitySpeed}\n🧊 Friction: ${card.frictionRate}\n\nForge yours on #RialoTrace #ZeroFriction @RialoHQ`;
-    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(txt)}`, '_blank', 'noopener,noreferrer');
+
+    // 2. Open Twitter/X composer directly (no OS share popup!)
+    const tweetText = `Just forged my official Rialo Persona Card! 🎴\n\n"${card.title}" [${card.rarity}]\n⚡ Finality: ${card.finalitySpeed}\n🧊 Friction: ${card.frictionRate}\n\nForge yours on #RialoTrace #ZeroFriction @RialoHQ`;
+    const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`;
+    window.open(url, '_blank', 'noopener,noreferrer');
   };
 
   const theme = card ? rarityTheme(card.rarity) : rarityTheme('COMMON');
@@ -372,7 +364,7 @@ export const PersonaCardStudio: React.FC = () => {
               {/* Holo foil */}
               <div style={{ position: 'absolute', inset: 0, borderRadius: '22px', pointerEvents: 'none', opacity: isHovered ? 0.35 : 0.12, background: `linear-gradient(${120 + mousePos.x * 60}deg, transparent 20%, ${theme.color}80 35%, rgba(169,221,211,0.55) 50%, rgba(200,180,255,0.45) 65%, transparent 100%)`, mixBlendMode: 'screen', transition: 'opacity 0.3s ease', zIndex: 2 }} />
               {/* Hazard stripes */}
-              <div style={{ position: 'absolute', bottom: '54px', left: 0, width: '100%', height: '36px', background: `repeating-linear-gradient(-55deg, transparent, transparent 10px, rgba(229,195,101,0.18) 10px, rgba(229,195,101,0.18) 20px)`, zIndex: 3, pointerEvents: 'none' }} />
+              <div style={{ position: 'absolute', bottom: '40px', left: 0, width: '100%', height: '32px', background: `repeating-linear-gradient(-55deg, transparent, transparent 10px, rgba(229,195,101,0.18) 10px, rgba(229,195,101,0.18) 20px)`, zIndex: 3, pointerEvents: 'none' }} />
 
               {/* LEFT: vertical RIALO text */}
               <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 5, background: 'rgba(0,0,0,0.55)', borderRight: '1px solid rgba(229,195,101,0.25)' }}>
@@ -399,7 +391,7 @@ export const PersonaCardStudio: React.FC = () => {
               </div>
 
               {/* HERO PFP fills upper area */}
-              <div style={{ position: 'absolute', top: '40px', left: '44px', right: '36px', bottom: '190px', zIndex: 4, overflow: 'hidden' }}>
+              <div style={{ position: 'absolute', top: '40px', left: '44px', right: '36px', bottom: '180px', zIndex: 4, overflow: 'hidden' }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={card.imageUrl}
@@ -417,7 +409,7 @@ export const PersonaCardStudio: React.FC = () => {
               </div>
 
               {/* BOTTOM info block */}
-              <div style={{ position: 'absolute', bottom: '54px', left: '44px', right: '36px', padding: '14px 16px 10px', zIndex: 6, display: 'flex', flexDirection: 'column', gap: '8px', background: 'rgba(7,10,9,0.85)', backdropFilter: 'blur(10px)' }}>
+              <div style={{ position: 'absolute', bottom: '40px', left: '44px', right: '36px', padding: '14px 16px 12px', zIndex: 6, display: 'flex', flexDirection: 'column', gap: '8px', background: 'rgba(7,10,9,0.85)', backdropFilter: 'blur(10px)' }}>
                 <div style={{ fontFamily: "'Bebas Neue','Impact','Arial Black',sans-serif", fontSize: '26px', fontWeight: 900, letterSpacing: '2px', color: '#FFFFFF', textTransform: 'uppercase', lineHeight: 1.0, textShadow: `0 0 20px ${theme.glow}` }}>
                   {card.title}
                 </div>
@@ -431,94 +423,24 @@ export const PersonaCardStudio: React.FC = () => {
                 </div>
               </div>
 
-              {/* FOOTER IN-CARD ACTIONS */}
-              <div style={{ position: 'absolute', bottom: 0, left: '44px', right: '36px', height: '54px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 12px', zIndex: 5, background: 'rgba(0,0,0,0.75)', borderTop: '1px solid rgba(229,195,101,0.2)' }}>
-                <span style={{ fontFamily: "'Space Mono',monospace", fontSize: '7.5px', letterSpacing: '1px', color: 'rgba(229,195,101,0.5)', textTransform: 'uppercase' }}>
-                  WWW.RIALO.IO
+              {/* CLEAN CARD FOOTER - AUTHENTIC TRADING CARD SPEC (NO DUPLICATE BUTTONS) */}
+              <div style={{ position: 'absolute', bottom: 0, left: '44px', right: '36px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 14px', zIndex: 5, background: 'rgba(0,0,0,0.85)', borderTop: '1px solid rgba(229,195,101,0.2)' }}>
+                <span style={{ fontFamily: "'Space Mono',monospace", fontSize: '8px', letterSpacing: '2px', color: 'rgba(229,195,101,0.6)', textTransform: 'uppercase', userSelect: 'none' }}>
+                  WWW.RIALO.IO • ZERO-FRICTION PROTOCOL
                 </span>
-                <div style={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
-                  <button
-                    type="button"
-                    onClick={handleDownload}
-                    disabled={downloading}
-                    title="Download HD PNG Card"
-                    style={{
-                      padding: '5px 9px',
-                      background: `linear-gradient(135deg, ${theme.color} 0%, ${theme.glow} 100%)`,
-                      color: '#010101',
-                      border: 'none',
-                      borderRadius: '9999px',
-                      fontSize: '8.5px',
-                      fontWeight: 900,
-                      cursor: downloading ? 'wait' : 'pointer',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '4px',
-                      letterSpacing: '0.5px',
-                      boxShadow: `0 0 10px ${theme.glow}`,
-                      fontFamily: "'Space Mono',monospace",
-                    }}
-                  >
-                    <Download size={9} /> {downloading ? 'SAVING...' : 'SAVE'}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleCopyImage}
-                    disabled={copying}
-                    title="Copy Card Image to Clipboard"
-                    style={{
-                      padding: '5px 9px',
-                      background: copiedStatus ? 'rgba(169, 221, 211, 0.25)' : 'rgba(255,255,255,0.07)',
-                      border: copiedStatus ? '1px solid #A9DDD3' : '1px solid rgba(255,255,255,0.18)',
-                      color: copiedStatus ? '#A9DDD3' : '#FFFFFF',
-                      borderRadius: '9999px',
-                      fontSize: '8.5px',
-                      fontWeight: 700,
-                      cursor: copying ? 'wait' : 'pointer',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '4px',
-                      fontFamily: "'Space Mono',monospace",
-                    }}
-                  >
-                    {copiedStatus ? <Check size={9} color="#A9DDD3" /> : <Copy size={9} />}
-                    {copiedStatus === 'IMAGE' ? 'COPIED!' : copiedStatus === 'TEXT' ? 'TEXT' : 'COPY'}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleShare}
-                    title="Share Card"
-                    style={{
-                      padding: '5px 9px',
-                      background: 'rgba(255,255,255,0.07)',
-                      border: '1px solid rgba(255,255,255,0.18)',
-                      color: '#FFFFFF',
-                      borderRadius: '9999px',
-                      fontSize: '8.5px',
-                      fontWeight: 700,
-                      cursor: 'pointer',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '4px',
-                      fontFamily: "'Space Mono',monospace",
-                    }}
-                  >
-                    <Share2 size={9} />
-                  </button>
-                </div>
               </div>
             </div>
           </div>
 
-          {/* ── PRIMARY PROMINENT ACTION CONTROLS ── */}
-          <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center', maxWidth: '440px' }}>
+          {/* ── ACTION CONTROLS (ONLY OUTSIDE THE CARD - CLEAN & UNCLUTTERED) ── */}
+          <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center', maxWidth: '520px' }}>
             {/* Download Button */}
             <button
               type="button"
               onClick={handleDownload}
               disabled={downloading}
               style={{
-                padding: '9px 18px',
+                padding: '10px 20px',
                 background: 'linear-gradient(135deg, #A9DDD3 0%, #00F0FF 100%)',
                 color: '#010101',
                 border: 'none',
@@ -528,13 +450,13 @@ export const PersonaCardStudio: React.FC = () => {
                 cursor: downloading ? 'wait' : 'pointer',
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: '6px',
+                gap: '7px',
                 boxShadow: '0 0 16px rgba(169,221,211,0.3)',
                 transition: 'all 0.2s',
               }}
             >
-              <Download size={14} />
-              {downloading ? 'Generating PNG...' : 'Download Card (PNG)'}
+              <Download size={15} />
+              {downloading ? 'Saving HD Card...' : 'Download Card (PNG)'}
             </button>
 
             {/* Copy Card Image Button */}
@@ -543,7 +465,7 @@ export const PersonaCardStudio: React.FC = () => {
               onClick={handleCopyImage}
               disabled={copying}
               style={{
-                padding: '9px 16px',
+                padding: '10px 18px',
                 background: copiedStatus ? 'rgba(169,221,211,0.2)' : 'rgba(255,255,255,0.05)',
                 border: copiedStatus ? '1px solid #A9DDD3' : '1px solid rgba(255,255,255,0.15)',
                 color: copiedStatus ? '#A9DDD3' : '#E8E3D5',
@@ -553,20 +475,20 @@ export const PersonaCardStudio: React.FC = () => {
                 cursor: copying ? 'wait' : 'pointer',
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: '6px',
+                gap: '7px',
                 transition: 'all 0.2s',
               }}
             >
-              {copiedStatus ? <Check size={14} color="#A9DDD3" /> : <Copy size={14} />}
-              {copiedStatus === 'IMAGE' ? 'Image Copied! (Ready to paste)' : copiedStatus === 'TEXT' ? 'Link Copied!' : 'Copy Card Image'}
+              {copiedStatus ? <Check size={15} color="#A9DDD3" /> : <Copy size={15} />}
+              {copiedStatus === 'IMAGE' ? 'Image Copied! (Ctrl+V to paste)' : copiedStatus === 'TEXT' ? 'Link Copied!' : 'Copy Card Image'}
             </button>
 
-            {/* Share to X */}
+            {/* Direct Share to X */}
             <button
               type="button"
-              onClick={handleShare}
+              onClick={handleShareToX}
               style={{
-                padding: '9px 16px',
+                padding: '10px 18px',
                 background: 'rgba(255,255,255,0.05)',
                 border: '1px solid rgba(255,255,255,0.15)',
                 color: '#E8E3D5',
@@ -576,11 +498,11 @@ export const PersonaCardStudio: React.FC = () => {
                 cursor: 'pointer',
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: '6px',
+                gap: '7px',
                 transition: 'all 0.2s',
               }}
             >
-              <Share2 size={14} /> Share to X
+              <Share2 size={15} /> Share to X
             </button>
 
             {/* Reshuffle Archetype */}
@@ -588,7 +510,7 @@ export const PersonaCardStudio: React.FC = () => {
               type="button"
               onClick={handleReshuffle}
               style={{
-                padding: '9px 16px',
+                padding: '10px 16px',
                 background: 'rgba(255,255,255,0.05)',
                 border: '1px solid rgba(255,255,255,0.15)',
                 color: '#8E9B97',
@@ -610,7 +532,7 @@ export const PersonaCardStudio: React.FC = () => {
               type="button"
               onClick={() => { setEditMode(v => !v); sound.playTap(); }}
               style={{
-                padding: '9px 16px',
+                padding: '10px 16px',
                 background: editMode ? 'rgba(169,221,211,0.15)' : 'rgba(255,255,255,0.05)',
                 border: editMode ? '1px solid rgba(169,221,211,0.4)' : '1px solid rgba(255,255,255,0.15)',
                 color: editMode ? '#A9DDD3' : '#E8E3D5',
@@ -627,6 +549,13 @@ export const PersonaCardStudio: React.FC = () => {
               <Edit3 size={13} /> {editMode ? 'Hide Editor' : 'Edit Card'}
             </button>
           </div>
+
+          {/* Hint for Sharing */}
+          {copiedStatus === 'IMAGE' && (
+            <div style={{ fontSize: '11px', color: '#A9DDD3', fontFamily: 'var(--font-mono)', textAlign: 'center', animation: 'fadeIn 0.2s ease' }}>
+              💡 Card image copied to clipboard! In X (Twitter), just press <strong>Ctrl+V</strong> to attach the image to your tweet.
+            </div>
+          )}
 
           {/* ── EDIT PANEL ── */}
           {editMode && (
