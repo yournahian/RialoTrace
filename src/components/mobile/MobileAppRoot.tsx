@@ -6,7 +6,6 @@ import { UserProfile, CardArchetype } from '@/lib/types';
 import { MobileHeader } from './MobileHeader';
 import { MobileBinderView } from './MobileBinderView';
 import { MobileQuickTabs } from './MobileQuickTabs';
-import { MobileNavDrawer } from '../MobileNavDrawer';
 import { MobileNotificationsSheet } from './MobileNotificationsSheet';
 
 // Tab Components
@@ -52,7 +51,6 @@ export const MobileAppRoot: React.FC<MobileAppRootProps> = ({
   onSwitchAccount,
   onLogOut,
 }) => {
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isNotifsOpen, setIsNotifsOpen] = useState(false);
 
   return (
@@ -76,7 +74,6 @@ export const MobileAppRoot: React.FC<MobileAppRootProps> = ({
         currentUsername={currentUsername}
         unreadNotifsCount={0}
         onOpenNotifications={() => setIsNotifsOpen(true)}
-        onOpenDrawer={() => setIsDrawerOpen(true)}
         onOpenProfile={() => onSelectTab('profile')}
       />
 
@@ -170,17 +167,7 @@ export const MobileAppRoot: React.FC<MobileAppRootProps> = ({
         )}
       </main>
 
-      {/* 5. Mobile Drawer Menu */}
-      <MobileNavDrawer
-        isOpen={isDrawerOpen}
-        onClose={() => setIsDrawerOpen(false)}
-        activeTab={activeTab}
-        onSelectTab={onSelectTab}
-        user={currentUser}
-        currentUsername={currentUsername}
-        onSwitchAccount={onSwitchAccount}
-        onLogOut={onLogOut}
-      />
+
 
       {/* 6. Mobile Notifications Bottom Sheet */}
       <MobileNotificationsSheet

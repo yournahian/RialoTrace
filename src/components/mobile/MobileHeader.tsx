@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Bell, Menu } from 'lucide-react';
+import { Bell, User } from 'lucide-react';
 import { sound } from '@/lib/soundFx';
 import { UserProfile } from '@/lib/types';
 
@@ -10,7 +10,6 @@ interface MobileHeaderProps {
   currentUsername: string;
   unreadNotifsCount: number;
   onOpenNotifications: () => void;
-  onOpenDrawer: () => void;
   onOpenProfile: () => void;
 }
 
@@ -19,7 +18,6 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
   currentUsername,
   unreadNotifsCount,
   onOpenNotifications,
-  onOpenDrawer,
   onOpenProfile,
 }) => {
   return (
@@ -155,18 +153,18 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
           )}
         </button>
 
-        {/* Hamburger Menu Button */}
+        {/* User Profile Avatar / Icon */}
         <button
           type="button"
           onClick={() => {
             sound.playTap();
-            onOpenDrawer();
+            onOpenProfile();
           }}
-          title="Open Menu"
+          title="My Profile"
           style={{
             width: '34px',
             height: '34px',
-            borderRadius: '9px',
+            borderRadius: '50%',
             background: 'rgba(169, 221, 211, 0.14)',
             border: '1.5px solid #A9DDD3',
             color: '#A9DDD3',
@@ -175,10 +173,22 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
             justifyContent: 'center',
             cursor: 'pointer',
             padding: 0,
-            boxShadow: '0 0 12px rgba(169, 221, 211, 0.25)',
+            overflow: 'hidden',
+            boxShadow: '0 0 10px rgba(169, 221, 211, 0.25)',
           }}
         >
-          <Menu size={17} />
+          {currentUsername ? (
+            <img
+              src={`https://unavatar.io/x/${currentUsername}`}
+              alt={currentUsername}
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              onError={(e) => {
+                e.currentTarget.style.display = 'none';
+              }}
+            />
+          ) : (
+            <User size={16} />
+          )}
         </button>
       </div>
     </header>
