@@ -7,14 +7,13 @@ import {
   Shield,
   Zap,
   Layers,
-  Flame,
   Award,
   Swords,
-  ChevronRight,
   TrendingUp,
-  ExternalLink,
   Star,
+  ExternalLink,
 } from 'lucide-react';
+import { RialoIcon } from './RialoLogo';
 import { sound } from '@/lib/soundFx';
 
 interface LandingPageProps {
@@ -38,8 +37,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
     const rect = heroPackRef.current.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-    const rotateX = ((y - rect.height / 2) / (rect.height / 2)) * -16;
-    const rotateY = ((x - rect.width / 2) / (rect.width / 2)) * 16;
+    const rotateX = ((y - rect.height / 2) / (rect.height / 2)) * -14;
+    const rotateY = ((x - rect.width / 2) / (rect.width / 2)) * 14;
     setPackTilt({
       x: rotateX,
       y: rotateY,
@@ -63,63 +62,67 @@ export const LandingPage: React.FC<LandingPageProps> = ({
     if (action) action();
   };
 
-  // 4 Showcase Packs
+  // 4 Authentic Showcase Packs with Real 3D Pack Art
   const packTiers = [
     {
       id: 'genesis',
       name: 'GENESIS WAVE 1',
       sub: 'DAILY DROP • TIER 0',
-      price: 'FREE / 24H',
-      tag: 'POPULAR',
+      method: 'FREE DAILY CLAIM',
+      tag: 'FEATURED',
       color: '#00F5FF',
-      accentBg: 'linear-gradient(135deg, rgba(0,245,255,0.2) 0%, rgba(6,16,14,0.95) 100%)',
-      borderColor: 'rgba(0,245,255,0.4)',
+      packImage: '/packs/pack_genesis.jpg',
+      accentBg: 'linear-gradient(135deg, rgba(0,245,255,0.15) 0%, rgba(6,16,14,0.95) 100%)',
+      borderColor: 'rgba(0,245,255,0.35)',
       glow: '0 0 35px rgba(0,245,255,0.25)',
       rarity: 'Common to Mythic',
-      cardsCount: 3,
-      desc: 'Contains 3 randomized cards with guaranteed Common or Rare, plus chance for a Mythic Devourer.',
+      cardsCount: '3 CARDS',
+      desc: 'Contains 3 randomized cards with guaranteed Common or Rare, plus chance for the Mythic Sub-Second Devourer.',
     },
     {
       id: 'void',
       name: 'VOID CYBERSAMURAI',
       sub: 'MYTHIC EDITION',
-      price: '500 SHARDS',
+      method: 'FORGE SYNTHESIS',
       tag: 'MYTHIC',
       color: '#A855F7',
-      accentBg: 'linear-gradient(135deg, rgba(168,85,247,0.2) 0%, rgba(10,8,18,0.95) 100%)',
-      borderColor: 'rgba(168,85,247,0.4)',
+      packImage: '/packs/pack_void.jpg',
+      accentBg: 'linear-gradient(135deg, rgba(168,85,247,0.15) 0%, rgba(10,8,18,0.95) 100%)',
+      borderColor: 'rgba(168,85,247,0.35)',
       glow: '0 0 35px rgba(168,85,247,0.25)',
-      rarity: 'Guaranteed Epic+',
-      cardsCount: 4,
-      desc: 'Synthesized in The Forge. Higher density of high-speed transaction executioner archetypes.',
+      rarity: 'Epic & Mythic Pool',
+      cardsCount: '4 CARDS',
+      desc: 'Synthesized in The Forge using recyclable duplicates. Higher density of executioner and ronin archetypes.',
     },
     {
       id: 'superconductor',
       name: 'SUPERCONDUCTOR',
       sub: 'LEGENDARY APEX',
-      price: '250 SHARDS',
+      method: 'MISSION VAULT',
       tag: 'HIGH VELOCITY',
       color: '#F59E0B',
-      accentBg: 'linear-gradient(135deg, rgba(245,158,11,0.2) 0%, rgba(18,12,6,0.95) 100%)',
-      borderColor: 'rgba(245,158,11,0.4)',
+      packImage: '/packs/pack_superconductor.jpg',
+      accentBg: 'linear-gradient(135deg, rgba(245,158,11,0.15) 0%, rgba(18,12,6,0.95) 100%)',
+      borderColor: 'rgba(245,158,11,0.35)',
       glow: '0 0 35px rgba(245,158,11,0.25)',
       rarity: 'Legendary Guaranteed',
-      cardsCount: 3,
-      desc: 'Infused with zero-friction consensus energy. High finality rating and premium foil aesthetics.',
+      cardsCount: '3 CARDS',
+      desc: 'Awarded to top engagement streaks and arcade milestones. Infused with zero-friction consensus energy.',
     },
     {
       id: 'zero-friction',
       name: 'ZERO-FRICTION GRAIL',
       sub: 'LIMITED RUN 2026',
-      price: '1,000 SHARDS',
-      tag: 'GRAIL',
+      method: 'ARENA GRAIL',
+      tag: 'APEX GRAIL',
       color: '#10B981',
-      accentBg: 'linear-gradient(135deg, rgba(16,185,129,0.2) 0%, rgba(6,16,12,0.95) 100%)',
-      borderColor: 'rgba(16,185,129,0.4)',
+      packImage: '/packs/pack_apex.jpg',
+      accentBg: 'linear-gradient(135deg, rgba(16,185,129,0.15) 0%, rgba(6,16,12,0.95) 100%)',
+      borderColor: 'rgba(16,185,129,0.35)',
       glow: '0 0 35px rgba(16,185,129,0.25)',
       rarity: '1-of-1 Mythic Pool',
-      cardsCount: 5,
-      desc: 'The crown jewel of RialoTrace. Unlocks holographic animated foils and custom signature scripts.',
+      cardsCount: '5 CARDS',
+      desc: 'The crown jewel of the RialoTrace ecosystem. Unlocks custom holographic animated foil export parameters.',
     },
   ];
 
@@ -132,10 +135,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       grade: 'GEM MINT 10',
       color: '#EC4899',
       image: '/cards/devourer.png',
-      pulledBy: '@yournahian',
-      time: '2 MINS AGO',
-      finality: '0.04s',
-      friction: '0.00%',
+      edition: 'GENESIS APEX',
       serial: '#0003/1000',
       tiltDeg: -6,
     },
@@ -146,10 +146,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       grade: 'PRISTINE 9.5',
       color: '#F59E0B',
       image: '/cards/cyber_ronin.png',
-      pulledBy: '@sol_crypto',
-      time: '5 MINS AGO',
-      finality: '0.12s',
-      friction: '0.01%',
+      edition: 'CONSENSUS WARRIOR',
       serial: '#0142/2500',
       tiltDeg: -3,
     },
@@ -160,10 +157,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       grade: 'GEM MINT 10',
       color: '#F59E0B',
       image: '/cards/sovereign.png',
-      pulledBy: '@0xRialoAlpha',
-      time: 'JUST NOW',
-      finality: '0.02s',
-      friction: '0.00%',
+      edition: 'PARALLEL CLUSTER',
       serial: '#0001/0500',
       tiltDeg: 0,
       isFeatured: true,
@@ -175,10 +169,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       grade: 'MINT 9.0',
       color: '#10B981',
       image: '/cards/architect.png',
-      pulledBy: '@testnet_queen',
-      time: '12 MINS AGO',
-      finality: '0.18s',
-      friction: '0.02%',
+      edition: 'PIPELINE ENGINEER',
       serial: '#0455/5000',
       tiltDeg: 3,
     },
@@ -189,10 +180,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       grade: 'GEM MINT 10',
       color: '#A855F7',
       image: '/cards/chronomancer.png',
-      pulledBy: '@defi_samurai',
-      time: '18 MINS AGO',
-      finality: '0.05s',
-      friction: '0.00%',
+      edition: 'SUB-SECOND TEMPORAL',
       serial: '#0021/1000',
       tiltDeg: 6,
     },
@@ -218,7 +206,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           transform: 'translateX(-50%)',
           width: '1200px',
           height: '650px',
-          background: 'radial-gradient(ellipse at 50% 0%, rgba(245, 158, 11, 0.18) 0%, rgba(0, 245, 255, 0.08) 45%, transparent 75%)',
+          background: 'radial-gradient(ellipse at 50% 0%, rgba(0, 245, 255, 0.12) 0%, rgba(16, 185, 129, 0.06) 45%, transparent 75%)',
           filter: 'blur(90px)',
           pointerEvents: 'none',
           zIndex: 0,
@@ -237,7 +225,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       />
 
       {/* ======================================================== */}
-      {/* 1. TOP STICKY NAVBAR                                     */}
+      {/* 1. TOP STICKY NAVBAR WITH OFFICIAL RIALO BRAND LOGO     */}
       {/* ======================================================== */}
       <nav
         style={{
@@ -245,58 +233,57 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           top: 0,
           zIndex: 100,
           backdropFilter: 'blur(20px)',
-          backgroundColor: 'rgba(4, 7, 6, 0.85)',
-          borderBottom: '1px solid rgba(169, 221, 211, 0.12)',
+          backgroundColor: 'rgba(4, 7, 6, 0.88)',
+          borderBottom: '1px solid rgba(169, 221, 211, 0.14)',
           padding: '14px 28px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
         }}
       >
-        {/* Brand */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+        {/* Official Rialo Brand Kit Logo */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <div
             style={{
               width: '38px',
               height: '38px',
-              borderRadius: '12px',
-              background: 'linear-gradient(135deg, #00F5FF 0%, #10B981 100%)',
+              borderRadius: '10px',
+              background: 'rgba(6, 16, 14, 0.95)',
+              border: '1.5px solid rgba(0, 245, 255, 0.45)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              boxShadow: '0 0 20px rgba(0,245,255,0.4)',
+              boxShadow: '0 0 20px rgba(0, 245, 255, 0.3)',
             }}
           >
-            <Sparkles size={20} color="#040706" />
+            <RialoIcon size={24} color="#00F5FF" />
           </div>
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span
-                style={{
-                  fontFamily: "'Bebas Neue', sans-serif",
-                  fontSize: '24px',
-                  letterSpacing: '1.5px',
-                  color: '#FFFFFF',
-                }}
-              >
-                RIALO<span style={{ color: '#00F5FF' }}>TRACE</span>
-              </span>
-              <span
-                style={{
-                  fontSize: '10px',
-                  fontFamily: "'Space Mono', monospace",
-                  padding: '2px 6px',
-                  borderRadius: '4px',
-                  background: 'rgba(16, 185, 129, 0.15)',
-                  border: '1px solid rgba(16, 185, 129, 0.4)',
-                  color: '#10B981',
-                  fontWeight: 700,
-                  letterSpacing: '0.5px',
-                }}
-              >
-                BETA 2.0
-              </span>
-            </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span
+              style={{
+                fontWeight: 900,
+                fontSize: '22px',
+                letterSpacing: '-0.02em',
+                color: '#FFFFFF',
+              }}
+            >
+              Rialo<span style={{ color: '#00F5FF' }}>Trace</span>
+            </span>
+            <span
+              style={{
+                fontSize: '10px',
+                fontFamily: "'Space Mono', monospace",
+                padding: '2px 7px',
+                borderRadius: '4px',
+                background: 'rgba(0, 245, 255, 0.12)',
+                border: '1px solid rgba(0, 245, 255, 0.35)',
+                color: '#00F5FF',
+                fontWeight: 700,
+                letterSpacing: '0.8px',
+              }}
+            >
+              TESTNET
+            </span>
           </div>
         </div>
 
@@ -327,7 +314,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             onMouseEnter={(e) => (e.currentTarget.style.color = '#00F5FF')}
             onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(255,255,255,0.7)')}
           >
-            LIVE PULLS
+            SLABS
           </a>
           <a
             href="#pillars"
@@ -343,7 +330,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             onMouseEnter={(e) => (e.currentTarget.style.color = '#00F5FF')}
             onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(255,255,255,0.7)')}
           >
-            COMMUNITY
+            SWARM
           </a>
           <a
             href="#reputation"
@@ -351,7 +338,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             onMouseEnter={(e) => (e.currentTarget.style.color = '#00F5FF')}
             onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(255,255,255,0.7)')}
           >
-            VERIFIED
+            PROTOCOL
           </a>
         </div>
 
@@ -359,20 +346,18 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
           <button
             type="button"
-            onClick={() => {
-              handleButtonClick(() => onLaunchApp());
-            }}
+            onClick={() => handleButtonClick(() => onLaunchApp())}
             style={{
               padding: '10px 24px',
               borderRadius: '9999px',
-              background: 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)',
-              border: '1px solid rgba(245, 158, 11, 0.6)',
+              background: 'linear-gradient(135deg, #00F5FF 0%, #0284C7 100%)',
+              border: '1px solid rgba(0, 245, 255, 0.6)',
               color: '#040706',
               fontFamily: "'Bebas Neue', sans-serif",
               fontSize: '18px',
               letterSpacing: '1px',
               cursor: 'pointer',
-              boxShadow: '0 0 25px rgba(245, 158, 11, 0.4)',
+              boxShadow: '0 0 25px rgba(0, 245, 255, 0.4)',
               display: 'flex',
               alignItems: 'center',
               gap: '8px',
@@ -380,11 +365,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = 'scale(1.04)';
-              e.currentTarget.style.boxShadow = '0 0 35px rgba(245, 158, 11, 0.6)';
+              e.currentTarget.style.boxShadow = '0 0 35px rgba(0, 245, 255, 0.6)';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.transform = 'scale(1)';
-              e.currentTarget.style.boxShadow = '0 0 25px rgba(245, 158, 11, 0.4)';
+              e.currentTarget.style.boxShadow = '0 0 25px rgba(0, 245, 255, 0.4)';
             }}
           >
             <span>{currentUsername ? `ENTER AS @${currentUsername}` : 'LAUNCH APP'}</span>
@@ -394,14 +379,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       </nav>
 
       {/* ======================================================== */}
-      {/* 2. HERO SECTION                                          */}
+      {/* 2. HERO SECTION WITH 3D HOLOGRAPHIC BOOSTER PACK        */}
       {/* ======================================================== */}
       <section
         id="hero"
         style={{
           position: 'relative',
           zIndex: 1,
-          padding: '50px 20px 80px',
+          padding: '50px 20px 70px',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
@@ -416,19 +401,19 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             gap: '8px',
             padding: '6px 18px',
             borderRadius: '9999px',
-            background: 'rgba(245, 158, 11, 0.1)',
-            border: '1px solid rgba(245, 158, 11, 0.35)',
-            color: '#F59E0B',
+            background: 'rgba(0, 245, 255, 0.1)',
+            border: '1px solid rgba(0, 245, 255, 0.35)',
+            color: '#00F5FF',
             fontSize: '12px',
             fontFamily: "'Space Mono', monospace",
             fontWeight: 700,
             letterSpacing: '1px',
             marginBottom: '24px',
-            boxShadow: '0 0 25px rgba(245, 158, 11, 0.15)',
+            boxShadow: '0 0 25px rgba(0, 245, 255, 0.15)',
           }}
         >
           <Sparkles size={14} />
-          <span>GENESIS WAVE 1 PACKS LIVE ON TESTNET</span>
+          <span>RIALO NETWORK ZERO-FRICTION COLLECTOR VAULT</span>
         </div>
 
         {/* Big Impact Headline */}
@@ -450,10 +435,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           <br />
           <span
             style={{
-              background: 'linear-gradient(180deg, #FDE68A 0%, #F59E0B 50%, #D97706 100%)',
+              background: 'linear-gradient(180deg, #A7F3D0 0%, #00F5FF 50%, #0284C7 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
-              filter: 'drop-shadow(0 0 30px rgba(245, 158, 11, 0.5))',
+              filter: 'drop-shadow(0 0 30px rgba(0, 245, 255, 0.5))',
             }}
           >
             OWN THE PROTOCOL.
@@ -472,7 +457,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           }}
         >
           The sovereign social analytics terminal and gamified digital collector vault for Rialo Network.
-          Track your viral velocity, rip daily booster packs, and dominate the creator arena.
+          Track creator momentum, rip daily booster packs, and challenge peers in the Versus Arena.
         </p>
 
         {/* Action Buttons */}
@@ -483,7 +468,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             justifyContent: 'center',
             gap: '16px',
             flexWrap: 'wrap',
-            marginBottom: '50px',
+            marginBottom: '48px',
           }}
         >
           <button
@@ -553,12 +538,12 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             }}
           >
             <TrendingUp size={18} color="#00F5FF" />
-            <span>CHECK CREATOR LEADERBOARD</span>
+            <span>EXPLORE LEADERBOARD</span>
           </button>
         </div>
 
         {/* ====================================================== */}
-        {/* HERO 3D PACK DISPLAY (Interactive Tilt & Sheen)        */}
+        {/* HERO 3D PACK DISPLAY (Using the Real 3D Pack Asset)     */}
         {/* ====================================================== */}
         <div
           style={{
@@ -568,7 +553,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             alignItems: 'center',
             position: 'relative',
             width: '100%',
-            maxWidth: '420px',
+            maxWidth: '440px',
             margin: '0 auto',
           }}
         >
@@ -577,15 +562,15 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             style={{
               position: 'absolute',
               inset: '-30px',
-              background: 'radial-gradient(circle, rgba(0, 245, 255, 0.22) 0%, rgba(245, 158, 11, 0.15) 50%, transparent 70%)',
-              filter: 'blur(40px)',
+              background: 'radial-gradient(circle, rgba(0, 245, 255, 0.3) 0%, rgba(16, 185, 129, 0.15) 50%, transparent 70%)',
+              filter: 'blur(50px)',
               borderRadius: '50%',
               pointerEvents: 'none',
               animation: 'pulse 4s ease-in-out infinite',
             }}
           />
 
-          {/* The Foil Booster Pack */}
+          {/* Interactive 3D Pack Container */}
           <div
             ref={heroPackRef}
             onMouseMove={handleHeroPackMouseMove}
@@ -593,319 +578,122 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             onMouseLeave={handleHeroPackLeave}
             onClick={() => handleButtonClick(() => onLaunchApp())}
             style={{
-              width: '300px',
+              width: '330px',
               height: '450px',
-              borderRadius: '18px',
+              borderRadius: '20px',
               position: 'relative',
               cursor: 'pointer',
               transformStyle: 'preserve-3d',
-              transform: `rotateX(${packTilt.x}deg) rotateY(${packTilt.y}deg) scale(${isPackHovered ? 1.04 : 1})`,
+              transform: `rotateX(${packTilt.x}deg) rotateY(${packTilt.y}deg) scale(${isPackHovered ? 1.05 : 1})`,
               transition: isPackHovered ? 'transform 0.08s ease-out' : 'transform 0.5s ease-out',
               boxShadow: isPackHovered
-                ? '0 30px 60px rgba(0, 0, 0, 0.9), 0 0 50px rgba(0, 245, 255, 0.5)'
-                : '0 20px 40px rgba(0, 0, 0, 0.8), 0 0 30px rgba(0, 245, 255, 0.25)',
-              background: '#0A0F0D',
-              border: '2px solid rgba(0, 245, 255, 0.4)',
+                ? '0 30px 60px rgba(0, 0, 0, 0.95), 0 0 50px rgba(0, 245, 255, 0.6)'
+                : '0 20px 45px rgba(0, 0, 0, 0.85), 0 0 35px rgba(0, 245, 255, 0.3)',
               overflow: 'hidden',
+              backgroundColor: '#040706',
+              border: '1px solid rgba(0, 245, 255, 0.4)',
             }}
           >
-            {/* Top Crinkle / Crimp Metallic Seal */}
-            <div
+            {/* The Real 3D Pack Image Artwork */}
+            <img
+              src="/packs/rialo_pack_holographic.jpg"
+              alt="RialoTrace 3D Booster Pack"
               style={{
-                height: '28px',
                 width: '100%',
-                background: 'repeating-linear-gradient(90deg, #1A2622 0px, #2A3B35 3px, #0F1715 6px)',
-                borderBottom: '1px solid rgba(0, 245, 255, 0.3)',
-                position: 'relative',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
+                height: '100%',
+                objectFit: 'cover',
+                display: 'block',
               }}
-            >
-              {/* Tear Notch */}
-              <div
-                style={{
-                  position: 'absolute',
-                  right: '16px',
-                  top: '6px',
-                  width: '12px',
-                  height: '14px',
-                  backgroundColor: '#040706',
-                  clipPath: 'polygon(100% 0, 0 50%, 100% 100%)',
-                }}
-              />
-              <span
-                style={{
-                  fontFamily: "'Space Mono', monospace",
-                  fontSize: '9px',
-                  letterSpacing: '2px',
-                  color: 'rgba(255, 255, 255, 0.6)',
-                  fontWeight: 700,
-                }}
-              >
-                ▼ TEAR HERE TO UNSEAL ▼
-              </span>
-            </div>
+            />
 
-            {/* Pack Graphic Body */}
-            <div
-              style={{
-                padding: '24px 20px',
-                height: 'calc(100% - 56px)',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                position: 'relative',
-                background: 'radial-gradient(circle at 50% 30%, #152420 0%, #080D0B 100%)',
-              }}
-            >
-              {/* Header inside Pack */}
-              <div>
-                <div
-                  style={{
-                    fontFamily: "'Space Mono', monospace",
-                    fontSize: '10px',
-                    letterSpacing: '3px',
-                    color: '#00F5FF',
-                    fontWeight: 700,
-                  }}
-                >
-                  RIALO NETWORK // EDITION 01
-                </div>
-                <div
-                  style={{
-                    fontFamily: "'Bebas Neue', sans-serif",
-                    fontSize: '38px',
-                    letterSpacing: '2px',
-                    color: '#FFFFFF',
-                    lineHeight: '1',
-                    margin: '6px 0 0',
-                    textShadow: '0 0 20px rgba(0,245,255,0.4)',
-                  }}
-                >
-                  GENESIS BOOSTER
-                </div>
-              </div>
-
-              {/* Central Glowing Seal / Pokeball / Rialo Hologram */}
-              <div
-                style={{
-                  width: '130px',
-                  height: '130px',
-                  borderRadius: '50%',
-                  position: 'relative',
-                  background: 'radial-gradient(circle, #0F201C 0%, #040807 80%)',
-                  border: '3px solid #00F5FF',
-                  boxShadow: '0 0 35px rgba(0, 245, 255, 0.4), inset 0 0 20px rgba(0, 245, 255, 0.3)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                {/* Center Core */}
-                <div
-                  style={{
-                    width: '60px',
-                    height: '60px',
-                    borderRadius: '50%',
-                    background: 'linear-gradient(135deg, #00F5FF 0%, #10B981 100%)',
-                    boxShadow: '0 0 25px rgba(0, 245, 255, 0.8)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <Zap size={32} color="#040706" />
-                </div>
-
-                {/* Orbiting Ring */}
-                <div
-                  style={{
-                    position: 'absolute',
-                    inset: '-8px',
-                    borderRadius: '50%',
-                    border: '1px dashed rgba(245, 158, 11, 0.5)',
-                  }}
-                />
-              </div>
-
-              {/* Bottom Pack Specs */}
-              <div>
-                <div
-                  style={{
-                    fontFamily: "'Bebas Neue', sans-serif",
-                    fontSize: '22px',
-                    color: '#F59E0B',
-                    letterSpacing: '1px',
-                  }}
-                >
-                  3 DIGITAL CARDS INSIDE
-                </div>
-                <div
-                  style={{
-                    fontFamily: "'Space Mono', monospace",
-                    fontSize: '9px',
-                    color: 'rgba(255, 255, 255, 0.5)',
-                    letterSpacing: '1px',
-                  }}
-                >
-                  SUB-SECOND CONSENSUS • 0.00% FRICTION
-                </div>
-              </div>
-            </div>
-
-            {/* Bottom Crinkle / Crimp Metallic Seal */}
-            <div
-              style={{
-                height: '28px',
-                width: '100%',
-                background: 'repeating-linear-gradient(90deg, #1A2622 0px, #2A3B35 3px, #0F1715 6px)',
-                borderTop: '1px solid rgba(0, 245, 255, 0.3)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <span
-                style={{
-                  fontFamily: "'Space Mono', monospace",
-                  fontSize: '9px',
-                  letterSpacing: '2px',
-                  color: 'rgba(255, 255, 255, 0.6)',
-                  fontWeight: 700,
-                }}
-              >
-                PRODUCED BY RIALOTRACE
-              </span>
-            </div>
-
-            {/* Dynamic Holographic Foil Glare Overlay */}
+            {/* Dynamic Glare Overlay */}
             <div
               style={{
                 position: 'absolute',
                 inset: 0,
                 pointerEvents: 'none',
-                background: `radial-gradient(circle at ${packTilt.glareX}% ${packTilt.glareY}%, rgba(255, 255, 255, 0.35) 0%, rgba(0, 245, 255, 0.15) 30%, transparent 70%)`,
+                background: `radial-gradient(circle at ${packTilt.glareX}% ${packTilt.glareY}%, rgba(255, 255, 255, 0.35) 0%, rgba(0, 245, 255, 0.2) 25%, transparent 60%)`,
                 mixBlendMode: 'overlay',
               }}
             />
           </div>
         </div>
 
-        {/* Live Metrics Ticker Bar */}
+        {/* Protocol Architecture Features (Real Values, No Dummy Stats) */}
         <div
           style={{
-            marginTop: '60px',
+            marginTop: '56px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            gap: 'clamp(20px, 4vw, 50px)',
+            gap: 'clamp(20px, 3vw, 40px)',
             flexWrap: 'wrap',
-            padding: '18px 36px',
+            padding: '16px 32px',
             borderRadius: '18px',
-            backgroundColor: 'rgba(10, 16, 14, 0.8)',
+            backgroundColor: 'rgba(10, 16, 14, 0.85)',
             border: '1px solid rgba(169, 221, 211, 0.15)',
             backdropFilter: 'blur(10px)',
             boxShadow: '0 10px 30px rgba(0, 0, 0, 0.5)',
           }}
         >
-          <div>
-            <div
-              style={{
-                fontFamily: "'Bebas Neue', sans-serif",
-                fontSize: '32px',
-                color: '#00F5FF',
-                letterSpacing: '1px',
-                lineHeight: '1',
-              }}
-            >
-              1.8M+
-            </div>
-            <div
-              style={{
-                fontSize: '11px',
-                fontFamily: "'Space Mono', monospace",
-                color: 'rgba(255,255,255,0.6)',
-              }}
-            >
-              IMPRESSIONS TRACKED
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <Zap size={18} color="#00F5FF" />
+            <div style={{ textAlign: 'left' }}>
+              <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '18px', color: '#FFFFFF', letterSpacing: '0.8px' }}>
+                SUB-SECOND BFT
+              </div>
+              <div style={{ fontSize: '10px', fontFamily: "'Space Mono', monospace", color: 'rgba(255,255,255,0.55)' }}>
+                INSTANT FINALITY
+              </div>
             </div>
           </div>
-          <div style={{ width: '1px', height: '35px', backgroundColor: 'rgba(255,255,255,0.1)' }} />
-          <div>
-            <div
-              style={{
-                fontFamily: "'Bebas Neue', sans-serif",
-                fontSize: '32px',
-                color: '#F59E0B',
-                letterSpacing: '1px',
-                lineHeight: '1',
-              }}
-            >
-              1,420+
-            </div>
-            <div
-              style={{
-                fontSize: '11px',
-                fontFamily: "'Space Mono', monospace",
-                color: 'rgba(255,255,255,0.6)',
-              }}
-            >
-              ACTIVE CREATORS
+
+          <div style={{ width: '1px', height: '28px', backgroundColor: 'rgba(255,255,255,0.1)' }} />
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <Layers size={18} color="#10B981" />
+            <div style={{ textAlign: 'left' }}>
+              <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '18px', color: '#FFFFFF', letterSpacing: '0.8px' }}>
+                30 ARCHETYPES
+              </div>
+              <div style={{ fontSize: '10px', fontFamily: "'Space Mono', monospace", color: 'rgba(255,255,255,0.55)' }}>
+                GENESIS COLLECTOR SET
+              </div>
             </div>
           </div>
-          <div style={{ width: '1px', height: '35px', backgroundColor: 'rgba(255,255,255,0.1)' }} />
-          <div>
-            <div
-              style={{
-                fontFamily: "'Bebas Neue', sans-serif",
-                fontSize: '32px',
-                color: '#10B981',
-                letterSpacing: '1px',
-                lineHeight: '1',
-              }}
-            >
-              8,950+
-            </div>
-            <div
-              style={{
-                fontSize: '11px',
-                fontFamily: "'Space Mono', monospace",
-                color: 'rgba(255,255,255,0.6)',
-              }}
-            >
-              PACKS RIPPED
+
+          <div style={{ width: '1px', height: '28px', backgroundColor: 'rgba(255,255,255,0.1)' }} />
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <Shield size={18} color="#F59E0B" />
+            <div style={{ textAlign: 'left' }}>
+              <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '18px', color: '#FFFFFF', letterSpacing: '0.8px' }}>
+                ANTI-SYBIL VERIFIED
+              </div>
+              <div style={{ fontSize: '10px', fontFamily: "'Space Mono', monospace", color: 'rgba(255,255,255,0.55)' }}>
+                AUTHENTIC CREATOR PROOF
+              </div>
             </div>
           </div>
-          <div style={{ width: '1px', height: '35px', backgroundColor: 'rgba(255,255,255,0.1)' }} />
-          <div>
-            <div
-              style={{
-                fontFamily: "'Bebas Neue', sans-serif",
-                fontSize: '32px',
-                color: '#A855F7',
-                letterSpacing: '1px',
-                lineHeight: '1',
-              }}
-            >
-              &lt; 0.05S
-            </div>
-            <div
-              style={{
-                fontSize: '11px',
-                fontFamily: "'Space Mono', monospace",
-                color: 'rgba(255,255,255,0.6)',
-              }}
-            >
-              AVERAGE FINALITY
+
+          <div style={{ width: '1px', height: '28px', backgroundColor: 'rgba(255,255,255,0.1)' }} />
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <Award size={18} color="#A855F7" />
+            <div style={{ textAlign: 'left' }}>
+              <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '18px', color: '#FFFFFF', letterSpacing: '0.8px' }}>
+                ZERO TRANSACTION FRICTION
+              </div>
+              <div style={{ fontSize: '10px', fontFamily: "'Space Mono', monospace", color: 'rgba(255,255,255,0.55)' }}>
+                RIALO NATIVE PROTOCOL
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* ======================================================== */}
-      {/* 3. SECTION: FIND YOUR NEXT PULL (Booster Packs Showcase) */}
+      {/* 3. SECTION: FIND YOUR NEXT PULL (Real Booster Packs)     */}
       {/* ======================================================== */}
       <section
         id="packs"
@@ -913,7 +701,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           position: 'relative',
           zIndex: 1,
           padding: '80px 24px',
-          maxWidth: '1240px',
+          maxWidth: '1260px',
           margin: '0 auto',
         }}
       >
@@ -922,7 +710,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             style={{
               fontFamily: "'Space Mono', monospace",
               fontSize: '12px',
-              color: '#F59E0B',
+              color: '#00F5FF',
               letterSpacing: '2px',
               fontWeight: 700,
               marginBottom: '8px',
@@ -949,16 +737,16 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               margin: '0 auto',
             }}
           >
-            Rip packs daily for free or synthesize advanced foil boosters using Shards earned in the
-            Arcade, Trollbox, and Social Missions.
+            Rip packs daily for free or earn advanced editions through The Forge, Daily Missions,
+            and Versus Arena triumphs.
           </p>
         </div>
 
-        {/* 4 Packs Grid */}
+        {/* 4 Packs Grid Featuring Real 3D Pack Artwork */}
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(270px, 1fr))',
             gap: '24px',
           }}
         >
@@ -967,17 +755,17 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               key={pack.id}
               onClick={() => handleButtonClick(() => onLaunchApp())}
               style={{
-                borderRadius: '20px',
+                borderRadius: '22px',
                 background: pack.accentBg,
                 border: `1px solid ${pack.borderColor}`,
-                padding: '28px 22px',
+                padding: '24px 20px',
                 cursor: 'pointer',
                 position: 'relative',
                 overflow: 'hidden',
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
-                minHeight: '420px',
+                minHeight: '460px',
                 transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
                 boxShadow: '0 15px 35px rgba(0, 0, 0, 0.6)',
               }}
@@ -992,7 +780,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 e.currentTarget.style.borderColor = pack.borderColor;
               }}
             >
-              {/* Top Tag */}
+              {/* Top Tag & Card Count */}
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span
                   style={{
@@ -1010,62 +798,41 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 </span>
                 <span
                   style={{
-                    fontSize: '12px',
+                    fontSize: '11px',
                     fontFamily: "'Space Mono', monospace",
                     color: 'rgba(255,255,255,0.7)',
                   }}
                 >
-                  {pack.cardsCount} CARDS
+                  {pack.cardsCount}
                 </span>
               </div>
 
-              {/* Center Pack Foil Graphic Mini-Representation */}
+              {/* Real 3D Booster Pack Image in Center */}
               <div
                 style={{
-                  margin: '30px auto',
-                  width: '120px',
-                  height: '170px',
+                  margin: '20px auto 16px',
+                  width: '140px',
+                  height: '210px',
                   borderRadius: '12px',
-                  background: '#070B0A',
-                  border: `2px solid ${pack.color}`,
-                  boxShadow: `0 0 25px ${pack.color}40`,
+                  overflow: 'hidden',
+                  boxShadow: `0 12px 30px rgba(0,0,0,0.7), 0 0 20px ${pack.color}40`,
+                  border: `1.5px solid ${pack.color}80`,
                   position: 'relative',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  padding: '10px',
-                  textAlign: 'center',
+                  transition: 'transform 0.3s ease',
                 }}
               >
-                {/* Mini emblem */}
-                <div
+                <img
+                  src={pack.packImage}
+                  alt={pack.name}
                   style={{
-                    width: '44px',
-                    height: '44px',
-                    borderRadius: '50%',
-                    background: `linear-gradient(135deg, ${pack.color} 0%, #000 100%)`,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    marginBottom: '8px',
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
                   }}
-                >
-                  <Sparkles size={20} color="#FFFFFF" />
-                </div>
-                <div
-                  style={{
-                    fontFamily: "'Bebas Neue', sans-serif",
-                    fontSize: '16px',
-                    color: '#FFFFFF',
-                    lineHeight: '1.1',
-                  }}
-                >
-                  {pack.name}
-                </div>
+                />
               </div>
 
-              {/* Bottom Details */}
+              {/* Bottom Pack Info */}
               <div>
                 <div
                   style={{
@@ -1081,20 +848,20 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 <div
                   style={{
                     fontFamily: "'Space Mono', monospace",
-                    fontSize: '12px',
+                    fontSize: '11px',
                     color: pack.color,
                     fontWeight: 700,
-                    marginBottom: '12px',
+                    marginBottom: '10px',
                   }}
                 >
-                  {pack.price}
+                  {pack.method}
                 </div>
                 <p
                   style={{
                     fontSize: '13px',
-                    color: 'rgba(255,255,255,0.6)',
+                    color: 'rgba(255,255,255,0.65)',
                     lineHeight: '1.5',
-                    marginBottom: '20px',
+                    marginBottom: '18px',
                     minHeight: '40px',
                   }}
                 >
@@ -1184,7 +951,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               margin: '0 auto',
             }}
           >
-            Real-time pulls permanently encapsulated into high-grade digital collector slabs. Every card
+            Verified pulls permanently encapsulated into high-grade digital collector slabs. Every card
             carries cryptographic proof-of-work.
           </p>
         </div>
@@ -1313,7 +1080,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                     background: 'linear-gradient(180deg, transparent 60%, rgba(10, 16, 14, 0.95) 100%)',
                   }}
                 />
-                {/* Rarity Badge Overlay */}
                 <div
                   style={{
                     position: 'absolute',
@@ -1333,7 +1099,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 </div>
               </div>
 
-              {/* Card Info & Owner */}
+              {/* Card Info */}
               <div style={{ padding: '14px 14px 18px' }}>
                 <div
                   style={{
@@ -1359,8 +1125,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                     marginBottom: '10px',
                   }}
                 >
-                  <span style={{ color: '#F59E0B' }}>{pull.pulledBy}</span>
-                  <span>{pull.time}</span>
+                  <span style={{ color: '#00F5FF' }}>{pull.edition}</span>
                 </div>
 
                 {/* Stars Rating */}
@@ -1641,7 +1406,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 height: '56px',
                 borderRadius: '16px',
                 backgroundColor: 'rgba(16, 185, 129, 0.15)',
-                border: '1px solid rgba(16, 185, 129, 0.4)',
+                border: '1px solid rgba(169, 221, 211, 0.4)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -1708,7 +1473,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       <div
         style={{
           width: '100%',
-          backgroundColor: '#F59E0B',
+          backgroundColor: '#00F5FF',
           color: '#040706',
           padding: '14px 0',
           overflow: 'hidden',
@@ -1718,7 +1483,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           fontFamily: "'Bebas Neue', sans-serif",
           fontSize: '22px',
           letterSpacing: '3px',
-          boxShadow: '0 0 35px rgba(245, 158, 11, 0.4)',
+          boxShadow: '0 0 35px rgba(0, 245, 255, 0.4)',
         }}
       >
         <div
@@ -1728,13 +1493,13 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           }}
         >
           ★ RIALO TRACE ★ SUB-SECOND FINALITY ★ ZERO-FRICTION CONSENSUS ★ RIP THE PACK ★ DOMINATE
-          THE ARENA ★ 10,000+ TPS ★ VERIFIED PROOF OF WORK ★ RIALO TRACE ★ SUB-SECOND FINALITY ★
-          ZERO-FRICTION CONSENSUS ★ RIP THE PACK ★ DOMINATE THE ARENA ★
+          THE ARENA ★ VERIFIED PROOF OF WORK ★ RIALO TRACE ★ SUB-SECOND FINALITY ★ ZERO-FRICTION
+          CONSENSUS ★ RIP THE PACK ★ DOMINATE THE ARENA ★
         </div>
       </div>
 
       {/* ======================================================== */}
-      {/* 7. SECTION: COMMUNITY & REALTIME SIGNALS                 */}
+      {/* 7. SECTION: COMMUNITY PULSE                              */}
       {/* ======================================================== */}
       <section
         id="community"
@@ -1778,177 +1543,76 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               margin: '0 auto',
             }}
           >
-            Join the creators, researchers, and alphas stress-testing Rialo Network every single day.
+            Join creators, researchers, and alphas stress-testing Rialo Network every single day.
           </p>
         </div>
 
-        {/* Split Showcase */}
+        {/* Live Ecosystem Pillars */}
         <div
           style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-            gap: '32px',
-            alignItems: 'center',
+            gap: '24px',
           }}
         >
-          {/* Left: Atmospheric Community Showcase Graphic */}
           <div
             style={{
-              borderRadius: '24px',
-              overflow: 'hidden',
-              position: 'relative',
-              height: '400px',
-              background: 'linear-gradient(135deg, #102A24 0%, #06110E 100%)',
-              border: '1px solid rgba(0, 245, 255, 0.3)',
-              boxShadow: '0 20px 50px rgba(0, 0, 0, 0.8)',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'flex-end',
-              padding: '32px',
+              padding: '28px 24px',
+              borderRadius: '20px',
+              backgroundColor: 'rgba(10, 16, 14, 0.85)',
+              border: '1px solid rgba(0, 245, 255, 0.2)',
             }}
           >
-            <div
-              style={{
-                position: 'absolute',
-                inset: 0,
-                backgroundImage: 'radial-gradient(circle at 70% 30%, rgba(0, 245, 255, 0.25) 0%, transparent 60%)',
-              }}
-            />
-            <div style={{ position: 'relative', zIndex: 2 }}>
-              <span
-                style={{
-                  fontSize: '11px',
-                  fontFamily: "'Space Mono', monospace",
-                  padding: '4px 10px',
-                  borderRadius: '6px',
-                  backgroundColor: 'rgba(0, 245, 255, 0.2)',
-                  color: '#00F5FF',
-                  fontWeight: 700,
-                }}
-              >
-                LIVE TROLLBOX CHAT
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
+              <RialoIcon size={20} color="#00F5FF" />
+              <span style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '22px', color: '#FFFFFF' }}>
+                REALTIME TROLLBOX CHAT
               </span>
-              <h3
-                style={{
-                  fontFamily: "'Bebas Neue', sans-serif",
-                  fontSize: '36px',
-                  letterSpacing: '1px',
-                  color: '#FFFFFF',
-                  margin: '14px 0 8px 0',
-                }}
-              >
-                UNFILTERED ALPHA SIGNALS
-              </h3>
-              <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '14px', lineHeight: '1.5', margin: 0 }}>
-                Chat in real-time with verified creators, cheer on Versus battles, and tip Shards
-                directly in the live Trollbox.
-              </p>
             </div>
+            <p style={{ fontSize: '14px', color: 'rgba(255,255,255,0.65)', lineHeight: '1.6', margin: 0 }}>
+              Live peer-to-peer chat room powered by Supabase Realtime. Tip Shards, challenge creators to
+              Versus battles, and share alpha signals without leaving the terminal.
+            </p>
           </div>
 
-          {/* Right: Testimonial & Quote Feed Cards */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <div
-              style={{
-                padding: '22px 24px',
-                borderRadius: '18px',
-                backgroundColor: 'rgba(10, 16, 14, 0.8)',
-                border: '1px solid rgba(169, 221, 211, 0.15)',
-              }}
-            >
-              <p
-                style={{
-                  fontSize: '14px',
-                  color: '#FFFFFF',
-                  lineHeight: '1.6',
-                  margin: '0 0 14px 0',
-                  fontStyle: 'italic',
-                }}
-              >
-                &ldquo;RialoTrace is literally the smoothest dApp on Rialo testnet right now. Ripping
-                packs and flexing my graded slabs on Twitter got me 50k impressions in 2 days.&rdquo;
-              </p>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <div
-                  style={{
-                    width: '32px',
-                    height: '32px',
-                    borderRadius: '50%',
-                    background: 'linear-gradient(135deg, #00F5FF, #3B82F6)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '12px',
-                    fontWeight: 800,
-                  }}
-                >
-                  YN
-                </div>
-                <div>
-                  <div style={{ fontSize: '13px', fontWeight: 700, color: '#FFFFFF' }}>Nahian</div>
-                  <div
-                    style={{
-                      fontSize: '11px',
-                      color: '#00F5FF',
-                      fontFamily: "'Space Mono', monospace",
-                    }}
-                  >
-                    @yournahian • Genesis Vanguard
-                  </div>
-                </div>
-              </div>
+          <div
+            style={{
+              padding: '28px 24px',
+              borderRadius: '20px',
+              backgroundColor: 'rgba(10, 16, 14, 0.85)',
+              border: '1px solid rgba(245, 158, 11, 0.2)',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
+              <TrendingUp size={20} color="#F59E0B" />
+              <span style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '22px', color: '#FFFFFF' }}>
+                DYNAMIC PERCENTILE RANKING
+              </span>
             </div>
+            <p style={{ fontSize: '14px', color: 'rgba(255,255,255,0.65)', lineHeight: '1.6', margin: 0 }}>
+              Calculates dynamic percentile thresholds from the top creators down to novices. Real-time
+              leaderboard refresh ensures transparent, verifiable performance.
+            </p>
+          </div>
 
-            <div
-              style={{
-                padding: '22px 24px',
-                borderRadius: '18px',
-                backgroundColor: 'rgba(10, 16, 14, 0.8)',
-                border: '1px solid rgba(169, 221, 211, 0.15)',
-              }}
-            >
-              <p
-                style={{
-                  fontSize: '14px',
-                  color: '#FFFFFF',
-                  lineHeight: '1.6',
-                  margin: '0 0 14px 0',
-                  fontStyle: 'italic',
-                }}
-              >
-                &ldquo;Sub-second finality makes pack opening feel instant. The Versus Arena is addictive
-                as hell. Best community analytics in crypto.&rdquo;
-              </p>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <div
-                  style={{
-                    width: '32px',
-                    height: '32px',
-                    borderRadius: '50%',
-                    background: 'linear-gradient(135deg, #F59E0B, #EC4899)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '12px',
-                    fontWeight: 800,
-                  }}
-                >
-                  SK
-                </div>
-                <div>
-                  <div style={{ fontSize: '13px', fontWeight: 700, color: '#FFFFFF' }}>SolKrypto</div>
-                  <div
-                    style={{
-                      fontSize: '11px',
-                      color: '#F59E0B',
-                      fontFamily: "'Space Mono', monospace",
-                    }}
-                  >
-                    @sol_crypto • Top 5 Overlord
-                  </div>
-                </div>
-              </div>
+          <div
+            style={{
+              padding: '28px 24px',
+              borderRadius: '20px',
+              backgroundColor: 'rgba(10, 16, 14, 0.85)',
+              border: '1px solid rgba(16, 185, 129, 0.2)',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <Award size={20} color="#10B981" />
+              <span style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '22px', color: '#FFFFFF' }}>
+                CRYO STREAK VAULT
+              </span>
             </div>
+            <p style={{ fontSize: '14px', color: 'rgba(255,255,255,0.65)', lineHeight: '1.6', margin: '12px 0 0' }}>
+              Maintain daily login and engagement streaks to earn Shards, unlock exclusive titles, and
+              synthesize rare cards in The Forge.
+            </p>
           </div>
         </div>
       </section>
@@ -2011,7 +1675,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               }}
             >
               Every badge, streak, card, and viral score you achieve is bound to your profile.
-              Whether you are an aspiring crypto researcher or an established tier-1 creator,
+              Whether you are an aspiring crypto researcher or an established creator,
               RialoTrace immortalizes your journey with zero gas friction.
             </p>
             <button
@@ -2131,8 +1795,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                   ZERO-FRICTION SUB-SECOND SPEED
                 </h4>
                 <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '13px', lineHeight: '1.5', margin: 0 }}>
-                  Transactions and claims settle in under 50ms. No waiting around, no heavy gas fee
-                  surprises.
+                  Claims and trades execute with sub-second finality. No waiting, no unpredictable gas
+                  fees.
                 </p>
               </div>
             </div>
@@ -2196,7 +1860,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           overflow: 'hidden',
         }}
       >
-        {/* Split Foil Pack Graphic & Ray Burst in Background */}
         <div
           style={{
             position: 'absolute',
@@ -2205,7 +1868,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             transform: 'translate(-50%, -50%)',
             width: '700px',
             height: '500px',
-            background: 'radial-gradient(circle, rgba(245, 158, 11, 0.22) 0%, rgba(0, 245, 255, 0.1) 40%, transparent 70%)',
+            background: 'radial-gradient(circle, rgba(0, 245, 255, 0.2) 0%, rgba(16, 185, 129, 0.1) 40%, transparent 70%)',
             filter: 'blur(70px)',
             pointerEvents: 'none',
             zIndex: 0,
@@ -2217,7 +1880,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             style={{
               fontFamily: "'Space Mono', monospace",
               fontSize: '12px',
-              color: '#F59E0B',
+              color: '#00F5FF',
               letterSpacing: '3px',
               fontWeight: 700,
               marginBottom: '12px',
@@ -2234,12 +1897,12 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               margin: '0 0 16px 0',
               lineHeight: '0.95',
               color: '#FFFFFF',
-              textShadow: '0 0 40px rgba(245, 158, 11, 0.4)',
+              textShadow: '0 0 40px rgba(0, 245, 255, 0.4)',
             }}
           >
             YOUR NEXT PULL
             <br />
-            <span style={{ color: '#F59E0B' }}>IS WAITING.</span>
+            <span style={{ color: '#00F5FF' }}>IS WAITING.</span>
           </h2>
 
           <p
@@ -2250,8 +1913,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               margin: '0 auto 36px',
             }}
           >
-            Join over 1,400+ creators on Rialo Network. Connect your X handle in 5 seconds and open
-            your first 3-card Genesis Booster Pack right now.
+            Connect your X handle in 5 seconds and open your daily 3-card Genesis Booster Pack right
+            now on Rialo Network.
           </p>
 
           <button
@@ -2260,14 +1923,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             style={{
               padding: '18px 48px',
               borderRadius: '9999px',
-              background: 'linear-gradient(135deg, #F59E0B 0%, #D97706 50%, #B45309 100%)',
+              background: 'linear-gradient(135deg, #00F5FF 0%, #0284C7 50%, #0369A1 100%)',
               border: '2px solid rgba(255, 255, 255, 0.4)',
               color: '#040706',
               fontFamily: "'Bebas Neue', sans-serif",
               fontSize: '26px',
               letterSpacing: '1.5px',
               cursor: 'pointer',
-              boxShadow: '0 0 50px rgba(245, 158, 11, 0.6), inset 0 2px 8px rgba(255,255,255,0.4)',
+              boxShadow: '0 0 50px rgba(0, 245, 255, 0.6), inset 0 2px 8px rgba(255,255,255,0.4)',
               display: 'inline-flex',
               alignItems: 'center',
               gap: '12px',
@@ -2275,11 +1938,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = 'scale(1.06)';
-              e.currentTarget.style.boxShadow = '0 0 75px rgba(245, 158, 11, 0.9)';
+              e.currentTarget.style.boxShadow = '0 0 75px rgba(0, 245, 255, 0.9)';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.transform = 'scale(1)';
-              e.currentTarget.style.boxShadow = '0 0 50px rgba(245, 158, 11, 0.6)';
+              e.currentTarget.style.boxShadow = '0 0 50px rgba(0, 245, 255, 0.6)';
             }}
           >
             <Sparkles size={26} color="#040706" />
@@ -2290,7 +1953,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       </section>
 
       {/* ======================================================== */}
-      {/* 10. LUXURY DARK FOOTER                                   */}
+      {/* 10. LUXURY DARK FOOTER WITH OFFICIAL RIALO LOGO          */}
       {/* ======================================================== */}
       <footer
         style={{
@@ -2313,31 +1976,33 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             marginBottom: '50px',
           }}
         >
-          {/* Brand Info */}
+          {/* Brand Info with Official Rialo Glyph */}
           <div style={{ maxWidth: '360px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '14px' }}>
               <div
                 style={{
-                  width: '32px',
-                  height: '32px',
+                  width: '34px',
+                  height: '34px',
                   borderRadius: '8px',
-                  background: 'linear-gradient(135deg, #00F5FF, #10B981)',
+                  background: 'rgba(6, 16, 14, 0.95)',
+                  border: '1.5px solid rgba(0, 245, 255, 0.4)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
+                  boxShadow: '0 0 15px rgba(0, 245, 255, 0.25)',
                 }}
               >
-                <Sparkles size={16} color="#040706" />
+                <RialoIcon size={22} color="#00F5FF" />
               </div>
               <span
                 style={{
-                  fontFamily: "'Bebas Neue', sans-serif",
+                  fontWeight: 900,
                   fontSize: '22px',
-                  letterSpacing: '1px',
+                  letterSpacing: '-0.02em',
                   color: '#FFFFFF',
                 }}
               >
-                RIALO<span style={{ color: '#00F5FF' }}>TRACE</span>
+                Rialo<span style={{ color: '#00F5FF' }}>Trace</span>
               </span>
             </div>
             <p
@@ -2349,7 +2014,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               }}
             >
               The sovereign social analytics terminal and gamified digital collector layer for Rialo
-              Network. Engineered for near-instant finality and zero transaction friction.
+              Network. Engineered for sub-second finality and zero transaction friction.
             </p>
           </div>
 
@@ -2426,9 +2091,17 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                   letterSpacing: '1px',
                 }}
               >
-                NETWORK
+                OFFICIAL RIALO
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '13px' }}>
+                <a
+                  href="https://www.rialo.io/brand-assets"
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none' }}
+                >
+                  Brand Assets ↗
+                </a>
                 <a
                   href="https://rialo.io"
                   target="_blank"
@@ -2486,7 +2159,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 boxShadow: '0 0 8px #10B981',
               }}
             />
-            <span>RIALO TESTNET V1.0 CONNECTED</span>
+            <span>RIALO TESTNET CONNECTED</span>
           </div>
         </div>
       </footer>

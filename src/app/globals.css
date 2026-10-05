@@ -2249,15 +2249,19 @@ body {
 
 /* Card Back */
 .monad-card-back {
-  background: radial-gradient(circle at 50% 50%, rgba(169, 221, 211, 0.08) 0%, #010101 80%);
-  border: 1px solid rgba(169, 221, 211, 0.25);
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  text-align: center;
+  background: #040706 url('/rialo-card-back.png') center / cover no-repeat !important;
+  border: 2px solid rgba(0, 245, 255, 0.5) !important;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.9), 0 0 35px rgba(0, 245, 255, 0.35) !important;
   transform: rotateY(180deg);
+  border-radius: inherit;
+  overflow: hidden;
+  position: relative;
+}
+
+.monad-card-back .monad-back-header,
+.monad-card-back .monad-back-center-logo,
+.monad-card-back .monad-back-circuit-footer {
+  display: none !important;
 }
 
 .monad-back-header {
