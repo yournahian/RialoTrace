@@ -1,4 +1,7 @@
 'use client';
+
+import { LandingPage } from '@/components/LandingPage';
+
 import { sound } from '@/lib/soundFx';
 
 import React, { useState, useEffect } from 'react';
@@ -30,6 +33,7 @@ import { MobileAppRoot } from '@/components/mobile/MobileAppRoot';
 import { User, Menu } from 'lucide-react';
 
 export default function HomePage() {
+  const [viewMode, setViewMode] = useState<'landing' | 'app'>('landing');
   const [activeTab, setActiveTab] = useState<TabType>('proof');
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
 
@@ -74,15 +78,21 @@ export default function HomePage() {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const activeUser = localStorage.getItem('rialo_active_user');
+      const savedViewMode = localStorage.getItem('rialo_view_mode') as 'landing' | 'app';
       if (activeUser && activeUser.trim()) {
         setCurrentUsername(activeUser.trim());
         fetchUserData(activeUser.trim());
         setIsOnboardingOpen(false);
+        if (savedViewMode === 'landing') {
+          setViewMode('landing');
+        } else {
+          setViewMode('app');
+        }
       } else {
-        // Mandatory Entry Gate: first-time visitors / unauthenticated users must enter handle first!
+        // First-time visitors: showcase the majestic Landing Page!
         setCurrentUsername('');
         setCurrentUser(null);
-        setIsOnboardingOpen(true);
+        setViewMode('landing');
       }
       const savedAvatar = localStorage.getItem('rialo_user_avatar');
       if (savedAvatar) setHeaderAvatarUrl(savedAvatar);
@@ -140,6 +150,44 @@ export default function HomePage() {
     handleSelectTab('cards');
   };
 
+  if (viewMode === 'landing') {
+    return (
+      <div className="app-viewport">
+        <LandingPage
+          currentUsername={currentUsername}
+          onLaunchApp={() => {
+            setViewMode('app');
+            if (typeof window !== 'undefined') {
+              localStorage.setItem('rialo_view_mode', 'app');
+            }
+            if (!currentUsername) {
+              setIsOnboardingOpen(true);
+            }
+          }}
+          onExploreSection={(tab) => {
+            setViewMode('app');
+            if (typeof window !== 'undefined') {
+              localStorage.setItem('rialo_view_mode', 'app');
+            }
+            handleSelectTab(tab as TabType);
+            if (!currentUsername) {
+              setIsOnboardingOpen(true);
+            }
+          }}
+        />
+        <OnboardingModal
+          isOpen={isOnboardingOpen}
+          onClose={() => setIsOnboardingOpen(false)}
+          onSuccess={handleOnboardingSuccess}
+        />
+        <FollowGate
+          isOpen={isFollowGateOpen}
+          onClose={() => setIsFollowGateOpen(false)}
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="app-viewport">
       <FollowGate
@@ -153,19 +201,66 @@ export default function HomePage() {
           ======================================================== */}
       <div className="desktop-engine-root">
         <header className="app-header">
-        <div className="brand-link">
+        <div className="brand-link" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <div
             className="brand-badge"
+            onClick={() => {
+              sound.playTap();
+              setViewMode('landing');
+              if (typeof window !== 'undefined') {
+                localStorage.setItem('rialo_view_mode', 'landing');
+              }
+            }}
             style={{
               padding: '6px 16px',
               gap: '0px',
               display: 'inline-flex',
               alignItems: 'center',
+              cursor: 'pointer',
             }}
+            title="View Landing Page"
           >
             <span style={{ fontWeight: 800, fontSize: '19px', color: '#FFFFFF', letterSpacing: '-0.02em' }}>Rialo</span>
             <span style={{ fontWeight: 800, fontSize: '19px', color: 'var(--rialo-accent)', letterSpacing: '-0.02em', marginLeft: '1px' }}>Trace</span>
           </div>
+
+          <button
+            type="button"
+            onClick={() => {
+              sound.playTap();
+              setViewMode('landing');
+              if (typeof window !== 'undefined') {
+                localStorage.setItem('rialo_view_mode', 'landing');
+              }
+            }}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '4px 12px',
+              borderRadius: '9999px',
+              backgroundColor: 'rgba(255, 255, 255, 0.05)',
+              border: '1px solid rgba(0, 245, 255, 0.25)',
+              color: '#00F5FF',
+              fontFamily: 'var(--font-mono)',
+              fontSize: '11px',
+              fontWeight: 700,
+              cursor: 'pointer',
+              transition: 'all 0.2s',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = 'rgba(0, 245, 255, 0.15)';
+              e.currentTarget.style.borderColor = '#00F5FF';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.05)';
+              e.currentTarget.style.borderColor = 'rgba(0, 245, 255, 0.25)';
+            }}
+            title="Return to Landing Showcase"
+          >
+            <span>🌐</span>
+            <span>LANDING</span>
+          </button>
         </div>
 
         <div className="header-right" style={{ position: 'relative', display: 'flex', alignItems: 'center', gap: '10px' }}>
