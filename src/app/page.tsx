@@ -224,43 +224,7 @@ export default function HomePage() {
             <span style={{ fontWeight: 800, fontSize: '19px', color: '#A9DDD3', letterSpacing: '-0.02em', marginLeft: '1px' }}>Trace</span>
           </div>
 
-          <button
-            type="button"
-            onClick={() => {
-              sound.playTap();
-              setViewMode('landing');
-              if (typeof window !== 'undefined') {
-                localStorage.setItem('rialo_view_mode', 'landing');
-              }
-            }}
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '6px',
-              padding: '4px 12px',
-              borderRadius: '9999px',
-              backgroundColor: 'rgba(255, 255, 255, 0.05)',
-              border: '1px solid rgba(169, 221, 211, 0.3)',
-              color: '#A9DDD3',
-              fontFamily: 'var(--font-mono)',
-              fontSize: '11px',
-              fontWeight: 700,
-              cursor: 'pointer',
-              transition: 'all 0.2s',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = 'rgba(169, 221, 211, 0.15)';
-              e.currentTarget.style.borderColor = '#A9DDD3';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.05)';
-              e.currentTarget.style.borderColor = 'rgba(169, 221, 211, 0.3)';
-            }}
-            title="Return to Landing Showcase"
-          >
-            <span>🌐</span>
-            <span>LANDING</span>
-          </button>
+
         </div>
 
         <div className="header-right" style={{ position: 'relative', display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -433,6 +397,39 @@ export default function HomePage() {
                   >
                     <span>🔄</span>
                     <span>Switch Account</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      sound.playTap();
+                      setIsProfileMenuOpen(false);
+                      setViewMode('landing');
+                      if (typeof window !== 'undefined') {
+                        localStorage.setItem('rialo_view_mode', 'landing');
+                      }
+                    }}
+                    style={{
+                      width: '100%',
+                      padding: '10px 12px',
+                      borderRadius: '10px',
+                      background: 'transparent',
+                      border: 'none',
+                      color: '#A9DDD3',
+                      fontSize: '12px',
+                      fontWeight: 700,
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      cursor: 'pointer',
+                      textAlign: 'left',
+                      transition: 'all 0.15s ease',
+                    }}
+                    onMouseEnter={(e) => (e.currentTarget.style.background = 'rgba(169, 221, 211, 0.12)')}
+                    onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
+                  >
+                    <span>🪐</span>
+                    <span>Return to Landing Page</span>
                   </button>
 
                   <div style={{ height: '1px', background: 'rgba(255, 255, 255, 0.08)', margin: '4px 0' }} />

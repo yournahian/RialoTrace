@@ -458,7 +458,7 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onSelectTa
   const activeBroadcast = broadcasts.find((b) => !dismissedBroadcasts[b.id]);
 
   return (
-    <div style={{ maxWidth: '100%', width: '100%', margin: '0 auto', padding: '16px 8px 60px 8px', boxSizing: 'border-box', overflowX: 'hidden' }}>
+    <div style={{ maxWidth: '1160px', width: '100%', margin: '0 auto', padding: '16px 8px 60px 8px', boxSizing: 'border-box', overflowX: 'hidden' }}>
       {/* ========================================================
           USER IDENTITY PROFILE CARD (OFFICIAL BRAND THEME)
           ======================================================== */}
@@ -573,7 +573,7 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onSelectTa
           </div>
 
           {/* Quick Action Shortcuts: Row 1 = Switch Account + Sign Out, Row 2 = Completed Missions (100% full width single line) */}
-          <div className="profile-actions-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', width: '100%', marginTop: '12px' }}>
+          <div className="profile-actions-grid">
             {onSwitchAccount && (
               <button
                 type="button"

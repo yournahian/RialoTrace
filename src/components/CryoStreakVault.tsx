@@ -21,16 +21,39 @@ const STREAK_DAYS = [
 ];
 
 export const CryoStreakVault: React.FC<CryoStreakVaultProps> = ({ user, onUserUpdate }) => {
-  const [streakDay, setStreakDay] = useState<number>(1);
-  const [canClaim, setCanClaim] = useState<boolean>(true);
-  const [claiming, setClaiming] = useState<boolean>(false);
-  const [claimedReward, setClaimedReward] = useState<any | null>(null);
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
-
   const getLocalDateStr = () => {
     const d = new Date();
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   };
+
+  const cleanUsername = user?.username ? user.username.toLowerCase().replace('@', '').trim() : '';
+
+  // Synchronous instant initialization from localStorage or user prop to prevent 1-2s flash
+  const [streakDay, setStreakDay] = useState<number>(() => {
+    if (typeof window !== 'undefined' && cleanUsername) {
+      const cached = localStorage.getItem(`rialo_streak_day_${cleanUsername}`);
+      if (cached) return parseInt(cached, 10);
+    }
+    return user?.streakDays || 1;
+  });
+
+  const [canClaim, setCanClaim] = useState<boolean>(() => {
+    const today = getLocalDateStr();
+    if (typeof window !== 'undefined' && cleanUsername) {
+      const cachedDate = localStorage.getItem(`rialo_streak_claimed_date_${cleanUsername}`);
+      if (cachedDate === today) return false;
+    }
+    if (user?.lastClaimDate) {
+      return user.lastClaimDate !== today;
+    }
+    // Prevent premature "CLAIM" flash on fresh load until verified
+    return false;
+  });
+
+  const [hasVerifiedStatus, setHasVerifiedStatus] = useState<boolean>(false);
+  const [claiming, setClaiming] = useState<boolean>(false);
+  const [claimedReward, setClaimedReward] = useState<any | null>(null);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const fetchStreakStatus = async () => {
     if (!user?.username) return;
@@ -39,16 +62,36 @@ export const CryoStreakVault: React.FC<CryoStreakVaultProps> = ({ user, onUserUp
       const res = await fetch(`/api/arcade?username=${encodeURIComponent(user.username)}&date=${encodeURIComponent(clientDate)}`);
       const data = await res.json();
       if (data.success) {
-        setStreakDay(data.streakDay || 1);
-        setCanClaim(data.canClaimStreak);
+        const nextDay = data.streakDay || 1;
+        const claimable = Boolean(data.canClaimStreak);
+        setStreakDay(nextDay);
+        setCanClaim(claimable);
+        setHasVerifiedStatus(true);
+
+        if (typeof window !== 'undefined' && cleanUsername) {
+          localStorage.setItem(`rialo_streak_day_${cleanUsername}`, String(nextDay));
+          if (!claimable) {
+            localStorage.setItem(`rialo_streak_claimed_date_${cleanUsername}`, clientDate);
+          } else {
+            localStorage.removeItem(`rialo_streak_claimed_date_${cleanUsername}`);
+          }
+        }
       }
     } catch (e) {
       console.error(e);
+      setHasVerifiedStatus(true);
     }
   };
 
   useEffect(() => {
-    fetchStreakStatus();
+    if (cleanUsername) {
+      const today = getLocalDateStr();
+      const cachedDate = typeof window !== 'undefined' ? localStorage.getItem(`rialo_streak_claimed_date_${cleanUsername}`) : null;
+      if (cachedDate === today) {
+        setCanClaim(false);
+      }
+      fetchStreakStatus();
+    }
   }, [user?.username]);
 
   const handleClaimStreak = async () => {
@@ -79,6 +122,10 @@ export const CryoStreakVault: React.FC<CryoStreakVaultProps> = ({ user, onUserUp
       setClaimedReward(data.reward);
       setCanClaim(false);
       setStreakDay(data.nextDay);
+      if (typeof window !== 'undefined' && cleanUsername) {
+        localStorage.setItem(`rialo_streak_day_${cleanUsername}`, String(data.nextDay));
+        localStorage.setItem(`rialo_streak_claimed_date_${cleanUsername}`, clientDate);
+      }
       sound.playJackpot();
 
       if (data.user && onUserUpdate) {

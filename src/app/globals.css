@@ -4961,20 +4961,69 @@ body {
   }
 }
 
-/* Rialo Radar 2-top-1-centered special layout */
+/* Rialo Radar Roadmap & CTAs: Desktop PC = 1 horizontal line, Mobile = 2-top-1-centered special layout */
 .roadmap-stages-grid-special {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
   width: 100%;
-  max-width: 580px;
-  margin: 14px auto 0 auto;
+  max-width: 780px;
+  margin: 20px auto 0 auto;
 }
 
 .roadmap-stages-grid-special .stage-centered-row {
-  grid-column: 1 / span 2;
-  width: calc(50% - 6px);
-  margin: 0 auto;
+  grid-column: auto;
+  width: 100%;
+  margin: 0;
+}
+
+.playground-cta-grid-special {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  width: 100%;
+  max-width: 780px;
+  margin: 18px auto 0 auto;
+  flex-wrap: wrap;
+}
+
+.playground-cta-grid-special .cta-centered-row {
+  grid-column: auto;
+  width: auto;
+  margin: 0;
+}
+
+/* Mobile responsive layout for Radar (2-top-1-centered) */
+@media (max-width: 768px) {
+  .roadmap-stages-grid-special {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    max-width: 580px;
+    margin: 14px auto 0 auto;
+  }
+
+  .roadmap-stages-grid-special .stage-centered-row {
+    grid-column: 1 / span 2;
+    width: calc(50% - 6px);
+    margin: 0 auto;
+  }
+
+  .playground-cta-grid-special {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    max-width: 580px;
+    margin: 16px auto 0 auto;
+  }
+
+  .playground-cta-grid-special .cta-centered-row {
+    grid-column: 1 / span 2;
+    width: fit-content;
+    min-width: 180px;
+    margin: 0 auto;
+  }
 }
 
 @media (max-width: 540px) {
@@ -4983,20 +5032,39 @@ body {
   }
 }
 
-.playground-cta-grid-special {
+/* Profile Section Stats & Actions Grid: Desktop PC = 4 columns, Mobile = 2 columns */
+.profile-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  width: 100%;
+  margin-top: 18px;
+}
+
+.profile-actions-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
   width: 100%;
-  max-width: 580px;
-  margin: 16px auto 0 auto;
+  max-width: 520px;
+  margin-top: 14px;
 }
 
-.playground-cta-grid-special .cta-centered-row {
-  grid-column: 1 / span 2;
-  width: fit-content;
-  min-width: 180px;
-  margin: 0 auto;
+@media (max-width: 768px) {
+  .profile-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .profile-actions-grid {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .profile-stats-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .versus-vs-icon.is-battling {
