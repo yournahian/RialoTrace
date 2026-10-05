@@ -220,8 +220,8 @@ export default function HomePage() {
             }}
             title="View Landing Page"
           >
-            <span style={{ fontWeight: 800, fontSize: '19px', color: '#FFFFFF', letterSpacing: '-0.02em' }}>Rialo</span>
-            <span style={{ fontWeight: 800, fontSize: '19px', color: 'var(--rialo-accent)', letterSpacing: '-0.02em', marginLeft: '1px' }}>Trace</span>
+            <span style={{ fontWeight: 800, fontSize: '19px', color: '#E8E3D5', letterSpacing: '-0.02em' }}>Rialo</span>
+            <span style={{ fontWeight: 800, fontSize: '19px', color: '#A9DDD3', letterSpacing: '-0.02em', marginLeft: '1px' }}>Trace</span>
           </div>
 
           <button
@@ -240,8 +240,8 @@ export default function HomePage() {
               padding: '4px 12px',
               borderRadius: '9999px',
               backgroundColor: 'rgba(255, 255, 255, 0.05)',
-              border: '1px solid rgba(0, 245, 255, 0.25)',
-              color: '#00F5FF',
+              border: '1px solid rgba(169, 221, 211, 0.3)',
+              color: '#A9DDD3',
               fontFamily: 'var(--font-mono)',
               fontSize: '11px',
               fontWeight: 700,
@@ -249,12 +249,12 @@ export default function HomePage() {
               transition: 'all 0.2s',
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = 'rgba(0, 245, 255, 0.15)';
-              e.currentTarget.style.borderColor = '#00F5FF';
+              e.currentTarget.style.backgroundColor = 'rgba(169, 221, 211, 0.15)';
+              e.currentTarget.style.borderColor = '#A9DDD3';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.05)';
-              e.currentTarget.style.borderColor = 'rgba(0, 245, 255, 0.25)';
+              e.currentTarget.style.borderColor = 'rgba(169, 221, 211, 0.3)';
             }}
             title="Return to Landing Showcase"
           >

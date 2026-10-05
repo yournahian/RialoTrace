@@ -198,7 +198,7 @@ export const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ fontWeight: 800, fontSize: '18px', color: '#FFFFFF', letterSpacing: '-0.02em' }}>
+            <span style={{ fontWeight: 800, fontSize: '18px', color: '#E8E3D5', letterSpacing: '-0.02em' }}>
               Rialo<span style={{ color: '#A9DDD3' }}>Trace</span>
             </span>
             <span

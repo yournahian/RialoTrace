@@ -40,7 +40,7 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
         boxSizing: 'border-box',
       }}
     >
-      {/* Brand Logo */}
+      {/* Brand Word Mark Only (No Logo Icon) */}
       <div
         onClick={() => {
           sound.playTap();
@@ -48,31 +48,13 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
         }}
         style={{
           display: 'flex',
-          alignItems: 'center',
-          gap: '8px',
+          alignItems: 'baseline',
           cursor: 'pointer',
         }}
       >
-        <div
-          style={{
-            width: '28px',
-            height: '28px',
-            borderRadius: '8px',
-            background: 'linear-gradient(135deg, rgba(169, 221, 211, 0.25) 0%, rgba(169, 221, 211, 0.05) 100%)',
-            border: '1.5px solid #A9DDD3',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            boxShadow: '0 0 12px rgba(169, 221, 211, 0.35)',
-          }}
-        >
-          <span style={{ fontWeight: 900, fontSize: '14px', color: '#A9DDD3' }}>R</span>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'baseline' }}>
-          <span style={{ fontWeight: 900, fontSize: '16.5px', color: '#FFFFFF', letterSpacing: '-0.02em' }}>
-            Rialo<span style={{ color: '#A9DDD3' }}>Trace</span>
-          </span>
-        </div>
+        <span style={{ fontWeight: 900, fontSize: '18px', color: '#E8E3D5', letterSpacing: '-0.02em' }}>
+          Rialo<span style={{ color: '#A9DDD3' }}>Trace</span>
+        </span>
       </div>
 
       {/* Right Controls */}

@@ -12,7 +12,7 @@ import {
   TrendingUp,
   Star,
 } from 'lucide-react';
-import { RialoIcon } from './RialoLogo';
+// Logo import removed for pure word mark typography
 import { sound } from '@/lib/soundFx';
 
 /**
@@ -226,23 +226,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           justifyContent: 'space-between',
         }}
       >
-        {/* Official Rialo Brand Kit Logo */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <div
-            style={{
-              width: '38px',
-              height: '38px',
-              borderRadius: '10px',
-              background: '#010101',
-              border: '1.5px solid rgba(169, 221, 211, 0.5)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              boxShadow: '0 0 20px rgba(169, 221, 211, 0.25)',
-            }}
-          >
-            <RialoIcon size={24} color="#A9DDD3" />
-          </div>
+        {/* Rialo Trace Word Mark Only (No Logo) */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <span
               style={{
@@ -1545,7 +1530,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
-              <RialoIcon size={20} color="#A9DDD3" />
+              <Sparkles size={20} color="#A9DDD3" />
               <span style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '22px', color: '#E8E3D5' }}>
                 REALTIME TROLLBOX CHAT
               </span>
@@ -1957,28 +1942,13 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             marginBottom: '50px',
           }}
         >
-          {/* Brand Info with Official Rialo Glyph */}
+          {/* Brand Info - Word Mark Only (No Logo) */}
           <div style={{ maxWidth: '360px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '14px' }}>
-              <div
-                style={{
-                  width: '34px',
-                  height: '34px',
-                  borderRadius: '8px',
-                  background: '#010101',
-                  border: '1.5px solid rgba(169, 221, 211, 0.4)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  boxShadow: '0 0 15px rgba(169, 221, 211, 0.2)',
-                }}
-              >
-                <RialoIcon size={22} color="#A9DDD3" />
-              </div>
+            <div style={{ marginBottom: '14px' }}>
               <span
                 style={{
                   fontWeight: 900,
-                  fontSize: '22px',
+                  fontSize: '24px',
                   letterSpacing: '-0.02em',
                   color: '#E8E3D5',
                 }}
