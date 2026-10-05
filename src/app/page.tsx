@@ -128,6 +128,8 @@ export default function HomePage() {
         localStorage.setItem('rialo_recommended_handles', JSON.stringify(updated));
       } catch (e) {}
     }
+    const savedAvatar = typeof window !== 'undefined' ? localStorage.getItem('rialo_user_avatar') : null;
+    if (savedAvatar) setHeaderAvatarUrl(savedAvatar);
     fetchUserData(user.username);
 
     // After entering X handle -> show the screen to follow @yournahin on X!
