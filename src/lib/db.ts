@@ -440,6 +440,64 @@ export async function completeBroadcastMission(
   return { success: true, user: savedUser, broadcast };
 }
 
+export async function dismissBroadcastEvent(
+  username: string,
+  broadcastId: string
+): Promise<{ success: boolean; user?: UserProfile }> {
+  const cleanUsername = username.replace('@', '').trim().toLowerCase();
+  if (!cleanUsername || !broadcastId) return { success: false };
+
+  // 1. Update broadcasts.completed_by in Supabase
+  try {
+    const { data: bcast } = await supabase
+      .from('broadcasts')
+      .select('id, completed_by')
+      .eq('id', broadcastId)
+      .single();
+
+    if (bcast) {
+      const list: string[] = Array.isArray(bcast.completed_by) ? [...bcast.completed_by] : [];
+      if (!list.includes(cleanUsername)) {
+        list.push(cleanUsername);
+        await supabase
+          .from('broadcasts')
+          .update({ completed_by: list })
+          .eq('id', broadcastId);
+      }
+    }
+  } catch (err) {
+    console.error('Error updating broadcast completed_by:', err);
+  }
+
+  // 2. Persist to user.completedMissions in Supabase
+  let savedUser: UserProfile | undefined;
+  try {
+    const user = await getUser(cleanUsername);
+    if (user) {
+      let changed = false;
+      if (!user.completedMissions.includes(broadcastId)) {
+        user.completedMissions.push(broadcastId);
+        changed = true;
+      }
+      const marker = `dismissed_${broadcastId}`;
+      if (!user.completedMissions.includes(marker)) {
+        user.completedMissions.push(marker);
+        changed = true;
+      }
+      if (changed) {
+        user.updatedAt = new Date().toISOString();
+        savedUser = await saveUser(user);
+      } else {
+        savedUser = user;
+      }
+    }
+  } catch (err) {
+    console.error('Error saving dismissal to user profile:', err);
+  }
+
+  return { success: true, user: savedUser };
+}
+
 // ─── GIFT LOGS ────────────────────────────────────────────────────────────────
 
 export async function getGiftLogs(): Promise<GiftCardLog[]> {

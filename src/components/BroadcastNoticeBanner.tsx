@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Radio, X, CheckCircle2, MessageSquare, Gift, Sparkles } from 'lucide-react';
+import { Radio, X, CheckCircle2, MessageSquare, Gift, Sparkles, CheckCheck } from 'lucide-react';
 import { BroadcastEvent, UserProfile } from '@/lib/types';
 import { sound } from '@/lib/soundFx';
 
@@ -18,18 +18,21 @@ export const BroadcastNoticeBanner: React.FC<BroadcastNoticeBannerProps> = ({
 }) => {
   const [broadcasts, setBroadcasts] = useState<BroadcastEvent[]>([]);
   const [dismissedBroadcasts, setDismissedBroadcasts] = useState<Record<string, boolean>>({});
+  const [sessionClosed, setSessionClosed] = useState<boolean>(false);
   const [trollboxSentCount, setTrollboxSentCount] = useState<number>(0);
   const [claimedMissionIds, setClaimedMissionIds] = useState<Record<string, boolean>>({});
   const [isClaiming, setIsClaiming] = useState<boolean>(false);
   const [claimSuccessMsg, setClaimSuccessMsg] = useState<string>('');
 
-  // 1. Initialize dismissed state from localStorage
+  const userHandle = (currentUsername || '').toLowerCase().replace('@', '').trim();
+
+  // 1. Initialize dismissed state from localStorage cache
   useEffect(() => {
     if (typeof window !== 'undefined') {
       try {
         const saved = JSON.parse(localStorage.getItem('rialo_dismissed_broadcasts') || '{}');
         if (saved && typeof saved === 'object') {
-          setDismissedBroadcasts(saved);
+          setDismissedBroadcasts((prev) => ({ ...prev, ...saved }));
         }
       } catch (e) {
         console.error('Failed to load dismissed broadcasts:', e);
@@ -37,7 +40,46 @@ export const BroadcastNoticeBanner: React.FC<BroadcastNoticeBannerProps> = ({
     }
   }, []);
 
-  // 2. Fetch active broadcasts from API and refresh periodically
+  // 2. Automatically sync dismissed state from database (Supabase currentUser & broadcasts)
+  // Even if cache is 100% wiped, this restores already dismissed/completed records!
+  useEffect(() => {
+    if (!userHandle) return;
+
+    setDismissedBroadcasts((prev) => {
+      let changed = false;
+      const updated = { ...prev };
+
+      // A. If broadcast.completedBy in database contains userHandle, it's ALREADY completed/read
+      broadcasts.forEach((b) => {
+        const completedUsers = (b.completedBy || []).map((u) => u.toLowerCase().replace('@', '').trim());
+        if (completedUsers.includes(userHandle)) {
+          if (!updated[b.id]) {
+            updated[b.id] = true;
+            changed = true;
+          }
+        }
+      });
+
+      // B. If currentUser.completedMissions has b.id or dismissed marker, it's ALREADY dismissed
+      currentUser?.completedMissions?.forEach((mId) => {
+        const cleanId = mId.replace('dismissed_', '').replace('dismissed_bcast_', '');
+        if (!updated[cleanId]) {
+          updated[cleanId] = true;
+          changed = true;
+        }
+      });
+
+      if (changed && typeof window !== 'undefined') {
+        try {
+          localStorage.setItem('rialo_dismissed_broadcasts', JSON.stringify(updated));
+        } catch (_) {}
+      }
+
+      return changed ? updated : prev;
+    });
+  }, [broadcasts, currentUser, userHandle]);
+
+  // 3. Fetch active broadcasts from API and refresh periodically
   const fetchBroadcasts = async () => {
     try {
       const res = await fetch('/api/admin/broadcast');
@@ -56,7 +98,7 @@ export const BroadcastNoticeBanner: React.FC<BroadcastNoticeBannerProps> = ({
     return () => clearInterval(interval);
   }, []);
 
-  // 3. Track trollbox messages for mission verification
+  // 4. Track trollbox messages for mission verification
   useEffect(() => {
     if (typeof window !== 'undefined' && currentUsername) {
       const cleanUser = currentUsername.toLowerCase().replace('@', '').trim();
@@ -73,11 +115,47 @@ export const BroadcastNoticeBanner: React.FC<BroadcastNoticeBannerProps> = ({
     }
   }, [currentUsername]);
 
-  // 4. Handle dismiss with permanent localStorage persistence
-  const handleDismiss = (broadcastId: string) => {
+  // 5. Check if an announcement was already dismissed or completed
+  const isAlreadyDismissed = (b: BroadcastEvent) => {
+    // Check locally dismissed
+    if (dismissedBroadcasts[b.id]) return true;
+
+    // Check if user already claimed/completed it on server
+    if (userHandle) {
+      const completedUsers = (b.completedBy || []).map((u) => u.toLowerCase().replace('@', '').trim());
+      if (completedUsers.includes(userHandle)) return true;
+    }
+
+    // Check if user has this mission/dismissal in profile
+    if (
+      currentUser?.completedMissions?.includes(b.id) ||
+      currentUser?.completedMissions?.includes(`dismissed_${b.id}`)
+    ) {
+      return true;
+    }
+
+    // Check if already claimed in current session
+    if (claimedMissionIds[b.id]) return true;
+
+    return false;
+  };
+
+  // 6. Handle dismiss with permanent local persistence AND server database sync!
+  const handleDismiss = async (broadcastId: string, dismissAll = false) => {
     sound.playTap();
+    // Close the banner for this session so the user is never barraged with sequential popups!
+    setSessionClosed(true);
+
+    const idsToDismiss = dismissAll
+      ? eligibleBroadcasts.map((b) => b.id)
+      : [broadcastId];
+
+    // Local state & localStorage update
     setDismissedBroadcasts((prev) => {
-      const updated = { ...prev, [broadcastId]: true };
+      const updated = { ...prev };
+      idsToDismiss.forEach((id) => {
+        updated[id] = true;
+      });
       if (typeof window !== 'undefined') {
         try {
           localStorage.setItem('rialo_dismissed_broadcasts', JSON.stringify(updated));
@@ -87,9 +165,29 @@ export const BroadcastNoticeBanner: React.FC<BroadcastNoticeBannerProps> = ({
       }
       return updated;
     });
+
+    // Server-side persistent sync to database so cache clear never resets it
+    if (userHandle && idsToDismiss.length > 0) {
+      try {
+        const res = await fetch('/api/user/dismiss-broadcast', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            username: userHandle,
+            broadcastIds: idsToDismiss,
+          }),
+        });
+        const data = await res.json();
+        if (data.success && data.user && onUserUpdate) {
+          onUserUpdate(data.user);
+        }
+      } catch (err) {
+        console.error('Failed to persist dismissal to database:', err);
+      }
+    }
   };
 
-  // 5. Claim reward for mission or rewarded broadcast
+  // 7. Claim reward for mission or rewarded broadcast
   const handleClaimReward = async (broadcast: BroadcastEvent) => {
     sound.playTap();
     setIsClaiming(true);
@@ -123,15 +221,17 @@ export const BroadcastNoticeBanner: React.FC<BroadcastNoticeBannerProps> = ({
     }
   };
 
-  // Find active broadcast matching recipient and not dismissed
-  const userHandle = (currentUsername || '').toLowerCase().replace('@', '').trim();
-  const activeBroadcast = broadcasts.find((b) => {
-    if (dismissedBroadcasts[b.id]) return false;
+  // 8. Find eligible broadcasts matching recipient and not already dismissed/completed
+  const eligibleBroadcasts = broadcasts.filter((b) => {
+    if (isAlreadyDismissed(b)) return false;
     const rec = (b.recipient || '').toLowerCase().replace('@', '').trim();
     return rec === 'all' || rec === 'all players' || rec === userHandle;
   });
 
-  if (!activeBroadcast) return null;
+  // If user closed the banner or there are no unread announcements, don't show anything
+  if (sessionClosed || eligibleBroadcasts.length === 0) return null;
+
+  const activeBroadcast = eligibleBroadcasts[0];
 
   // Determine styling theme based on notice type & severity
   const isMaintenance = activeBroadcast.broadcastType === 'system_notice' && activeBroadcast.noticeSeverity === 'maintenance';
@@ -166,7 +266,8 @@ export const BroadcastNoticeBanner: React.FC<BroadcastNoticeBannerProps> = ({
   }
 
   const isCompletedOrClaimed = Boolean(
-    activeBroadcast.completedBy?.includes(userHandle) || claimedMissionIds[activeBroadcast.id]
+    (userHandle && activeBroadcast.completedBy?.map((u) => u.toLowerCase()).includes(userHandle)) ||
+    claimedMissionIds[activeBroadcast.id]
   );
 
   return (
@@ -289,6 +390,23 @@ export const BroadcastNoticeBanner: React.FC<BroadcastNoticeBannerProps> = ({
                   </span>
                 )}
 
+                {/* Counter if multiple notices exist */}
+                {eligibleBroadcasts.length > 1 && (
+                  <span
+                    style={{
+                      fontSize: '10px',
+                      fontWeight: 800,
+                      color: '#A9DDD3',
+                      background: 'rgba(169, 221, 211, 0.12)',
+                      padding: '2px 8px',
+                      borderRadius: '6px',
+                      border: '1px solid rgba(169, 221, 211, 0.25)',
+                    }}
+                  >
+                    1 of {eligibleBroadcasts.length} notices
+                  </span>
+                )}
+
                 {isCompletedOrClaimed && (
                   <span
                     style={{
@@ -335,8 +453,8 @@ export const BroadcastNoticeBanner: React.FC<BroadcastNoticeBannerProps> = ({
             </div>
           </div>
 
-          {/* Right Action Area: Claim Reward Button + Permanent Dismiss (X) */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          {/* Right Action Area: Claim Reward Button + Dismiss All + Permanent Dismiss (X) */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             {/* Optional Claim Button if reward available and not claimed */}
             {activeBroadcast.shardsReward > 0 && !isCompletedOrClaimed && (
               <button
@@ -364,10 +482,46 @@ export const BroadcastNoticeBanner: React.FC<BroadcastNoticeBannerProps> = ({
               </button>
             )}
 
+            {/* Dismiss All Button if multiple unread notices exist */}
+            {eligibleBroadcasts.length > 1 && (
+              <button
+                type="button"
+                onClick={() => handleDismiss(activeBroadcast.id, true)}
+                style={{
+                  background: 'rgba(255, 255, 255, 0.05)',
+                  border: '1px solid rgba(255, 255, 255, 0.15)',
+                  color: '#8E9B97',
+                  borderRadius: '8px',
+                  padding: '5px 10px',
+                  fontSize: '11px',
+                  fontWeight: 800,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = 'rgba(239, 68, 68, 0.15)';
+                  e.currentTarget.style.color = '#EF4444';
+                  e.currentTarget.style.borderColor = 'rgba(239, 68, 68, 0.35)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
+                  e.currentTarget.style.color = '#8E9B97';
+                  e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.15)';
+                }}
+                title="Dismiss all current notices"
+              >
+                <CheckCheck size={13} />
+                <span>Dismiss All</span>
+              </button>
+            )}
+
             {/* Permanent Dismiss Cross Icon */}
             <button
               type="button"
-              onClick={() => handleDismiss(activeBroadcast.id)}
+              onClick={() => handleDismiss(activeBroadcast.id, false)}
               style={{
                 background: 'rgba(255, 255, 255, 0.05)',
                 border: '1px solid rgba(255, 255, 255, 0.15)',
@@ -392,7 +546,7 @@ export const BroadcastNoticeBanner: React.FC<BroadcastNoticeBannerProps> = ({
                 e.currentTarget.style.color = '#8E9B97';
                 e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.15)';
               }}
-              title="Dismiss announcement permanently (will not reappear on refresh)"
+              title="Dismiss announcement (permanently saved to your account)"
             >
               <X size={15} />
             </button>

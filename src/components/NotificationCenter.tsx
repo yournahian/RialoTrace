@@ -83,6 +83,7 @@ export const NotificationCenter: React.FC<NotificationCenterProps> = ({
               actionText = 'Read Notice in Profile';
             }
 
+            const isCompletedByMe = (b.completedBy || []).map((u: string) => u.toLowerCase().replace('@', '').trim()).includes(userHandle);
             items.push({
               id: 'notif-' + b.id,
               type: isMission ? 'mission' : 'broadcast',
@@ -90,7 +91,7 @@ export const NotificationCenter: React.FC<NotificationCenterProps> = ({
               message: b.message ? `"${b.message}"${b.shardsReward > 0 ? ` (+${b.shardsReward} Shards Drop)` : ''}` : b.desc,
               time: formatRelativeTime(b.createdAt),
               icon: b.icon || (isMission ? '🎯' : isNotice ? '📢' : '🏆'),
-              read: false,
+              read: Boolean(readIds['notif-' + b.id] || isCompletedByMe),
               actionTab: 'profile',
               actionText: actionText,
               data: b,
