@@ -2248,19 +2248,25 @@ body {
 }
 
 /* Card Back */
+.monad-card-face.monad-card-back,
 .monad-card-back {
-  background: #040706 url('/rialo-card-back.png') center / cover no-repeat !important;
-  border: 2px solid rgba(0, 245, 255, 0.5) !important;
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.9), 0 0 35px rgba(0, 245, 255, 0.35) !important;
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  background: #FFFFFF url('/rialo-card-back.png') center / cover no-repeat !important;
+  border: 2px solid rgba(169, 221, 211, 0.7) !important;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 35px rgba(169, 221, 211, 0.35) !important;
   transform: rotateY(180deg);
-  border-radius: inherit;
-  overflow: hidden;
-  position: relative;
+  border-radius: 28px !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
 }
 
 .monad-card-back .monad-back-header,
 .monad-card-back .monad-back-center-logo,
-.monad-card-back .monad-back-circuit-footer {
+.monad-card-back .monad-back-circuit-footer,
+.monad-card-back .monad-back-cta {
   display: none !important;
 }
 

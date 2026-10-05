@@ -359,6 +359,26 @@ export async function exportRialoCardBackPNG(options?: RialoCardBackExportOption
 
   ctx.scale(scale, scale);
 
+  const cardBackImg = await loadImage('/rialo-card-back.png');
+  if (cardBackImg) {
+    const cardX = 0;
+    const cardY = 0;
+    const cardW = width;
+    const cardH = height;
+    const cardR = 32;
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.roundRect(cardX, cardY, cardW, cardH, cardR);
+    ctx.clip();
+    ctx.drawImage(cardBackImg, 0, 0, width, height);
+    ctx.restore();
+
+    return new Promise((resolve) => {
+      canvas.toBlob((blob) => resolve(blob), 'image/png');
+    });
+  }
+
   // SVG Logo
   const svgString = `<svg width="128" height="128" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
     <g transform="translate(15.5 12) scale(1.1)">
