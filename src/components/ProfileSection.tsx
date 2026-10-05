@@ -572,14 +572,14 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onSelectTa
             </div>
           </div>
 
-          {/* Quick Action Shortcuts: Row 1 = Switch Account + Sign Out, Row 2 = Completed Missions (100% full width single line) */}
+          {/* Quick Action Shortcuts */}
           <div className="profile-actions-grid">
             {onSwitchAccount && (
               <button
                 type="button"
                 onClick={() => { sound.playTap(); onSwitchAccount(); }}
                 style={{
-                  padding: '10px 14px',
+                  padding: '10px 16px',
                   borderRadius: '12px',
                   background: 'rgba(169, 221, 211, 0.1)',
                   border: '1px solid rgba(169, 221, 211, 0.3)',
@@ -591,7 +591,6 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onSelectTa
                   alignItems: 'center',
                   justifyContent: 'center',
                   gap: '6px',
-                  width: '100%',
                 }}
               >
                 <span>🔄 Switch Account</span>
@@ -602,7 +601,7 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onSelectTa
                 type="button"
                 onClick={() => { sound.playTap(); onLogOut(); }}
                 style={{
-                  padding: '10px 14px',
+                  padding: '10px 16px',
                   borderRadius: '12px',
                   background: 'rgba(239, 68, 68, 0.12)',
                   border: '1px solid rgba(239, 68, 68, 0.35)',
@@ -614,7 +613,6 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onSelectTa
                   alignItems: 'center',
                   justifyContent: 'center',
                   gap: '6px',
-                  width: '100%',
                 }}
               >
                 <span>🚪 Sign Out</span>
@@ -626,9 +624,7 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onSelectTa
               className="full-span"
               onClick={() => { sound.playTap(); setIsMissionsHistoryOpen(true); }}
               style={{
-                gridColumn: '1 / -1',
-                width: '100%',
-                padding: '12px 18px',
+                padding: '10px 18px',
                 background: 'rgba(169, 221, 211, 0.12)',
                 border: '1px solid rgba(169, 221, 211, 0.45)',
                 borderRadius: '12px',
@@ -636,7 +632,7 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onSelectTa
                 fontSize: '12px',
                 fontWeight: 900,
                 cursor: 'pointer',
-                display: 'flex',
+                display: 'inline-flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 gap: '8px',

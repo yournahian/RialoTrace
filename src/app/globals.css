@@ -5032,39 +5032,65 @@ body {
   }
 }
 
-/* Profile Section Stats & Actions Grid: Desktop PC = 4 columns, Mobile = 2 columns */
+/* ========================================================
+   PROFILE HERO CARD & IDENTITY (PC DESKTOP ARCHITECTURE)
+   ======================================================== */
+.profile-hero-card {
+  background: linear-gradient(135deg, rgba(8, 12, 18, 0.95) 0%, rgba(2, 4, 6, 0.98) 100%);
+  border: 1.5px solid rgba(169, 221, 211, 0.28);
+  border-radius: 28px;
+  padding: 32px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), 0 0 30px rgba(169, 221, 211, 0.08);
+  margin-bottom: 28px;
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.profile-identity-main-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 24px;
+  width: 100%;
+}
+
+.profile-identity-wrap {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+  text-align: left;
+}
+
+.profile-badges-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.profile-actions-grid {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
 .profile-stats-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 14px;
   width: 100%;
-  margin-top: 18px;
-}
-
-.profile-actions-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  width: 100%;
-  max-width: 520px;
-  margin-top: 14px;
-}
-
-@media (max-width: 768px) {
-  .profile-stats-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-  }
-
-  .profile-actions-grid {
-    max-width: 100%;
-  }
-}
-
-@media (max-width: 480px) {
-  .profile-stats-grid {
-    grid-template-columns: 1fr;
-  }
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .versus-vs-icon.is-battling {
