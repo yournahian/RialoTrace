@@ -11,10 +11,16 @@ import {
   Swords,
   TrendingUp,
   Star,
-  ExternalLink,
 } from 'lucide-react';
 import { RialoIcon } from './RialoLogo';
 import { sound } from '@/lib/soundFx';
+
+/**
+ * STRICT 3-COLOR RIALO PALETTE ENFORCEMENT:
+ * 1. #010101 (Obsidian Black) - Primary backgrounds and base containers
+ * 2. #A9DDD3 (Rialo Mint) - Accents, primary buttons, borders, highlights, active states
+ * 3. #E8E3D5 (Rialo Cream/Bone) - Typography, headings, subtle borders, secondary text
+ */
 
 interface LandingPageProps {
   onLaunchApp: () => void;
@@ -62,7 +68,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
     if (action) action();
   };
 
-  // 4 Authentic Showcase Packs with Real 3D Pack Art
+  // 4 Showcase Packs (Strict 3-Color Theming)
   const packTiers = [
     {
       id: 'genesis',
@@ -70,11 +76,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       sub: 'DAILY DROP • TIER 0',
       method: 'FREE DAILY CLAIM',
       tag: 'FEATURED',
-      color: '#00F5FF',
       packImage: '/packs/pack_genesis.jpg',
-      accentBg: 'linear-gradient(135deg, rgba(0,245,255,0.15) 0%, rgba(6,16,14,0.95) 100%)',
-      borderColor: 'rgba(0,245,255,0.35)',
-      glow: '0 0 35px rgba(0,245,255,0.25)',
       rarity: 'Common to Mythic',
       cardsCount: '3 CARDS',
       desc: 'Contains 3 randomized cards with guaranteed Common or Rare, plus chance for the Mythic Sub-Second Devourer.',
@@ -85,11 +87,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       sub: 'MYTHIC EDITION',
       method: 'FORGE SYNTHESIS',
       tag: 'MYTHIC',
-      color: '#A855F7',
       packImage: '/packs/pack_void.jpg',
-      accentBg: 'linear-gradient(135deg, rgba(168,85,247,0.15) 0%, rgba(10,8,18,0.95) 100%)',
-      borderColor: 'rgba(168,85,247,0.35)',
-      glow: '0 0 35px rgba(168,85,247,0.25)',
       rarity: 'Epic & Mythic Pool',
       cardsCount: '4 CARDS',
       desc: 'Synthesized in The Forge using recyclable duplicates. Higher density of executioner and ronin archetypes.',
@@ -100,11 +98,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       sub: 'LEGENDARY APEX',
       method: 'MISSION VAULT',
       tag: 'HIGH VELOCITY',
-      color: '#F59E0B',
       packImage: '/packs/pack_superconductor.jpg',
-      accentBg: 'linear-gradient(135deg, rgba(245,158,11,0.15) 0%, rgba(18,12,6,0.95) 100%)',
-      borderColor: 'rgba(245,158,11,0.35)',
-      glow: '0 0 35px rgba(245,158,11,0.25)',
       rarity: 'Legendary Guaranteed',
       cardsCount: '3 CARDS',
       desc: 'Awarded to top engagement streaks and arcade milestones. Infused with zero-friction consensus energy.',
@@ -115,11 +109,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       sub: 'LIMITED RUN 2026',
       method: 'ARENA GRAIL',
       tag: 'APEX GRAIL',
-      color: '#10B981',
       packImage: '/packs/pack_apex.jpg',
-      accentBg: 'linear-gradient(135deg, rgba(16,185,129,0.15) 0%, rgba(6,16,12,0.95) 100%)',
-      borderColor: 'rgba(16,185,129,0.35)',
-      glow: '0 0 35px rgba(16,185,129,0.25)',
       rarity: '1-of-1 Mythic Pool',
       cardsCount: '5 CARDS',
       desc: 'The crown jewel of the RialoTrace ecosystem. Unlocks custom holographic animated foil export parameters.',
@@ -133,7 +123,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       cardId: 'devourer',
       rarity: 'MYTHIC',
       grade: 'GEM MINT 10',
-      color: '#EC4899',
       image: '/cards/devourer.png',
       edition: 'GENESIS APEX',
       serial: '#0003/1000',
@@ -144,7 +133,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       cardId: 'cyber_ronin',
       rarity: 'LEGENDARY',
       grade: 'PRISTINE 9.5',
-      color: '#F59E0B',
       image: '/cards/cyber_ronin.png',
       edition: 'CONSENSUS WARRIOR',
       serial: '#0142/2500',
@@ -155,7 +143,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       cardId: 'sovereign',
       rarity: 'LEGENDARY',
       grade: 'GEM MINT 10',
-      color: '#F59E0B',
       image: '/cards/sovereign.png',
       edition: 'PARALLEL CLUSTER',
       serial: '#0001/0500',
@@ -167,7 +154,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       cardId: 'architect',
       rarity: 'EPIC',
       grade: 'MINT 9.0',
-      color: '#10B981',
       image: '/cards/architect.png',
       edition: 'PIPELINE ENGINEER',
       serial: '#0455/5000',
@@ -178,7 +164,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       cardId: 'chronomancer',
       rarity: 'MYTHIC',
       grade: 'GEM MINT 10',
-      color: '#A855F7',
       image: '/cards/chronomancer.png',
       edition: 'SUB-SECOND TEMPORAL',
       serial: '#0021/1000',
@@ -190,14 +175,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({
     <div
       style={{
         minHeight: '100vh',
-        backgroundColor: '#040706',
-        color: '#FFFFFF',
+        backgroundColor: '#010101',
+        color: '#E8E3D5',
         fontFamily: "'Inter', sans-serif",
         overflowX: 'hidden',
         position: 'relative',
       }}
     >
-      {/* Background Ambience: Subtle Warm Twilight & Neon Glows */}
+      {/* Background Ambience: Strictly #A9DDD3 & #E8E3D5 subtle glows on #010101 */}
       <div
         style={{
           position: 'fixed',
@@ -206,7 +191,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           transform: 'translateX(-50%)',
           width: '1200px',
           height: '650px',
-          background: 'radial-gradient(ellipse at 50% 0%, rgba(0, 245, 255, 0.12) 0%, rgba(16, 185, 129, 0.06) 45%, transparent 75%)',
+          background: 'radial-gradient(ellipse at 50% 0%, rgba(169, 221, 211, 0.12) 0%, rgba(232, 227, 213, 0.04) 45%, transparent 75%)',
           filter: 'blur(90px)',
           pointerEvents: 'none',
           zIndex: 0,
@@ -216,7 +201,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         style={{
           position: 'fixed',
           inset: 0,
-          backgroundImage: 'radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px)',
+          backgroundImage: 'radial-gradient(rgba(232, 227, 213, 0.04) 1px, transparent 1px)',
           backgroundSize: '32px 32px',
           pointerEvents: 'none',
           zIndex: 0,
@@ -233,8 +218,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           top: 0,
           zIndex: 100,
           backdropFilter: 'blur(20px)',
-          backgroundColor: 'rgba(4, 7, 6, 0.88)',
-          borderBottom: '1px solid rgba(169, 221, 211, 0.14)',
+          backgroundColor: 'rgba(1, 1, 1, 0.92)',
+          borderBottom: '1px solid rgba(169, 221, 211, 0.18)',
           padding: '14px 28px',
           display: 'flex',
           alignItems: 'center',
@@ -248,15 +233,15 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               width: '38px',
               height: '38px',
               borderRadius: '10px',
-              background: 'rgba(6, 16, 14, 0.95)',
-              border: '1.5px solid rgba(0, 245, 255, 0.45)',
+              background: '#010101',
+              border: '1.5px solid rgba(169, 221, 211, 0.5)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              boxShadow: '0 0 20px rgba(0, 245, 255, 0.3)',
+              boxShadow: '0 0 20px rgba(169, 221, 211, 0.25)',
             }}
           >
-            <RialoIcon size={24} color="#00F5FF" />
+            <RialoIcon size={24} color="#A9DDD3" />
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <span
@@ -264,10 +249,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 fontWeight: 900,
                 fontSize: '22px',
                 letterSpacing: '-0.02em',
-                color: '#FFFFFF',
+                color: '#E8E3D5',
               }}
             >
-              Rialo<span style={{ color: '#00F5FF' }}>Trace</span>
+              Rialo<span style={{ color: '#A9DDD3' }}>Trace</span>
             </span>
             <span
               style={{
@@ -275,9 +260,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 fontFamily: "'Space Mono', monospace",
                 padding: '2px 7px',
                 borderRadius: '4px',
-                background: 'rgba(0, 245, 255, 0.12)',
-                border: '1px solid rgba(0, 245, 255, 0.35)',
-                color: '#00F5FF',
+                background: 'rgba(169, 221, 211, 0.12)',
+                border: '1px solid rgba(169, 221, 211, 0.4)',
+                color: '#A9DDD3',
                 fontWeight: 700,
                 letterSpacing: '0.8px',
               }}
@@ -295,7 +280,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             gap: '28px',
             fontSize: '13px',
             fontWeight: 600,
-            color: 'rgba(255,255,255,0.7)',
+            color: 'rgba(232, 227, 213, 0.7)',
             letterSpacing: '0.5px',
           }}
           className="hidden md:flex"
@@ -303,40 +288,40 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           <a
             href="#packs"
             style={{ color: 'inherit', textDecoration: 'none', transition: 'color 0.2s' }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = '#00F5FF')}
-            onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(255,255,255,0.7)')}
+            onMouseEnter={(e) => (e.currentTarget.style.color = '#A9DDD3')}
+            onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(232, 227, 213, 0.7)')}
           >
             PACKS
           </a>
           <a
             href="#pulls"
             style={{ color: 'inherit', textDecoration: 'none', transition: 'color 0.2s' }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = '#00F5FF')}
-            onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(255,255,255,0.7)')}
+            onMouseEnter={(e) => (e.currentTarget.style.color = '#A9DDD3')}
+            onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(232, 227, 213, 0.7)')}
           >
             SLABS
           </a>
           <a
             href="#pillars"
             style={{ color: 'inherit', textDecoration: 'none', transition: 'color 0.2s' }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = '#00F5FF')}
-            onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(255,255,255,0.7)')}
+            onMouseEnter={(e) => (e.currentTarget.style.color = '#A9DDD3')}
+            onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(232, 227, 213, 0.7)')}
           >
             TERMINAL
           </a>
           <a
             href="#community"
             style={{ color: 'inherit', textDecoration: 'none', transition: 'color 0.2s' }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = '#00F5FF')}
-            onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(255,255,255,0.7)')}
+            onMouseEnter={(e) => (e.currentTarget.style.color = '#A9DDD3')}
+            onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(232, 227, 213, 0.7)')}
           >
             SWARM
           </a>
           <a
             href="#reputation"
             style={{ color: 'inherit', textDecoration: 'none', transition: 'color 0.2s' }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = '#00F5FF')}
-            onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(255,255,255,0.7)')}
+            onMouseEnter={(e) => (e.currentTarget.style.color = '#A9DDD3')}
+            onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(232, 227, 213, 0.7)')}
           >
             PROTOCOL
           </a>
@@ -350,14 +335,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             style={{
               padding: '10px 24px',
               borderRadius: '9999px',
-              background: 'linear-gradient(135deg, #00F5FF 0%, #0284C7 100%)',
-              border: '1px solid rgba(0, 245, 255, 0.6)',
-              color: '#040706',
+              backgroundColor: '#A9DDD3',
+              border: '1px solid #A9DDD3',
+              color: '#010101',
               fontFamily: "'Bebas Neue', sans-serif",
               fontSize: '18px',
               letterSpacing: '1px',
               cursor: 'pointer',
-              boxShadow: '0 0 25px rgba(0, 245, 255, 0.4)',
+              boxShadow: '0 0 25px rgba(169, 221, 211, 0.35)',
               display: 'flex',
               alignItems: 'center',
               gap: '8px',
@@ -365,11 +350,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = 'scale(1.04)';
-              e.currentTarget.style.boxShadow = '0 0 35px rgba(0, 245, 255, 0.6)';
+              e.currentTarget.style.boxShadow = '0 0 35px rgba(169, 221, 211, 0.55)';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.transform = 'scale(1)';
-              e.currentTarget.style.boxShadow = '0 0 25px rgba(0, 245, 255, 0.4)';
+              e.currentTarget.style.boxShadow = '0 0 25px rgba(169, 221, 211, 0.35)';
             }}
           >
             <span>{currentUsername ? `ENTER AS @${currentUsername}` : 'LAUNCH APP'}</span>
@@ -401,18 +386,18 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             gap: '8px',
             padding: '6px 18px',
             borderRadius: '9999px',
-            background: 'rgba(0, 245, 255, 0.1)',
-            border: '1px solid rgba(0, 245, 255, 0.35)',
-            color: '#00F5FF',
+            background: 'rgba(169, 221, 211, 0.1)',
+            border: '1px solid rgba(169, 221, 211, 0.35)',
+            color: '#A9DDD3',
             fontSize: '12px',
             fontFamily: "'Space Mono', monospace",
             fontWeight: 700,
             letterSpacing: '1px',
             marginBottom: '24px',
-            boxShadow: '0 0 25px rgba(0, 245, 255, 0.15)',
+            boxShadow: '0 0 25px rgba(169, 221, 211, 0.15)',
           }}
         >
-          <Sparkles size={14} />
+          <Sparkles size={14} color="#A9DDD3" />
           <span>RIALO NETWORK ZERO-FRICTION COLLECTOR VAULT</span>
         </div>
 
@@ -425,20 +410,16 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             letterSpacing: '2px',
             margin: '0 0 16px 0',
             textTransform: 'uppercase',
-            background: 'linear-gradient(180deg, #FFFFFF 30%, #E2E8F0 70%, #94A3B8 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            textShadow: '0 0 40px rgba(255, 255, 255, 0.2)',
+            color: '#E8E3D5',
+            textShadow: '0 0 40px rgba(232, 227, 213, 0.15)',
           }}
         >
           RIP THE PACK.
           <br />
           <span
             style={{
-              background: 'linear-gradient(180deg, #A7F3D0 0%, #00F5FF 50%, #0284C7 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              filter: 'drop-shadow(0 0 30px rgba(0, 245, 255, 0.5))',
+              color: '#A9DDD3',
+              textShadow: '0 0 40px rgba(169, 221, 211, 0.5)',
             }}
           >
             OWN THE PROTOCOL.
@@ -451,7 +432,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             maxWidth: '640px',
             fontSize: '16px',
             lineHeight: '1.6',
-            color: 'rgba(255, 255, 255, 0.65)',
+            color: 'rgba(232, 227, 213, 0.7)',
             margin: '0 auto 36px',
             fontFamily: "'Inter', sans-serif",
           }}
@@ -477,14 +458,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             style={{
               padding: '14px 38px',
               borderRadius: '9999px',
-              background: 'linear-gradient(135deg, #00F5FF 0%, #0284C7 100%)',
-              border: '1px solid rgba(0, 245, 255, 0.8)',
-              color: '#040706',
+              backgroundColor: '#A9DDD3',
+              border: '1px solid #A9DDD3',
+              color: '#010101',
               fontFamily: "'Bebas Neue', sans-serif",
               fontSize: '22px',
               letterSpacing: '1.2px',
               cursor: 'pointer',
-              boxShadow: '0 0 40px rgba(0, 245, 255, 0.45)',
+              boxShadow: '0 0 40px rgba(169, 221, 211, 0.4)',
               display: 'flex',
               alignItems: 'center',
               gap: '10px',
@@ -492,14 +473,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = 'scale(1.05)';
-              e.currentTarget.style.boxShadow = '0 0 60px rgba(0, 245, 255, 0.7)';
+              e.currentTarget.style.boxShadow = '0 0 60px rgba(169, 221, 211, 0.65)';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.transform = 'scale(1)';
-              e.currentTarget.style.boxShadow = '0 0 40px rgba(0, 245, 255, 0.45)';
+              e.currentTarget.style.boxShadow = '0 0 40px rgba(169, 221, 211, 0.4)';
             }}
           >
-            <Zap size={22} color="#040706" />
+            <Zap size={22} color="#010101" />
             <span>RIP FREE GENESIS PACK</span>
             <ArrowRight size={20} />
           </button>
@@ -515,9 +496,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             style={{
               padding: '14px 32px',
               borderRadius: '9999px',
-              backgroundColor: 'rgba(255, 255, 255, 0.05)',
-              border: '1px solid rgba(255, 255, 255, 0.2)',
-              color: '#FFFFFF',
+              backgroundColor: 'rgba(232, 227, 213, 0.05)',
+              border: '1px solid rgba(169, 221, 211, 0.3)',
+              color: '#E8E3D5',
               fontFamily: "'Bebas Neue', sans-serif",
               fontSize: '20px',
               letterSpacing: '1px',
@@ -529,15 +510,15 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               transition: 'all 0.25s ease',
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.12)';
-              e.currentTarget.style.borderColor = '#00F5FF';
+              e.currentTarget.style.backgroundColor = 'rgba(169, 221, 211, 0.12)';
+              e.currentTarget.style.borderColor = '#A9DDD3';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.05)';
-              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+              e.currentTarget.style.backgroundColor = 'rgba(232, 227, 213, 0.05)';
+              e.currentTarget.style.borderColor = 'rgba(169, 221, 211, 0.3)';
             }}
           >
-            <TrendingUp size={18} color="#00F5FF" />
+            <TrendingUp size={18} color="#A9DDD3" />
             <span>EXPLORE LEADERBOARD</span>
           </button>
         </div>
@@ -562,7 +543,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             style={{
               position: 'absolute',
               inset: '-30px',
-              background: 'radial-gradient(circle, rgba(0, 245, 255, 0.3) 0%, rgba(16, 185, 129, 0.15) 50%, transparent 70%)',
+              background: 'radial-gradient(circle, rgba(169, 221, 211, 0.25) 0%, transparent 70%)',
               filter: 'blur(50px)',
               borderRadius: '50%',
               pointerEvents: 'none',
@@ -587,11 +568,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               transform: `rotateX(${packTilt.x}deg) rotateY(${packTilt.y}deg) scale(${isPackHovered ? 1.05 : 1})`,
               transition: isPackHovered ? 'transform 0.08s ease-out' : 'transform 0.5s ease-out',
               boxShadow: isPackHovered
-                ? '0 30px 60px rgba(0, 0, 0, 0.95), 0 0 50px rgba(0, 245, 255, 0.6)'
-                : '0 20px 45px rgba(0, 0, 0, 0.85), 0 0 35px rgba(0, 245, 255, 0.3)',
+                ? '0 30px 60px rgba(1, 1, 1, 0.95), 0 0 45px rgba(169, 221, 211, 0.5)'
+                : '0 20px 45px rgba(1, 1, 1, 0.85), 0 0 30px rgba(169, 221, 211, 0.25)',
               overflow: 'hidden',
-              backgroundColor: '#040706',
-              border: '1px solid rgba(0, 245, 255, 0.4)',
+              backgroundColor: '#010101',
+              border: '1px solid rgba(169, 221, 211, 0.4)',
             }}
           >
             {/* The Real 3D Pack Image Artwork */}
@@ -612,14 +593,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 position: 'absolute',
                 inset: 0,
                 pointerEvents: 'none',
-                background: `radial-gradient(circle at ${packTilt.glareX}% ${packTilt.glareY}%, rgba(255, 255, 255, 0.35) 0%, rgba(0, 245, 255, 0.2) 25%, transparent 60%)`,
+                background: `radial-gradient(circle at ${packTilt.glareX}% ${packTilt.glareY}%, rgba(232, 227, 213, 0.3) 0%, rgba(169, 221, 211, 0.15) 30%, transparent 65%)`,
                 mixBlendMode: 'overlay',
               }}
             />
           </div>
         </div>
 
-        {/* Protocol Architecture Features (Real Values, No Dummy Stats) */}
+        {/* Protocol Architecture Features (Strict 3 Colors) */}
         <div
           style={{
             marginTop: '56px',
@@ -630,61 +611,61 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             flexWrap: 'wrap',
             padding: '16px 32px',
             borderRadius: '18px',
-            backgroundColor: 'rgba(10, 16, 14, 0.85)',
-            border: '1px solid rgba(169, 221, 211, 0.15)',
+            backgroundColor: 'rgba(1, 1, 1, 0.9)',
+            border: '1px solid rgba(169, 221, 211, 0.2)',
             backdropFilter: 'blur(10px)',
-            boxShadow: '0 10px 30px rgba(0, 0, 0, 0.5)',
+            boxShadow: '0 10px 30px rgba(1, 1, 1, 0.7)',
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <Zap size={18} color="#00F5FF" />
+            <Zap size={18} color="#A9DDD3" />
             <div style={{ textAlign: 'left' }}>
-              <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '18px', color: '#FFFFFF', letterSpacing: '0.8px' }}>
+              <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '18px', color: '#E8E3D5', letterSpacing: '0.8px' }}>
                 SUB-SECOND BFT
               </div>
-              <div style={{ fontSize: '10px', fontFamily: "'Space Mono', monospace", color: 'rgba(255,255,255,0.55)' }}>
+              <div style={{ fontSize: '10px', fontFamily: "'Space Mono', monospace", color: 'rgba(232, 227, 213, 0.6)' }}>
                 INSTANT FINALITY
               </div>
             </div>
           </div>
 
-          <div style={{ width: '1px', height: '28px', backgroundColor: 'rgba(255,255,255,0.1)' }} />
+          <div style={{ width: '1px', height: '28px', backgroundColor: 'rgba(169, 221, 211, 0.15)' }} />
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <Layers size={18} color="#10B981" />
+            <Layers size={18} color="#A9DDD3" />
             <div style={{ textAlign: 'left' }}>
-              <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '18px', color: '#FFFFFF', letterSpacing: '0.8px' }}>
+              <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '18px', color: '#E8E3D5', letterSpacing: '0.8px' }}>
                 30 ARCHETYPES
               </div>
-              <div style={{ fontSize: '10px', fontFamily: "'Space Mono', monospace", color: 'rgba(255,255,255,0.55)' }}>
+              <div style={{ fontSize: '10px', fontFamily: "'Space Mono', monospace", color: 'rgba(232, 227, 213, 0.6)' }}>
                 GENESIS COLLECTOR SET
               </div>
             </div>
           </div>
 
-          <div style={{ width: '1px', height: '28px', backgroundColor: 'rgba(255,255,255,0.1)' }} />
+          <div style={{ width: '1px', height: '28px', backgroundColor: 'rgba(169, 221, 211, 0.15)' }} />
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <Shield size={18} color="#F59E0B" />
+            <Shield size={18} color="#A9DDD3" />
             <div style={{ textAlign: 'left' }}>
-              <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '18px', color: '#FFFFFF', letterSpacing: '0.8px' }}>
+              <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '18px', color: '#E8E3D5', letterSpacing: '0.8px' }}>
                 ANTI-SYBIL VERIFIED
               </div>
-              <div style={{ fontSize: '10px', fontFamily: "'Space Mono', monospace", color: 'rgba(255,255,255,0.55)' }}>
+              <div style={{ fontSize: '10px', fontFamily: "'Space Mono', monospace", color: 'rgba(232, 227, 213, 0.6)' }}>
                 AUTHENTIC CREATOR PROOF
               </div>
             </div>
           </div>
 
-          <div style={{ width: '1px', height: '28px', backgroundColor: 'rgba(255,255,255,0.1)' }} />
+          <div style={{ width: '1px', height: '28px', backgroundColor: 'rgba(169, 221, 211, 0.15)' }} />
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <Award size={18} color="#A855F7" />
+            <Award size={18} color="#A9DDD3" />
             <div style={{ textAlign: 'left' }}>
-              <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '18px', color: '#FFFFFF', letterSpacing: '0.8px' }}>
+              <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '18px', color: '#E8E3D5', letterSpacing: '0.8px' }}>
                 ZERO TRANSACTION FRICTION
               </div>
-              <div style={{ fontSize: '10px', fontFamily: "'Space Mono', monospace", color: 'rgba(255,255,255,0.55)' }}>
+              <div style={{ fontSize: '10px', fontFamily: "'Space Mono', monospace", color: 'rgba(232, 227, 213, 0.6)' }}>
                 RIALO NATIVE PROTOCOL
               </div>
             </div>
@@ -710,7 +691,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             style={{
               fontFamily: "'Space Mono', monospace",
               fontSize: '12px',
-              color: '#00F5FF',
+              color: '#A9DDD3',
               letterSpacing: '2px',
               fontWeight: 700,
               marginBottom: '8px',
@@ -724,14 +705,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               fontSize: 'clamp(38px, 5vw, 64px)',
               letterSpacing: '2px',
               margin: '0 0 12px 0',
-              color: '#FFFFFF',
+              color: '#E8E3D5',
             }}
           >
             FIND YOUR NEXT PULL
           </h2>
           <p
             style={{
-              color: 'rgba(255,255,255,0.65)',
+              color: 'rgba(232, 227, 213, 0.7)',
               fontSize: '15px',
               maxWidth: '580px',
               margin: '0 auto',
@@ -756,8 +737,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               onClick={() => handleButtonClick(() => onLaunchApp())}
               style={{
                 borderRadius: '22px',
-                background: pack.accentBg,
-                border: `1px solid ${pack.borderColor}`,
+                background: 'linear-gradient(180deg, rgba(169, 221, 211, 0.05) 0%, rgba(1, 1, 1, 0.98) 100%)',
+                border: '1px solid rgba(169, 221, 211, 0.25)',
                 padding: '24px 20px',
                 cursor: 'pointer',
                 position: 'relative',
@@ -767,17 +748,17 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 justifyContent: 'space-between',
                 minHeight: '460px',
                 transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
-                boxShadow: '0 15px 35px rgba(0, 0, 0, 0.6)',
+                boxShadow: '0 15px 35px rgba(1, 1, 1, 0.8)',
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.transform = 'translateY(-8px)';
-                e.currentTarget.style.boxShadow = `0 25px 50px rgba(0, 0, 0, 0.8), ${pack.glow}`;
-                e.currentTarget.style.borderColor = pack.color;
+                e.currentTarget.style.boxShadow = '0 25px 50px rgba(1, 1, 1, 0.9), 0 0 35px rgba(169, 221, 211, 0.3)';
+                e.currentTarget.style.borderColor = '#A9DDD3';
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = '0 15px 35px rgba(0, 0, 0, 0.6)';
-                e.currentTarget.style.borderColor = pack.borderColor;
+                e.currentTarget.style.boxShadow = '0 15px 35px rgba(1, 1, 1, 0.8)';
+                e.currentTarget.style.borderColor = 'rgba(169, 221, 211, 0.25)';
               }}
             >
               {/* Top Tag & Card Count */}
@@ -788,9 +769,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                     fontFamily: "'Space Mono', monospace",
                     padding: '3px 8px',
                     borderRadius: '6px',
-                    background: 'rgba(0,0,0,0.6)',
-                    border: `1px solid ${pack.borderColor}`,
-                    color: pack.color,
+                    background: '#010101',
+                    border: '1px solid rgba(169, 221, 211, 0.4)',
+                    color: '#A9DDD3',
                     fontWeight: 700,
                   }}
                 >
@@ -800,7 +781,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                   style={{
                     fontSize: '11px',
                     fontFamily: "'Space Mono', monospace",
-                    color: 'rgba(255,255,255,0.7)',
+                    color: 'rgba(232, 227, 213, 0.75)',
                   }}
                 >
                   {pack.cardsCount}
@@ -815,8 +796,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                   height: '210px',
                   borderRadius: '12px',
                   overflow: 'hidden',
-                  boxShadow: `0 12px 30px rgba(0,0,0,0.7), 0 0 20px ${pack.color}40`,
-                  border: `1.5px solid ${pack.color}80`,
+                  boxShadow: '0 12px 30px rgba(1, 1, 1, 0.8), 0 0 25px rgba(169, 221, 211, 0.25)',
+                  border: '1.5px solid rgba(169, 221, 211, 0.4)',
                   position: 'relative',
                   transition: 'transform 0.3s ease',
                 }}
@@ -839,7 +820,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                     fontFamily: "'Bebas Neue', sans-serif",
                     fontSize: '26px',
                     letterSpacing: '1px',
-                    color: '#FFFFFF',
+                    color: '#E8E3D5',
                     marginBottom: '4px',
                   }}
                 >
@@ -849,7 +830,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                   style={{
                     fontFamily: "'Space Mono', monospace",
                     fontSize: '11px',
-                    color: pack.color,
+                    color: '#A9DDD3',
                     fontWeight: 700,
                     marginBottom: '10px',
                   }}
@@ -859,7 +840,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 <p
                   style={{
                     fontSize: '13px',
-                    color: 'rgba(255,255,255,0.65)',
+                    color: 'rgba(232, 227, 213, 0.7)',
                     lineHeight: '1.5',
                     marginBottom: '18px',
                     minHeight: '40px',
@@ -874,9 +855,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                     width: '100%',
                     padding: '12px 0',
                     borderRadius: '12px',
-                    background: 'rgba(255,255,255,0.06)',
-                    border: `1px solid ${pack.borderColor}`,
-                    color: '#FFFFFF',
+                    background: 'rgba(169, 221, 211, 0.08)',
+                    border: '1px solid rgba(169, 221, 211, 0.3)',
+                    color: '#E8E3D5',
                     fontFamily: "'Bebas Neue', sans-serif",
                     fontSize: '18px',
                     letterSpacing: '1px',
@@ -888,12 +869,12 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                     transition: 'all 0.2s',
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = pack.color;
-                    e.currentTarget.style.color = '#040706';
+                    e.currentTarget.style.backgroundColor = '#A9DDD3';
+                    e.currentTarget.style.color = '#010101';
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.06)';
-                    e.currentTarget.style.color = '#FFFFFF';
+                    e.currentTarget.style.backgroundColor = 'rgba(169, 221, 211, 0.08)';
+                    e.currentTarget.style.color = '#E8E3D5';
                   }}
                 >
                   <span>PULL THIS PACK</span>
@@ -914,9 +895,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           position: 'relative',
           zIndex: 1,
           padding: '90px 24px',
-          backgroundColor: '#030504',
-          borderTop: '1px solid rgba(169, 221, 211, 0.1)',
-          borderBottom: '1px solid rgba(169, 221, 211, 0.1)',
+          backgroundColor: '#010101',
+          borderTop: '1px solid rgba(169, 221, 211, 0.15)',
+          borderBottom: '1px solid rgba(169, 221, 211, 0.15)',
         }}
       >
         <div style={{ textAlign: 'center', marginBottom: '54px' }}>
@@ -924,7 +905,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             style={{
               fontFamily: "'Space Mono', monospace",
               fontSize: '12px',
-              color: '#00F5FF',
+              color: '#A9DDD3',
               letterSpacing: '2px',
               fontWeight: 700,
               marginBottom: '8px',
@@ -938,14 +919,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               fontSize: 'clamp(38px, 5vw, 64px)',
               letterSpacing: '2px',
               margin: '0 0 12px 0',
-              color: '#FFFFFF',
+              color: '#E8E3D5',
             }}
           >
             SOMEONE JUST PULLED THIS
           </h2>
           <p
             style={{
-              color: 'rgba(255,255,255,0.65)',
+              color: 'rgba(232, 227, 213, 0.7)',
               fontSize: '15px',
               maxWidth: '600px',
               margin: '0 auto',
@@ -976,13 +957,13 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               style={{
                 width: '230px',
                 borderRadius: '18px',
-                background: 'rgba(10, 16, 14, 0.95)',
+                background: 'rgba(1, 1, 1, 0.95)',
                 border: pull.isFeatured
-                  ? '2px solid #F59E0B'
-                  : '1px solid rgba(169, 221, 211, 0.2)',
+                  ? '2px solid #A9DDD3'
+                  : '1px solid rgba(169, 221, 211, 0.25)',
                 boxShadow: pull.isFeatured
-                  ? '0 20px 45px rgba(245, 158, 11, 0.35)'
-                  : '0 15px 35px rgba(0, 0, 0, 0.7)',
+                  ? '0 20px 45px rgba(169, 221, 211, 0.25)'
+                  : '0 15px 35px rgba(1, 1, 1, 0.8)',
                 transform: `rotate(${pull.tiltDeg}deg) scale(${pull.isFeatured ? 1.05 : 0.96})`,
                 transition: 'all 0.35s ease',
                 cursor: 'pointer',
@@ -993,22 +974,22 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               onMouseEnter={(e) => {
                 e.currentTarget.style.transform = 'rotate(0deg) scale(1.08) translateY(-10px)';
                 e.currentTarget.style.zIndex = '20';
-                e.currentTarget.style.boxShadow = `0 25px 50px rgba(0, 0, 0, 0.9), 0 0 35px ${pull.color}50`;
+                e.currentTarget.style.boxShadow = '0 25px 50px rgba(1, 1, 1, 0.9), 0 0 35px rgba(169, 221, 211, 0.4)';
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.transform = `rotate(${pull.tiltDeg}deg) scale(${pull.isFeatured ? 1.05 : 0.96})`;
                 e.currentTarget.style.zIndex = pull.isFeatured ? '10' : '1';
                 e.currentTarget.style.boxShadow = pull.isFeatured
-                  ? '0 20px 45px rgba(245, 158, 11, 0.35)'
-                  : '0 15px 35px rgba(0, 0, 0, 0.7)';
+                  ? '0 20px 45px rgba(169, 221, 211, 0.25)'
+                  : '0 15px 35px rgba(1, 1, 1, 0.8)';
               }}
             >
-              {/* Graded Slab Label Header (PSA / BGS Aesthetic) */}
+              {/* Graded Slab Label Header (PSA / BGS Aesthetic in #010101, #A9DDD3, #E8E3D5) */}
               <div
                 style={{
                   padding: '10px 12px',
-                  backgroundColor: '#121A18',
-                  borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+                  backgroundColor: '#010101',
+                  borderBottom: '1px solid rgba(169, 221, 211, 0.2)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'space-between',
@@ -1019,7 +1000,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                     style={{
                       fontFamily: "'Space Mono', monospace",
                       fontSize: '8px',
-                      color: '#00F5FF',
+                      color: '#A9DDD3',
                       letterSpacing: '1px',
                     }}
                   >
@@ -1030,7 +1011,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                       fontFamily: "'Space Mono', monospace",
                       fontSize: '10px',
                       fontWeight: 800,
-                      color: '#FFFFFF',
+                      color: '#E8E3D5',
                     }}
                   >
                     {pull.serial}
@@ -1038,8 +1019,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 </div>
                 <div
                   style={{
-                    backgroundColor: pull.color,
-                    color: '#040706',
+                    backgroundColor: '#A9DDD3',
+                    color: '#010101',
                     fontFamily: "'Bebas Neue', sans-serif",
                     fontSize: '14px',
                     padding: '2px 8px',
@@ -1057,7 +1038,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                   height: '210px',
                   width: '100%',
                   position: 'relative',
-                  backgroundColor: '#050807',
+                  backgroundColor: '#010101',
                   overflow: 'hidden',
                 }}
               >
@@ -1077,7 +1058,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                   style={{
                     position: 'absolute',
                     inset: 0,
-                    background: 'linear-gradient(180deg, transparent 60%, rgba(10, 16, 14, 0.95) 100%)',
+                    background: 'linear-gradient(180deg, transparent 60%, rgba(1, 1, 1, 0.95) 100%)',
                   }}
                 />
                 <div
@@ -1087,9 +1068,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                     left: '10px',
                     padding: '2px 8px',
                     borderRadius: '4px',
-                    backgroundColor: 'rgba(4, 7, 6, 0.85)',
-                    border: `1px solid ${pull.color}`,
-                    color: pull.color,
+                    backgroundColor: '#010101',
+                    border: '1px solid #A9DDD3',
+                    color: '#A9DDD3',
                     fontSize: '9px',
                     fontFamily: "'Space Mono', monospace",
                     fontWeight: 700,
@@ -1106,7 +1087,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                     fontFamily: "'Bebas Neue', sans-serif",
                     fontSize: '20px',
                     letterSpacing: '1px',
-                    color: '#FFFFFF',
+                    color: '#E8E3D5',
                     lineHeight: '1.1',
                     marginBottom: '4px',
                   }}
@@ -1120,18 +1101,18 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                     alignItems: 'center',
                     justifyContent: 'space-between',
                     fontSize: '11px',
-                    color: 'rgba(255,255,255,0.6)',
+                    color: 'rgba(232, 227, 213, 0.65)',
                     fontFamily: "'Space Mono', monospace",
                     marginBottom: '10px',
                   }}
                 >
-                  <span style={{ color: '#00F5FF' }}>{pull.edition}</span>
+                  <span style={{ color: '#A9DDD3' }}>{pull.edition}</span>
                 </div>
 
-                {/* Stars Rating */}
-                <div style={{ display: 'flex', gap: '3px', color: '#F59E0B' }}>
+                {/* Stars Rating (in #A9DDD3) */}
+                <div style={{ display: 'flex', gap: '3px', color: '#A9DDD3' }}>
                   {[...Array(5)].map((_, i) => (
-                    <Star key={i} size={12} fill="#F59E0B" />
+                    <Star key={i} size={12} fill="#A9DDD3" />
                   ))}
                 </div>
               </div>
@@ -1158,7 +1139,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             style={{
               fontFamily: "'Space Mono', monospace",
               fontSize: '12px',
-              color: '#10B981',
+              color: '#A9DDD3',
               letterSpacing: '2px',
               fontWeight: 700,
               marginBottom: '8px',
@@ -1172,14 +1153,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               fontSize: 'clamp(38px, 5vw, 64px)',
               letterSpacing: '2px',
               margin: '0 0 12px 0',
-              color: '#FFFFFF',
+              color: '#E8E3D5',
             }}
           >
             ONE TERMINAL. THREE WAYS TO DOMINATE.
           </h2>
           <p
             style={{
-              color: 'rgba(255,255,255,0.65)',
+              color: 'rgba(232, 227, 213, 0.7)',
               fontSize: '15px',
               maxWidth: '600px',
               margin: '0 auto',
@@ -1202,7 +1183,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           <div
             onClick={() => handleButtonClick(() => (onExploreSection ? onExploreSection('cards') : onLaunchApp()))}
             style={{
-              backgroundColor: 'rgba(10, 16, 14, 0.7)',
+              backgroundColor: 'rgba(1, 1, 1, 0.85)',
               border: '1px solid rgba(169, 221, 211, 0.2)',
               borderRadius: '24px',
               padding: '36px 30px',
@@ -1213,8 +1194,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = 'translateY(-6px)';
-              e.currentTarget.style.borderColor = '#00F5FF';
-              e.currentTarget.style.boxShadow = '0 20px 40px rgba(0, 245, 255, 0.2)';
+              e.currentTarget.style.borderColor = '#A9DDD3';
+              e.currentTarget.style.boxShadow = '0 20px 40px rgba(169, 221, 211, 0.2)';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.transform = 'translateY(0)';
@@ -1227,21 +1208,21 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 width: '56px',
                 height: '56px',
                 borderRadius: '16px',
-                backgroundColor: 'rgba(0, 245, 255, 0.15)',
-                border: '1px solid rgba(0, 245, 255, 0.4)',
+                backgroundColor: 'rgba(169, 221, 211, 0.1)',
+                border: '1px solid rgba(169, 221, 211, 0.35)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 marginBottom: '24px',
               }}
             >
-              <Layers size={28} color="#00F5FF" />
+              <Layers size={28} color="#A9DDD3" />
             </div>
             <div
               style={{
                 fontFamily: "'Space Mono', monospace",
                 fontSize: '11px',
-                color: '#00F5FF',
+                color: '#A9DDD3',
                 letterSpacing: '1px',
                 marginBottom: '6px',
                 fontWeight: 700,
@@ -1254,7 +1235,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 fontFamily: "'Bebas Neue', sans-serif",
                 fontSize: '30px',
                 letterSpacing: '1px',
-                color: '#FFFFFF',
+                color: '#E8E3D5',
                 margin: '0 0 14px 0',
               }}
             >
@@ -1262,7 +1243,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             </h3>
             <p
               style={{
-                color: 'rgba(255,255,255,0.65)',
+                color: 'rgba(232, 227, 213, 0.7)',
                 fontSize: '14px',
                 lineHeight: '1.6',
                 marginBottom: '24px',
@@ -1276,7 +1257,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '8px',
-                color: '#00F5FF',
+                color: '#A9DDD3',
                 fontFamily: "'Bebas Neue', sans-serif",
                 fontSize: '18px',
                 letterSpacing: '0.8px',
@@ -1291,7 +1272,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           <div
             onClick={() => handleButtonClick(() => (onExploreSection ? onExploreSection('proof') : onLaunchApp()))}
             style={{
-              backgroundColor: 'rgba(10, 16, 14, 0.7)',
+              backgroundColor: 'rgba(1, 1, 1, 0.85)',
               border: '1px solid rgba(169, 221, 211, 0.2)',
               borderRadius: '24px',
               padding: '36px 30px',
@@ -1302,8 +1283,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = 'translateY(-6px)';
-              e.currentTarget.style.borderColor = '#F59E0B';
-              e.currentTarget.style.boxShadow = '0 20px 40px rgba(245, 158, 11, 0.2)';
+              e.currentTarget.style.borderColor = '#A9DDD3';
+              e.currentTarget.style.boxShadow = '0 20px 40px rgba(169, 221, 211, 0.2)';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.transform = 'translateY(0)';
@@ -1316,21 +1297,21 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 width: '56px',
                 height: '56px',
                 borderRadius: '16px',
-                backgroundColor: 'rgba(245, 158, 11, 0.15)',
-                border: '1px solid rgba(245, 158, 11, 0.4)',
+                backgroundColor: 'rgba(169, 221, 211, 0.1)',
+                border: '1px solid rgba(169, 221, 211, 0.35)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 marginBottom: '24px',
               }}
             >
-              <TrendingUp size={28} color="#F59E0B" />
+              <TrendingUp size={28} color="#A9DDD3" />
             </div>
             <div
               style={{
                 fontFamily: "'Space Mono', monospace",
                 fontSize: '11px',
-                color: '#F59E0B',
+                color: '#A9DDD3',
                 letterSpacing: '1px',
                 marginBottom: '6px',
                 fontWeight: 700,
@@ -1343,7 +1324,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 fontFamily: "'Bebas Neue', sans-serif",
                 fontSize: '30px',
                 letterSpacing: '1px',
-                color: '#FFFFFF',
+                color: '#E8E3D5',
                 margin: '0 0 14px 0',
               }}
             >
@@ -1351,7 +1332,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             </h3>
             <p
               style={{
-                color: 'rgba(255,255,255,0.65)',
+                color: 'rgba(232, 227, 213, 0.7)',
                 fontSize: '14px',
                 lineHeight: '1.6',
                 marginBottom: '24px',
@@ -1365,7 +1346,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '8px',
-                color: '#F59E0B',
+                color: '#A9DDD3',
                 fontFamily: "'Bebas Neue', sans-serif",
                 fontSize: '18px',
                 letterSpacing: '0.8px',
@@ -1380,7 +1361,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           <div
             onClick={() => handleButtonClick(() => (onExploreSection ? onExploreSection('versus') : onLaunchApp()))}
             style={{
-              backgroundColor: 'rgba(10, 16, 14, 0.7)',
+              backgroundColor: 'rgba(1, 1, 1, 0.85)',
               border: '1px solid rgba(169, 221, 211, 0.2)',
               borderRadius: '24px',
               padding: '36px 30px',
@@ -1391,8 +1372,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = 'translateY(-6px)';
-              e.currentTarget.style.borderColor = '#10B981';
-              e.currentTarget.style.boxShadow = '0 20px 40px rgba(16, 185, 129, 0.2)';
+              e.currentTarget.style.borderColor = '#A9DDD3';
+              e.currentTarget.style.boxShadow = '0 20px 40px rgba(169, 221, 211, 0.2)';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.transform = 'translateY(0)';
@@ -1405,21 +1386,21 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 width: '56px',
                 height: '56px',
                 borderRadius: '16px',
-                backgroundColor: 'rgba(16, 185, 129, 0.15)',
-                border: '1px solid rgba(169, 221, 211, 0.4)',
+                backgroundColor: 'rgba(169, 221, 211, 0.1)',
+                border: '1px solid rgba(169, 221, 211, 0.35)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 marginBottom: '24px',
               }}
             >
-              <Swords size={28} color="#10B981" />
+              <Swords size={28} color="#A9DDD3" />
             </div>
             <div
               style={{
                 fontFamily: "'Space Mono', monospace",
                 fontSize: '11px',
-                color: '#10B981',
+                color: '#A9DDD3',
                 letterSpacing: '1px',
                 marginBottom: '6px',
                 fontWeight: 700,
@@ -1432,7 +1413,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 fontFamily: "'Bebas Neue', sans-serif",
                 fontSize: '30px',
                 letterSpacing: '1px',
-                color: '#FFFFFF',
+                color: '#E8E3D5',
                 margin: '0 0 14px 0',
               }}
             >
@@ -1440,7 +1421,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             </h3>
             <p
               style={{
-                color: 'rgba(255,255,255,0.65)',
+                color: 'rgba(232, 227, 213, 0.7)',
                 fontSize: '14px',
                 lineHeight: '1.6',
                 marginBottom: '24px',
@@ -1454,7 +1435,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '8px',
-                color: '#10B981',
+                color: '#A9DDD3',
                 fontFamily: "'Bebas Neue', sans-serif",
                 fontSize: '18px',
                 letterSpacing: '0.8px',
@@ -1473,8 +1454,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       <div
         style={{
           width: '100%',
-          backgroundColor: '#00F5FF',
-          color: '#040706',
+          backgroundColor: '#A9DDD3',
+          color: '#010101',
           padding: '14px 0',
           overflow: 'hidden',
           whiteSpace: 'nowrap',
@@ -1483,7 +1464,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           fontFamily: "'Bebas Neue', sans-serif",
           fontSize: '22px',
           letterSpacing: '3px',
-          boxShadow: '0 0 35px rgba(0, 245, 255, 0.4)',
+          boxShadow: '0 0 35px rgba(169, 221, 211, 0.35)',
         }}
       >
         <div
@@ -1516,7 +1497,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             style={{
               fontFamily: "'Space Mono', monospace",
               fontSize: '12px',
-              color: '#00F5FF',
+              color: '#A9DDD3',
               letterSpacing: '2px',
               fontWeight: 700,
               marginBottom: '8px',
@@ -1530,14 +1511,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               fontSize: 'clamp(38px, 5vw, 64px)',
               letterSpacing: '2px',
               margin: '0 0 12px 0',
-              color: '#FFFFFF',
+              color: '#E8E3D5',
             }}
           >
             BUILT FOR THE RIALO SWARM
           </h2>
           <p
             style={{
-              color: 'rgba(255,255,255,0.65)',
+              color: 'rgba(232, 227, 213, 0.7)',
               fontSize: '15px',
               maxWidth: '600px',
               margin: '0 auto',
@@ -1559,17 +1540,17 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             style={{
               padding: '28px 24px',
               borderRadius: '20px',
-              backgroundColor: 'rgba(10, 16, 14, 0.85)',
-              border: '1px solid rgba(0, 245, 255, 0.2)',
+              backgroundColor: 'rgba(1, 1, 1, 0.85)',
+              border: '1px solid rgba(169, 221, 211, 0.2)',
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
-              <RialoIcon size={20} color="#00F5FF" />
-              <span style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '22px', color: '#FFFFFF' }}>
+              <RialoIcon size={20} color="#A9DDD3" />
+              <span style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '22px', color: '#E8E3D5' }}>
                 REALTIME TROLLBOX CHAT
               </span>
             </div>
-            <p style={{ fontSize: '14px', color: 'rgba(255,255,255,0.65)', lineHeight: '1.6', margin: 0 }}>
+            <p style={{ fontSize: '14px', color: 'rgba(232, 227, 213, 0.7)', lineHeight: '1.6', margin: 0 }}>
               Live peer-to-peer chat room powered by Supabase Realtime. Tip Shards, challenge creators to
               Versus battles, and share alpha signals without leaving the terminal.
             </p>
@@ -1579,17 +1560,17 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             style={{
               padding: '28px 24px',
               borderRadius: '20px',
-              backgroundColor: 'rgba(10, 16, 14, 0.85)',
-              border: '1px solid rgba(245, 158, 11, 0.2)',
+              backgroundColor: 'rgba(1, 1, 1, 0.85)',
+              border: '1px solid rgba(169, 221, 211, 0.2)',
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
-              <TrendingUp size={20} color="#F59E0B" />
-              <span style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '22px', color: '#FFFFFF' }}>
+              <TrendingUp size={20} color="#A9DDD3" />
+              <span style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '22px', color: '#E8E3D5' }}>
                 DYNAMIC PERCENTILE RANKING
               </span>
             </div>
-            <p style={{ fontSize: '14px', color: 'rgba(255,255,255,0.65)', lineHeight: '1.6', margin: 0 }}>
+            <p style={{ fontSize: '14px', color: 'rgba(232, 227, 213, 0.7)', lineHeight: '1.6', margin: 0 }}>
               Calculates dynamic percentile thresholds from the top creators down to novices. Real-time
               leaderboard refresh ensures transparent, verifiable performance.
             </p>
@@ -1599,17 +1580,17 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             style={{
               padding: '28px 24px',
               borderRadius: '20px',
-              backgroundColor: 'rgba(10, 16, 14, 0.85)',
-              border: '1px solid rgba(16, 185, 129, 0.2)',
+              backgroundColor: 'rgba(1, 1, 1, 0.85)',
+              border: '1px solid rgba(169, 221, 211, 0.2)',
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <Award size={20} color="#10B981" />
-              <span style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '22px', color: '#FFFFFF' }}>
+              <Award size={20} color="#A9DDD3" />
+              <span style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '22px', color: '#E8E3D5' }}>
                 CRYO STREAK VAULT
               </span>
             </div>
-            <p style={{ fontSize: '14px', color: 'rgba(255,255,255,0.65)', lineHeight: '1.6', margin: '12px 0 0' }}>
+            <p style={{ fontSize: '14px', color: 'rgba(232, 227, 213, 0.7)', lineHeight: '1.6', margin: '12px 0 0' }}>
               Maintain daily login and engagement streaks to earn Shards, unlock exclusive titles, and
               synthesize rare cards in The Forge.
             </p>
@@ -1644,7 +1625,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               style={{
                 fontFamily: "'Space Mono', monospace",
                 fontSize: '12px',
-                color: '#F59E0B',
+                color: '#A9DDD3',
                 letterSpacing: '2px',
                 fontWeight: 700,
                 marginBottom: '8px',
@@ -1658,17 +1639,17 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 fontSize: 'clamp(40px, 6vw, 68px)',
                 letterSpacing: '2px',
                 margin: '0 0 18px 0',
-                color: '#FFFFFF',
+                color: '#E8E3D5',
                 lineHeight: '0.95',
               }}
             >
               YOUR COLLECTION.
               <br />
-              <span style={{ color: '#00F5FF' }}>ALWAYS WITHIN REACH.</span>
+              <span style={{ color: '#A9DDD3' }}>ALWAYS WITHIN REACH.</span>
             </h2>
             <p
               style={{
-                color: 'rgba(255,255,255,0.65)',
+                color: 'rgba(232, 227, 213, 0.7)',
                 fontSize: '15px',
                 lineHeight: '1.7',
                 marginBottom: '32px',
@@ -1684,8 +1665,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               style={{
                 padding: '14px 34px',
                 borderRadius: '9999px',
-                background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
-                color: '#040706',
+                backgroundColor: '#A9DDD3',
+                color: '#010101',
                 fontFamily: "'Bebas Neue', sans-serif",
                 fontSize: '20px',
                 letterSpacing: '1px',
@@ -1694,16 +1675,16 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '10px',
-                boxShadow: '0 0 30px rgba(16, 185, 129, 0.4)',
+                boxShadow: '0 0 30px rgba(169, 221, 211, 0.35)',
                 transition: 'all 0.2s',
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.transform = 'scale(1.04)';
-                e.currentTarget.style.boxShadow = '0 0 45px rgba(16, 185, 129, 0.6)';
+                e.currentTarget.style.boxShadow = '0 0 45px rgba(169, 221, 211, 0.55)';
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.transform = 'scale(1)';
-                e.currentTarget.style.boxShadow = '0 0 30px rgba(16, 185, 129, 0.4)';
+                e.currentTarget.style.boxShadow = '0 0 30px rgba(169, 221, 211, 0.35)';
               }}
             >
               <span>ACCESS YOUR VAULT</span>
@@ -1717,8 +1698,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               style={{
                 padding: '24px',
                 borderRadius: '20px',
-                backgroundColor: 'rgba(10, 16, 14, 0.85)',
-                border: '1px solid rgba(169, 221, 211, 0.15)',
+                backgroundColor: 'rgba(1, 1, 1, 0.85)',
+                border: '1px solid rgba(169, 221, 211, 0.2)',
                 display: 'flex',
                 alignItems: 'flex-start',
                 gap: '18px',
@@ -1729,14 +1710,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                   width: '46px',
                   height: '46px',
                   borderRadius: '12px',
-                  backgroundColor: 'rgba(16, 185, 129, 0.15)',
+                  backgroundColor: 'rgba(169, 221, 211, 0.1)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   flexShrink: 0,
                 }}
               >
-                <Shield size={24} color="#10B981" />
+                <Shield size={24} color="#A9DDD3" />
               </div>
               <div>
                 <h4
@@ -1744,13 +1725,13 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                     fontFamily: "'Bebas Neue', sans-serif",
                     fontSize: '22px',
                     letterSpacing: '1px',
-                    color: '#FFFFFF',
+                    color: '#E8E3D5',
                     margin: '0 0 6px 0',
                   }}
                 >
                   100% COMMUNITY VERIFIED
                 </h4>
-                <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '13px', lineHeight: '1.5', margin: 0 }}>
+                <p style={{ color: 'rgba(232, 227, 213, 0.65)', fontSize: '13px', lineHeight: '1.5', margin: 0 }}>
                   Sybil-resistant ranking prevents bot manipulation. Only authentic community engagement
                   fuels your progress.
                 </p>
@@ -1761,8 +1742,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               style={{
                 padding: '24px',
                 borderRadius: '20px',
-                backgroundColor: 'rgba(10, 16, 14, 0.85)',
-                border: '1px solid rgba(169, 221, 211, 0.15)',
+                backgroundColor: 'rgba(1, 1, 1, 0.85)',
+                border: '1px solid rgba(169, 221, 211, 0.2)',
                 display: 'flex',
                 alignItems: 'flex-start',
                 gap: '18px',
@@ -1773,14 +1754,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                   width: '46px',
                   height: '46px',
                   borderRadius: '12px',
-                  backgroundColor: 'rgba(0, 245, 255, 0.15)',
+                  backgroundColor: 'rgba(169, 221, 211, 0.1)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   flexShrink: 0,
                 }}
               >
-                <Zap size={24} color="#00F5FF" />
+                <Zap size={24} color="#A9DDD3" />
               </div>
               <div>
                 <h4
@@ -1788,13 +1769,13 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                     fontFamily: "'Bebas Neue', sans-serif",
                     fontSize: '22px',
                     letterSpacing: '1px',
-                    color: '#FFFFFF',
+                    color: '#E8E3D5',
                     margin: '0 0 6px 0',
                   }}
                 >
                   ZERO-FRICTION SUB-SECOND SPEED
                 </h4>
-                <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '13px', lineHeight: '1.5', margin: 0 }}>
+                <p style={{ color: 'rgba(232, 227, 213, 0.65)', fontSize: '13px', lineHeight: '1.5', margin: 0 }}>
                   Claims and trades execute with sub-second finality. No waiting, no unpredictable gas
                   fees.
                 </p>
@@ -1805,8 +1786,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               style={{
                 padding: '24px',
                 borderRadius: '20px',
-                backgroundColor: 'rgba(10, 16, 14, 0.85)',
-                border: '1px solid rgba(169, 221, 211, 0.15)',
+                backgroundColor: 'rgba(1, 1, 1, 0.85)',
+                border: '1px solid rgba(169, 221, 211, 0.2)',
                 display: 'flex',
                 alignItems: 'flex-start',
                 gap: '18px',
@@ -1817,14 +1798,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                   width: '46px',
                   height: '46px',
                   borderRadius: '12px',
-                  backgroundColor: 'rgba(245, 158, 11, 0.15)',
+                  backgroundColor: 'rgba(169, 221, 211, 0.1)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   flexShrink: 0,
                 }}
               >
-                <Award size={24} color="#F59E0B" />
+                <Award size={24} color="#A9DDD3" />
               </div>
               <div>
                 <h4
@@ -1832,13 +1813,13 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                     fontFamily: "'Bebas Neue', sans-serif",
                     fontSize: '22px',
                     letterSpacing: '1px',
-                    color: '#FFFFFF',
+                    color: '#E8E3D5',
                     margin: '0 0 6px 0',
                   }}
                 >
                   HIGH-RES 4K EXPORT STUDIO
                 </h4>
-                <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '13px', lineHeight: '1.5', margin: 0 }}>
+                <p style={{ color: 'rgba(232, 227, 213, 0.65)', fontSize: '13px', lineHeight: '1.5', margin: 0 }}>
                   Generate and download crystal-clear collector cards featuring your custom signature
                   script and serial number.
                 </p>
@@ -1868,7 +1849,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             transform: 'translate(-50%, -50%)',
             width: '700px',
             height: '500px',
-            background: 'radial-gradient(circle, rgba(0, 245, 255, 0.2) 0%, rgba(16, 185, 129, 0.1) 40%, transparent 70%)',
+            background: 'radial-gradient(circle, rgba(169, 221, 211, 0.18) 0%, transparent 70%)',
             filter: 'blur(70px)',
             pointerEvents: 'none',
             zIndex: 0,
@@ -1880,7 +1861,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             style={{
               fontFamily: "'Space Mono', monospace",
               fontSize: '12px',
-              color: '#00F5FF',
+              color: '#A9DDD3',
               letterSpacing: '3px',
               fontWeight: 700,
               marginBottom: '12px',
@@ -1896,18 +1877,18 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               letterSpacing: '2px',
               margin: '0 0 16px 0',
               lineHeight: '0.95',
-              color: '#FFFFFF',
-              textShadow: '0 0 40px rgba(0, 245, 255, 0.4)',
+              color: '#E8E3D5',
+              textShadow: '0 0 40px rgba(169, 221, 211, 0.35)',
             }}
           >
             YOUR NEXT PULL
             <br />
-            <span style={{ color: '#00F5FF' }}>IS WAITING.</span>
+            <span style={{ color: '#A9DDD3' }}>IS WAITING.</span>
           </h2>
 
           <p
             style={{
-              color: 'rgba(255,255,255,0.7)',
+              color: 'rgba(232, 227, 213, 0.7)',
               fontSize: '16px',
               lineHeight: '1.6',
               margin: '0 auto 36px',
@@ -1923,14 +1904,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             style={{
               padding: '18px 48px',
               borderRadius: '9999px',
-              background: 'linear-gradient(135deg, #00F5FF 0%, #0284C7 50%, #0369A1 100%)',
-              border: '2px solid rgba(255, 255, 255, 0.4)',
-              color: '#040706',
+              backgroundColor: '#A9DDD3',
+              border: '2px solid rgba(232, 227, 213, 0.5)',
+              color: '#010101',
               fontFamily: "'Bebas Neue', sans-serif",
               fontSize: '26px',
               letterSpacing: '1.5px',
               cursor: 'pointer',
-              boxShadow: '0 0 50px rgba(0, 245, 255, 0.6), inset 0 2px 8px rgba(255,255,255,0.4)',
+              boxShadow: '0 0 45px rgba(169, 221, 211, 0.5)',
               display: 'inline-flex',
               alignItems: 'center',
               gap: '12px',
@@ -1938,14 +1919,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = 'scale(1.06)';
-              e.currentTarget.style.boxShadow = '0 0 75px rgba(0, 245, 255, 0.9)';
+              e.currentTarget.style.boxShadow = '0 0 65px rgba(169, 221, 211, 0.75)';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.transform = 'scale(1)';
-              e.currentTarget.style.boxShadow = '0 0 50px rgba(0, 245, 255, 0.6)';
+              e.currentTarget.style.boxShadow = '0 0 45px rgba(169, 221, 211, 0.5)';
             }}
           >
-            <Sparkles size={26} color="#040706" />
+            <Sparkles size={26} color="#010101" />
             <span>ENTER RIALOTRACE TERMINAL</span>
             <ArrowRight size={24} />
           </button>
@@ -1959,8 +1940,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         style={{
           position: 'relative',
           zIndex: 1,
-          backgroundColor: '#020403',
-          borderTop: '1px solid rgba(169, 221, 211, 0.12)',
+          backgroundColor: '#010101',
+          borderTop: '1px solid rgba(169, 221, 211, 0.18)',
           padding: '60px 24px 40px',
         }}
       >
@@ -1984,31 +1965,31 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                   width: '34px',
                   height: '34px',
                   borderRadius: '8px',
-                  background: 'rgba(6, 16, 14, 0.95)',
-                  border: '1.5px solid rgba(0, 245, 255, 0.4)',
+                  background: '#010101',
+                  border: '1.5px solid rgba(169, 221, 211, 0.4)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  boxShadow: '0 0 15px rgba(0, 245, 255, 0.25)',
+                  boxShadow: '0 0 15px rgba(169, 221, 211, 0.2)',
                 }}
               >
-                <RialoIcon size={22} color="#00F5FF" />
+                <RialoIcon size={22} color="#A9DDD3" />
               </div>
               <span
                 style={{
                   fontWeight: 900,
                   fontSize: '22px',
                   letterSpacing: '-0.02em',
-                  color: '#FFFFFF',
+                  color: '#E8E3D5',
                 }}
               >
-                Rialo<span style={{ color: '#00F5FF' }}>Trace</span>
+                Rialo<span style={{ color: '#A9DDD3' }}>Trace</span>
               </span>
             </div>
             <p
               style={{
                 fontSize: '13px',
-                color: 'rgba(255,255,255,0.55)',
+                color: 'rgba(232, 227, 213, 0.65)',
                 lineHeight: '1.6',
                 margin: 0,
               }}
@@ -2025,7 +2006,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 style={{
                   fontFamily: "'Space Mono', monospace",
                   fontSize: '11px',
-                  color: '#00F5FF',
+                  color: '#A9DDD3',
                   fontWeight: 700,
                   marginBottom: '14px',
                   letterSpacing: '1px',
@@ -2040,7 +2021,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                     e.preventDefault();
                     onLaunchApp();
                   }}
-                  style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none' }}
+                  style={{ color: 'rgba(232, 227, 213, 0.75)', textDecoration: 'none' }}
                 >
                   Leaderboards
                 </a>
@@ -2051,7 +2032,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                     if (onExploreSection) onExploreSection('versus');
                     else onLaunchApp();
                   }}
-                  style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none' }}
+                  style={{ color: 'rgba(232, 227, 213, 0.75)', textDecoration: 'none' }}
                 >
                   Versus Arena
                 </a>
@@ -2062,7 +2043,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                     if (onExploreSection) onExploreSection('cards');
                     else onLaunchApp();
                   }}
-                  style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none' }}
+                  style={{ color: 'rgba(232, 227, 213, 0.75)', textDecoration: 'none' }}
                 >
                   Pack Opening
                 </a>
@@ -2073,7 +2054,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                     if (onExploreSection) onExploreSection('arcade');
                     else onLaunchApp();
                   }}
-                  style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none' }}
+                  style={{ color: 'rgba(232, 227, 213, 0.75)', textDecoration: 'none' }}
                 >
                   Quantum Arcade
                 </a>
@@ -2085,7 +2066,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 style={{
                   fontFamily: "'Space Mono', monospace",
                   fontSize: '11px',
-                  color: '#F59E0B',
+                  color: '#A9DDD3',
                   fontWeight: 700,
                   marginBottom: '14px',
                   letterSpacing: '1px',
@@ -2098,7 +2079,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                   href="https://www.rialo.io/brand-assets"
                   target="_blank"
                   rel="noreferrer"
-                  style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none' }}
+                  style={{ color: 'rgba(232, 227, 213, 0.75)', textDecoration: 'none' }}
                 >
                   Brand Assets ↗
                 </a>
@@ -2106,7 +2087,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                   href="https://rialo.io"
                   target="_blank"
                   rel="noreferrer"
-                  style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none' }}
+                  style={{ color: 'rgba(232, 227, 213, 0.75)', textDecoration: 'none' }}
                 >
                   Rialo.io ↗
                 </a>
@@ -2114,7 +2095,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                   href="https://x.com/rialonetwork"
                   target="_blank"
                   rel="noreferrer"
-                  style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none' }}
+                  style={{ color: 'rgba(232, 227, 213, 0.75)', textDecoration: 'none' }}
                 >
                   Twitter / X ↗
                 </a>
@@ -2122,7 +2103,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                   href="https://docs.rialo.io"
                   target="_blank"
                   rel="noreferrer"
-                  style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none' }}
+                  style={{ color: 'rgba(232, 227, 213, 0.75)', textDecoration: 'none' }}
                 >
                   Documentation ↗
                 </a>
@@ -2137,26 +2118,26 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             maxWidth: '1240px',
             margin: '0 auto',
             paddingTop: '24px',
-            borderTop: '1px solid rgba(255,255,255,0.06)',
+            borderTop: '1px solid rgba(232, 227, 213, 0.08)',
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
             flexWrap: 'wrap',
             gap: '14px',
             fontSize: '12px',
-            color: 'rgba(255,255,255,0.4)',
+            color: 'rgba(232, 227, 213, 0.5)',
             fontFamily: "'Space Mono', monospace",
           }}
         >
           <div>© 2026 RIALOTRACE. ALL RIGHTS RESERVED.</div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#10B981' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#A9DDD3' }}>
             <span
               style={{
                 width: '6px',
                 height: '6px',
                 borderRadius: '50%',
-                backgroundColor: '#10B981',
-                boxShadow: '0 0 8px #10B981',
+                backgroundColor: '#A9DDD3',
+                boxShadow: '0 0 8px #A9DDD3',
               }}
             />
             <span>RIALO TESTNET CONNECTED</span>

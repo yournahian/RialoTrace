@@ -137,32 +137,32 @@ const RARITY_THEMES: Record<string, {
   badgeBorder: string;
 }> = {
   MYTHIC: {
-    color: '#FF2A6D',
+    color: '#A9DDD3',
     glow: 'rgba(255, 42, 109, 0.45)',
     border: 'rgba(255, 42, 109, 0.65)',
     badgeBg: 'linear-gradient(135deg, rgba(255, 42, 109, 0.25) 0%, rgba(5, 217, 232, 0.2) 100%)',
-    badgeBorder: '#FF2A6D',
+    badgeBorder: '#A9DDD3',
   },
   LEGENDARY: {
-    color: '#F59E0B',
-    glow: 'rgba(245, 158, 11, 0.4)',
-    border: 'rgba(245, 158, 11, 0.65)',
-    badgeBg: 'linear-gradient(135deg, rgba(245, 158, 11, 0.25) 0%, rgba(251, 191, 36, 0.15) 100%)',
-    badgeBorder: '#F59E0B',
+    color: '#A9DDD3',
+    glow: 'rgba(169, 221, 211, 0.4)',
+    border: 'rgba(169, 221, 211, 0.65)',
+    badgeBg: 'linear-gradient(135deg, rgba(169, 221, 211, 0.25) 0%, rgba(251, 191, 36, 0.15) 100%)',
+    badgeBorder: '#A9DDD3',
   },
   EPIC: {
-    color: '#A855F7',
-    glow: 'rgba(168, 85, 247, 0.4)',
-    border: 'rgba(168, 85, 247, 0.65)',
-    badgeBg: 'linear-gradient(135deg, rgba(168, 85, 247, 0.25) 0%, rgba(236, 72, 153, 0.15) 100%)',
-    badgeBorder: '#A855F7',
+    color: '#A9DDD3',
+    glow: 'rgba(169, 221, 211, 0.4)',
+    border: 'rgba(169, 221, 211, 0.65)',
+    badgeBg: 'linear-gradient(135deg, rgba(169, 221, 211, 0.25) 0%, rgba(236, 72, 153, 0.15) 100%)',
+    badgeBorder: '#A9DDD3',
   },
   RARE: {
-    color: '#00F0FF',
-    glow: 'rgba(0, 240, 255, 0.4)',
-    border: 'rgba(0, 240, 255, 0.65)',
-    badgeBg: 'linear-gradient(135deg, rgba(0, 240, 255, 0.25) 0%, rgba(16, 185, 129, 0.15) 100%)',
-    badgeBorder: '#00F0FF',
+    color: '#A9DDD3',
+    glow: 'rgba(169, 221, 211, 0.4)',
+    border: 'rgba(169, 221, 211, 0.65)',
+    badgeBg: 'linear-gradient(135deg, rgba(169, 221, 211, 0.25) 0%, rgba(16, 185, 129, 0.15) 100%)',
+    badgeBorder: '#A9DDD3',
   },
   COMMON: {
     color: '#A9DDD3',
@@ -261,7 +261,7 @@ export const XRayRoast: React.FC<{ initialHandle?: string }> = ({ initialHandle 
       border: '1px solid rgba(169, 221, 211, 0.22)',
       borderRadius: '24px',
       padding: '32px 24px',
-      color: '#FFFFFF',
+      color: '#E8E3D5',
       boxShadow: '0 20px 50px rgba(0, 0, 0, 0.7)',
       position: 'relative',
       width: '100%',
@@ -289,7 +289,7 @@ export const XRayRoast: React.FC<{ initialHandle?: string }> = ({ initialHandle 
         <h2 style={{ fontSize: '28px', fontWeight: '900', color: '#E8E3D5', margin: '0 0 6px 0', letterSpacing: '-0.02em', lineHeight: 1.2 }}>
           Rialo X-Ray & <span className="gradient-text-rialo">Persona Roast</span>
         </h2>
-        <p style={{ color: '#8E9B97', fontSize: '13.5px', maxWidth: '540px', margin: '0 auto', lineHeight: '1.45' }}>
+        <p style={{ color: '#E8E3D5', fontSize: '13.5px', maxWidth: '540px', margin: '0 auto', lineHeight: '1.45' }}>
           Scan any X handle or wallet to generate their official Web3 Holographic Persona Card with physics telemetry and witty roast.
         </p>
       </div>
@@ -300,7 +300,7 @@ export const XRayRoast: React.FC<{ initialHandle?: string }> = ({ initialHandle 
         margin: '0 auto 12px auto',
         display: 'flex',
         gap: '6px',
-        background: '#040706',
+        background: '#010101',
         border: '1.5px solid rgba(169, 221, 211, 0.35)',
         borderRadius: '9999px',
         padding: '4px 6px 4px 14px',
@@ -321,7 +321,7 @@ export const XRayRoast: React.FC<{ initialHandle?: string }> = ({ initialHandle 
             background: 'transparent',
             border: 'none',
             outline: 'none',
-            color: '#FFFFFF',
+            color: '#E8E3D5',
             fontSize: '13px',
             fontFamily: 'var(--font-mono, monospace)',
           }}
@@ -333,7 +333,7 @@ export const XRayRoast: React.FC<{ initialHandle?: string }> = ({ initialHandle 
           onClick={handleScan}
           style={{
             padding: '7px 18px',
-            background: isScanning || !handle.trim() ? 'rgba(255, 255, 255, 0.1)' : 'linear-gradient(135deg, #A9DDD3 0%, #00F0FF 100%)',
+            background: isScanning || !handle.trim() ? 'rgba(232, 227, 213, 0.1)' : 'linear-gradient(135deg, #A9DDD3 0%, #A9DDD3 100%)',
             color: '#010101',
             border: 'none',
             borderRadius: '9999px',
@@ -365,9 +365,9 @@ export const XRayRoast: React.FC<{ initialHandle?: string }> = ({ initialHandle 
             style={{
               padding: '4px 12px',
               borderRadius: '9999px',
-              background: handle.toLowerCase() === preset.toLowerCase() ? 'rgba(169,221,211,0.2)' : 'rgba(255,255,255,0.03)',
-              border: handle.toLowerCase() === preset.toLowerCase() ? '1.5px solid #A9DDD3' : '1px solid rgba(255,255,255,0.08)',
-              color: handle.toLowerCase() === preset.toLowerCase() ? '#A9DDD3' : '#8E9B97',
+              background: handle.toLowerCase() === preset.toLowerCase() ? 'rgba(169,221,211,0.2)' : 'rgba(232, 227, 213, 0.03)',
+              border: handle.toLowerCase() === preset.toLowerCase() ? '1.5px solid #A9DDD3' : '1px solid rgba(232, 227, 213, 0.08)',
+              color: handle.toLowerCase() === preset.toLowerCase() ? '#A9DDD3' : '#E8E3D5',
               fontSize: '11px',
               fontWeight: 700,
               cursor: 'pointer',
@@ -421,7 +421,7 @@ export const XRayRoast: React.FC<{ initialHandle?: string }> = ({ initialHandle 
           <div style={{ fontSize: '14px', fontWeight: 900, color: '#A9DDD3', fontFamily: 'var(--font-mono)' }}>
             DIAGNOSING @{handle.replace(/^@/, '')}...
           </div>
-          <div style={{ fontSize: '11px', color: '#8E9B97', marginTop: '6px' }}>
+          <div style={{ fontSize: '11px', color: '#E8E3D5', marginTop: '6px' }}>
             Auditing on-chain friction telemetry & calculating roast velocity
           </div>
         </div>
@@ -471,7 +471,7 @@ export const XRayRoast: React.FC<{ initialHandle?: string }> = ({ initialHandle 
               style={{
                 position: 'absolute',
                 inset: 0,
-                background: 'linear-gradient(145deg, #E5C365 0%, #D4A813 38%, #0A0D0C 38%, #070A09 100%)',
+                background: 'linear-gradient(145deg, #A9DDD3 0%, #A9DDD3 38%, #010101 38%, #010101 100%)',
                 zIndex: 0,
               }}
             />
@@ -510,7 +510,7 @@ export const XRayRoast: React.FC<{ initialHandle?: string }> = ({ initialHandle 
                 borderRadius: '22px',
                 pointerEvents: 'none',
                 opacity: isHovered ? 0.35 : 0.12,
-                background: `linear-gradient(${120 + mousePos.x * 60}deg, transparent 20%, rgba(229,195,101,0.5) 35%, rgba(169,221,211,0.55) 50%, rgba(200,180,255,0.45) 65%, transparent 100%)`,
+                background: `linear-gradient(${120 + mousePos.x * 60}deg, transparent 20%, rgba(169, 221, 211, 0.5) 35%, rgba(169,221,211,0.55) 50%, rgba(200,180,255,0.45) 65%, transparent 100%)`,
                 mixBlendMode: 'screen',
                 transition: 'opacity 0.3s ease',
                 zIndex: 2,
@@ -525,7 +525,7 @@ export const XRayRoast: React.FC<{ initialHandle?: string }> = ({ initialHandle 
                 left: '48px',
                 right: '48px',
                 height: '100%',
-                background: 'linear-gradient(145deg, rgba(229,195,101,0.15) 0%, transparent 45%)',
+                background: 'linear-gradient(145deg, rgba(169, 221, 211, 0.15) 0%, transparent 45%)',
                 zIndex: 1,
                 pointerEvents: 'none',
               }}
@@ -543,8 +543,8 @@ export const XRayRoast: React.FC<{ initialHandle?: string }> = ({ initialHandle 
                   -55deg,
                   transparent,
                   transparent 10px,
-                  rgba(229,195,101,0.22) 10px,
-                  rgba(229,195,101,0.22) 20px
+                  rgba(169, 221, 211, 0.22) 10px,
+                  rgba(169, 221, 211, 0.22) 20px
                 )`,
                 zIndex: 3,
                 pointerEvents: 'none',
@@ -564,7 +564,7 @@ export const XRayRoast: React.FC<{ initialHandle?: string }> = ({ initialHandle 
                 justifyContent: 'center',
                 zIndex: 5,
                 background: 'rgba(0,0,0,0.55)',
-                borderRight: '1px solid rgba(229,195,101,0.25)',
+                borderRight: '1px solid rgba(169, 221, 211, 0.25)',
               }}
             >
               <span
@@ -599,8 +599,8 @@ export const XRayRoast: React.FC<{ initialHandle?: string }> = ({ initialHandle 
                 alignItems: 'center',
                 justifyContent: 'center',
                 zIndex: 5,
-                background: 'rgba(229,195,101,0.10)',
-                borderLeft: '1px solid rgba(229,195,101,0.25)',
+                background: 'rgba(169, 221, 211, 0.10)',
+                borderLeft: '1px solid rgba(169, 221, 211, 0.25)',
               }}
             >
               <span
@@ -610,7 +610,7 @@ export const XRayRoast: React.FC<{ initialHandle?: string }> = ({ initialHandle 
                   fontSize: '8px',
                   fontWeight: 700,
                   letterSpacing: '2px',
-                  color: 'rgba(229,195,101,0.75)',
+                  color: 'rgba(169, 221, 211, 0.75)',
                   textTransform: 'uppercase',
                   whiteSpace: 'nowrap',
                   userSelect: 'none',
@@ -634,7 +634,7 @@ export const XRayRoast: React.FC<{ initialHandle?: string }> = ({ initialHandle 
                 justifyContent: 'space-between',
                 padding: '0 14px',
                 background: 'rgba(0,0,0,0.60)',
-                borderBottom: '1px solid rgba(229,195,101,0.2)',
+                borderBottom: '1px solid rgba(169, 221, 211, 0.2)',
               }}
             >
               <span
@@ -643,7 +643,7 @@ export const XRayRoast: React.FC<{ initialHandle?: string }> = ({ initialHandle 
                   fontSize: '9px',
                   fontWeight: 700,
                   letterSpacing: '2.5px',
-                  color: 'rgba(229,195,101,0.8)',
+                  color: 'rgba(169, 221, 211, 0.8)',
                   textTransform: 'uppercase',
                 }}
               >
@@ -714,8 +714,8 @@ export const XRayRoast: React.FC<{ initialHandle?: string }> = ({ initialHandle 
                 fontFamily: "'Caveat', 'Dancing Script', cursive",
                 fontSize: '28px',
                 fontWeight: 700,
-                color: '#FFFFFF',
-                textShadow: '0 2px 12px rgba(0,0,0,0.9), 0 0 20px rgba(229,195,101,0.6)',
+                color: '#E8E3D5',
+                textShadow: '0 2px 12px rgba(0,0,0,0.9), 0 0 20px rgba(169, 221, 211, 0.6)',
                 whiteSpace: 'nowrap',
                 userSelect: 'none',
                 pointerEvents: 'none',
@@ -747,7 +747,7 @@ export const XRayRoast: React.FC<{ initialHandle?: string }> = ({ initialHandle 
                   fontSize: '28px',
                   fontWeight: 900,
                   letterSpacing: '2px',
-                  color: '#FFFFFF',
+                  color: '#E8E3D5',
                   textTransform: 'uppercase',
                   lineHeight: 1.0,
                   textShadow: `0 0 20px ${theme.glow}`,
@@ -778,8 +778,8 @@ export const XRayRoast: React.FC<{ initialHandle?: string }> = ({ initialHandle 
                     key={i}
                     style={{
                       fontSize: '14px',
-                      color: i < (result.rarity === 'MYTHIC' ? 5 : result.rarity === 'LEGENDARY' ? 4 : 3) ? '#F59E0B' : 'rgba(255,255,255,0.15)',
-                      textShadow: i < 4 ? '0 0 8px rgba(245,158,11,0.8)' : 'none',
+                      color: i < (result.rarity === 'MYTHIC' ? 5 : result.rarity === 'LEGENDARY' ? 4 : 3) ? '#A9DDD3' : 'rgba(232, 227, 213, 0.15)',
+                      textShadow: i < 4 ? '0 0 8px rgba(169, 221, 211, 0.8)' : 'none',
                     }}
                   >
                     ★
@@ -802,7 +802,7 @@ export const XRayRoast: React.FC<{ initialHandle?: string }> = ({ initialHandle 
                 padding: '0 16px',
                 zIndex: 5,
                 background: 'rgba(0,0,0,0.7)',
-                borderTop: '1px solid rgba(229,195,101,0.2)',
+                borderTop: '1px solid rgba(169, 221, 211, 0.2)',
               }}
             >
               <span
@@ -810,7 +810,7 @@ export const XRayRoast: React.FC<{ initialHandle?: string }> = ({ initialHandle 
                   fontFamily: "'Space Mono', monospace",
                   fontSize: '7.5px',
                   letterSpacing: '1.5px',
-                  color: 'rgba(229,195,101,0.5)',
+                  color: 'rgba(169, 221, 211, 0.5)',
                   textTransform: 'uppercase',
                 }}
               >
@@ -846,9 +846,9 @@ export const XRayRoast: React.FC<{ initialHandle?: string }> = ({ initialHandle 
                   onClick={handleCopy}
                   style={{
                     padding: '6px 12px',
-                    background: 'rgba(255,255,255,0.07)',
-                    border: '1px solid rgba(255,255,255,0.18)',
-                    color: '#FFFFFF',
+                    background: 'rgba(232, 227, 213, 0.07)',
+                    border: '1px solid rgba(232, 227, 213, 0.18)',
+                    color: '#E8E3D5',
                     borderRadius: '9999px',
                     fontSize: '10px',
                     fontWeight: 700,

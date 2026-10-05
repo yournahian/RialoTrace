@@ -18,7 +18,7 @@ export const RialoLogo: React.FC<RialoLogoProps> = ({
         fontFamily: 'var(--font-display)',
         fontSize: `${size}px`,
         letterSpacing: '-0.03em',
-        color: '#ffffff',
+        color: '#E8E3D5',
       }}
       className={className}
     >
