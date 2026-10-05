@@ -68,7 +68,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
     if (action) action();
   };
 
-  // 4 Showcase Packs (Strict 3-Color Theming)
+  // 4 Showcase Packs (Color-Coded by Tier & Rarity)
   const packTiers = [
     {
       id: 'genesis',
@@ -80,6 +80,20 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       rarity: 'Common to Mythic',
       cardsCount: '3 CARDS',
       desc: 'Contains 3 randomized cards with guaranteed Common or Rare, plus chance for the Mythic Sub-Second Devourer.',
+      color: '#A9DDD3',
+      colorSecondary: '#22D3EE',
+      accentGlow: 'rgba(169, 221, 211, 0.45)',
+      bgGlow: 'rgba(169, 221, 211, 0.12)',
+      borderNormal: 'rgba(169, 221, 211, 0.32)',
+      tagBg: 'rgba(169, 221, 211, 0.12)',
+      tagBorder: 'rgba(169, 221, 211, 0.55)',
+      tagText: '#A9DDD3',
+      foilTint: 'linear-gradient(135deg, rgba(34, 211, 238, 0.55) 0%, rgba(169, 221, 211, 0.3) 50%, rgba(20, 184, 166, 0.55) 100%)',
+      sheenTint: 'radial-gradient(circle at 50% 25%, rgba(169, 221, 211, 0.65) 0%, transparent 65%)',
+      btnBg: 'rgba(169, 221, 211, 0.1)',
+      btnBorder: 'rgba(169, 221, 211, 0.4)',
+      btnHoverBg: '#A9DDD3',
+      btnHoverText: '#010101',
     },
     {
       id: 'void',
@@ -91,6 +105,20 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       rarity: 'Epic & Mythic Pool',
       cardsCount: '4 CARDS',
       desc: 'Synthesized in The Forge using recyclable duplicates. Higher density of executioner and ronin archetypes.',
+      color: '#C084FC',
+      colorSecondary: '#A855F7',
+      accentGlow: 'rgba(168, 85, 247, 0.5)',
+      bgGlow: 'rgba(168, 85, 247, 0.15)',
+      borderNormal: 'rgba(168, 85, 247, 0.4)',
+      tagBg: 'rgba(168, 85, 247, 0.18)',
+      tagBorder: 'rgba(192, 132, 252, 0.65)',
+      tagText: '#E9D5FF',
+      foilTint: 'linear-gradient(135deg, rgba(168, 85, 247, 0.72) 0%, rgba(147, 51, 234, 0.38) 50%, rgba(192, 132, 252, 0.65) 100%)',
+      sheenTint: 'radial-gradient(circle at 50% 25%, rgba(216, 180, 254, 0.7) 0%, transparent 65%)',
+      btnBg: 'rgba(168, 85, 247, 0.14)',
+      btnBorder: 'rgba(192, 132, 252, 0.5)',
+      btnHoverBg: '#A855F7',
+      btnHoverText: '#FFFFFF',
     },
     {
       id: 'superconductor',
@@ -102,6 +130,20 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       rarity: 'Legendary Guaranteed',
       cardsCount: '3 CARDS',
       desc: 'Awarded to top engagement streaks and arcade milestones. Infused with zero-friction consensus energy.',
+      color: '#FBBF24',
+      colorSecondary: '#F59E0B',
+      accentGlow: 'rgba(245, 158, 11, 0.5)',
+      bgGlow: 'rgba(245, 158, 11, 0.15)',
+      borderNormal: 'rgba(245, 158, 11, 0.4)',
+      tagBg: 'rgba(245, 158, 11, 0.18)',
+      tagBorder: 'rgba(251, 191, 36, 0.65)',
+      tagText: '#FEF08A',
+      foilTint: 'linear-gradient(135deg, rgba(245, 158, 11, 0.75) 0%, rgba(217, 119, 6, 0.38) 50%, rgba(251, 191, 36, 0.65) 100%)',
+      sheenTint: 'radial-gradient(circle at 50% 25%, rgba(254, 240, 138, 0.7) 0%, transparent 65%)',
+      btnBg: 'rgba(245, 158, 11, 0.14)',
+      btnBorder: 'rgba(251, 191, 36, 0.5)',
+      btnHoverBg: '#F59E0B',
+      btnHoverText: '#010101',
     },
     {
       id: 'zero-friction',
@@ -113,6 +155,20 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       rarity: '1-of-1 Mythic Pool',
       cardsCount: '5 CARDS',
       desc: 'The crown jewel of the RialoTrace ecosystem. Unlocks custom holographic animated foil export parameters.',
+      color: '#FB7185',
+      colorSecondary: '#F43F5E',
+      accentGlow: 'rgba(244, 63, 94, 0.55)',
+      bgGlow: 'rgba(244, 63, 94, 0.16)',
+      borderNormal: 'rgba(244, 63, 94, 0.45)',
+      tagBg: 'rgba(244, 63, 94, 0.2)',
+      tagBorder: 'rgba(251, 113, 133, 0.7)',
+      tagText: '#FFE4E6',
+      foilTint: 'linear-gradient(135deg, rgba(244, 63, 94, 0.8) 0%, rgba(225, 29, 72, 0.42) 50%, rgba(251, 113, 133, 0.65) 100%)',
+      sheenTint: 'radial-gradient(circle at 50% 25%, rgba(255, 228, 230, 0.75) 0%, transparent 65%)',
+      btnBg: 'rgba(244, 63, 94, 0.15)',
+      btnBorder: 'rgba(251, 113, 133, 0.55)',
+      btnHoverBg: '#F43F5E',
+      btnHoverText: '#FFFFFF',
     },
   ];
 
@@ -722,8 +778,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               onClick={() => handleButtonClick(() => onLaunchApp())}
               style={{
                 borderRadius: '22px',
-                background: 'linear-gradient(180deg, rgba(169, 221, 211, 0.05) 0%, rgba(1, 1, 1, 0.98) 100%)',
-                border: '1px solid rgba(169, 221, 211, 0.25)',
+                background: `linear-gradient(180deg, ${pack.bgGlow} 0%, rgba(6, 9, 8, 0.98) 100%)`,
+                border: `1.5px solid ${pack.borderNormal}`,
                 padding: '24px 20px',
                 cursor: 'pointer',
                 position: 'relative',
@@ -731,62 +787,95 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
-                minHeight: '460px',
+                minHeight: '470px',
                 transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
-                boxShadow: '0 15px 35px rgba(1, 1, 1, 0.8)',
+                boxShadow: `0 15px 35px rgba(0, 0, 0, 0.85), 0 0 20px ${pack.bgGlow}`,
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.transform = 'translateY(-8px)';
-                e.currentTarget.style.boxShadow = '0 25px 50px rgba(1, 1, 1, 0.9), 0 0 35px rgba(169, 221, 211, 0.3)';
-                e.currentTarget.style.borderColor = '#A9DDD3';
+                e.currentTarget.style.boxShadow = `0 25px 50px rgba(0, 0, 0, 0.95), 0 0 40px ${pack.accentGlow}`;
+                e.currentTarget.style.borderColor = pack.color;
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = '0 15px 35px rgba(1, 1, 1, 0.8)';
-                e.currentTarget.style.borderColor = 'rgba(169, 221, 211, 0.25)';
+                e.currentTarget.style.boxShadow = `0 15px 35px rgba(0, 0, 0, 0.85), 0 0 20px ${pack.bgGlow}`;
+                e.currentTarget.style.borderColor = pack.borderNormal;
               }}
             >
+              {/* Atmospheric Ambient Glow Beam at Top */}
+              <div
+                style={{
+                  position: 'absolute',
+                  top: '-40px',
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  width: '260px',
+                  height: '140px',
+                  background: `radial-gradient(ellipse at center, ${pack.accentGlow} 0%, transparent 70%)`,
+                  filter: 'blur(20px)',
+                  pointerEvents: 'none',
+                  opacity: 0.65,
+                }}
+              />
+
               {/* Top Tag & Card Count */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'relative', zIndex: 2 }}>
                 <span
                   style={{
-                    fontSize: '10px',
+                    fontSize: '10.5px',
                     fontFamily: "'Space Mono', monospace",
-                    padding: '3px 8px',
+                    padding: '4px 10px',
                     borderRadius: '6px',
-                    background: '#010101',
-                    border: '1px solid rgba(169, 221, 211, 0.4)',
-                    color: '#A9DDD3',
-                    fontWeight: 700,
+                    background: pack.tagBg,
+                    border: `1px solid ${pack.tagBorder}`,
+                    color: pack.tagText,
+                    fontWeight: 800,
+                    letterSpacing: '0.6px',
+                    boxShadow: `0 0 14px ${pack.accentGlow}`,
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '5px',
                   }}
                 >
+                  <span
+                    style={{
+                      width: '6px',
+                      height: '6px',
+                      borderRadius: '50%',
+                      background: pack.color,
+                      boxShadow: `0 0 8px ${pack.color}`,
+                    }}
+                  />
                   {pack.tag}
                 </span>
                 <span
                   style={{
                     fontSize: '11px',
                     fontFamily: "'Space Mono', monospace",
-                    color: 'rgba(232, 227, 213, 0.75)',
+                    color: 'rgba(232, 227, 213, 0.85)',
+                    fontWeight: 700,
                   }}
                 >
                   {pack.cardsCount}
                 </span>
               </div>
 
-              {/* Real 3D Booster Pack Image in Center */}
+              {/* Real 3D Booster Pack Image Colorized to Rarity & Tier */}
               <div
                 style={{
                   margin: '20px auto 16px',
-                  width: '140px',
-                  height: '210px',
-                  borderRadius: '12px',
+                  width: '148px',
+                  height: '218px',
+                  borderRadius: '14px',
                   overflow: 'hidden',
-                  boxShadow: '0 12px 30px rgba(1, 1, 1, 0.8), 0 0 25px rgba(169, 221, 211, 0.25)',
-                  border: '1.5px solid rgba(169, 221, 211, 0.4)',
+                  boxShadow: `0 14px 32px rgba(0, 0, 0, 0.88), 0 0 28px ${pack.accentGlow}`,
+                  border: `1.5px solid ${pack.borderNormal}`,
                   position: 'relative',
-                  transition: 'transform 0.3s ease',
+                  transition: 'all 0.3s ease',
+                  background: '#040706',
                 }}
               >
+                {/* Base 3D Pack Render */}
                 <img
                   src={pack.packImage}
                   alt={pack.name}
@@ -794,19 +883,81 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                     width: '100%',
                     height: '100%',
                     objectFit: 'cover',
+                    display: 'block',
                   }}
                 />
+
+                {/* 1. Color Tint Layer (Tint the metallic foil to match rarity) */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    inset: 0,
+                    background: pack.foilTint,
+                    mixBlendMode: 'color',
+                    pointerEvents: 'none',
+                  }}
+                />
+
+                {/* 2. Holographic Overlay & Depth Vibrancy */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    inset: 0,
+                    background: pack.foilTint,
+                    mixBlendMode: 'overlay',
+                    opacity: 0.85,
+                    pointerEvents: 'none',
+                  }}
+                />
+
+                {/* 3. Radiant Specular Foil Sheen */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    inset: 0,
+                    background: pack.sheenTint,
+                    mixBlendMode: 'screen',
+                    opacity: 0.6,
+                    pointerEvents: 'none',
+                  }}
+                />
+
+                {/* Micro Rarity Watermark Tag */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    bottom: '8px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    padding: '2px 8px',
+                    borderRadius: '4px',
+                    background: 'rgba(4, 7, 6, 0.82)',
+                    backdropFilter: 'blur(8px)',
+                    border: `1px solid ${pack.borderNormal}`,
+                    color: pack.color,
+                    fontFamily: "'Space Mono', monospace",
+                    fontSize: '8.5px',
+                    fontWeight: 900,
+                    letterSpacing: '0.8px',
+                    whiteSpace: 'nowrap',
+                    pointerEvents: 'none',
+                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.6)',
+                  }}
+                >
+                  {pack.rarity.toUpperCase()}
+                </div>
               </div>
 
               {/* Bottom Pack Info */}
-              <div>
+              <div style={{ position: 'relative', zIndex: 2 }}>
                 <div
                   style={{
                     fontFamily: "'Bebas Neue', sans-serif",
-                    fontSize: '26px',
-                    letterSpacing: '1px',
+                    fontSize: '27px',
+                    letterSpacing: '1.2px',
                     color: '#E8E3D5',
-                    marginBottom: '4px',
+                    marginBottom: '3px',
+                    textShadow: `0 0 20px ${pack.color}33`,
                   }}
                 >
                   {pack.name}
@@ -815,17 +966,22 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                   style={{
                     fontFamily: "'Space Mono', monospace",
                     fontSize: '11px',
-                    color: '#A9DDD3',
-                    fontWeight: 700,
+                    color: pack.color,
+                    fontWeight: 800,
+                    letterSpacing: '0.8px',
                     marginBottom: '10px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
                   }}
                 >
-                  {pack.method}
+                  <span style={{ color: pack.color }}>⚡</span>
+                  <span>{pack.method}</span>
                 </div>
                 <p
                   style={{
                     fontSize: '13px',
-                    color: 'rgba(232, 227, 213, 0.7)',
+                    color: 'rgba(232, 227, 213, 0.72)',
                     lineHeight: '1.5',
                     marginBottom: '18px',
                     minHeight: '40px',
@@ -840,26 +996,31 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                     width: '100%',
                     padding: '12px 0',
                     borderRadius: '12px',
-                    background: 'rgba(169, 221, 211, 0.08)',
-                    border: '1px solid rgba(169, 221, 211, 0.3)',
+                    background: pack.btnBg,
+                    border: `1.5px solid ${pack.btnBorder}`,
                     color: '#E8E3D5',
                     fontFamily: "'Bebas Neue', sans-serif",
                     fontSize: '18px',
-                    letterSpacing: '1px',
+                    letterSpacing: '1.2px',
                     cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    gap: '6px',
-                    transition: 'all 0.2s',
+                    gap: '8px',
+                    transition: 'all 0.25s ease',
+                    boxShadow: '0 4px 15px rgba(0, 0, 0, 0.4)',
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = '#A9DDD3';
-                    e.currentTarget.style.color = '#010101';
+                    e.currentTarget.style.backgroundColor = pack.btnHoverBg;
+                    e.currentTarget.style.color = pack.btnHoverText;
+                    e.currentTarget.style.borderColor = pack.color;
+                    e.currentTarget.style.boxShadow = `0 0 25px ${pack.accentGlow}`;
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = 'rgba(169, 221, 211, 0.08)';
+                    e.currentTarget.style.backgroundColor = pack.btnBg;
                     e.currentTarget.style.color = '#E8E3D5';
+                    e.currentTarget.style.borderColor = pack.btnBorder;
+                    e.currentTarget.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.4)';
                   }}
                 >
                   <span>PULL THIS PACK</span>
