@@ -2128,6 +2128,25 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               The sovereign social analytics terminal and gamified digital collector layer for Rialo
               Network. Engineered for sub-second finality and zero transaction friction.
             </p>
+            <div
+              style={{
+                marginTop: '16px',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '6px 12px',
+                borderRadius: '8px',
+                background: 'rgba(239, 68, 68, 0.08)',
+                border: '1px solid rgba(239, 68, 68, 0.3)',
+                fontSize: '11px',
+                fontWeight: 700,
+                color: '#F87171',
+                letterSpacing: '0.5px',
+                fontFamily: "'Space Mono', monospace",
+              }}
+            >
+              <span style={{ fontSize: '12px' }}>⚠️</span> NOT AFFILIATED WITH RIALO.IO
+            </div>
           </div>
 
           {/* Quick Links */}
@@ -2260,7 +2279,13 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             fontFamily: "'Space Mono', monospace",
           }}
         >
-          <div>© 2026 RIALOTRACE. ALL RIGHTS RESERVED.</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+            <div>© 2026 RIALOTRACE. ALL RIGHTS RESERVED.</div>
+            <span style={{ color: 'rgba(232, 227, 213, 0.25)' }}>•</span>
+            <div style={{ color: '#F87171', fontWeight: 700, letterSpacing: '0.3px' }}>
+              NOT AFFILIATED WITH RIALO.IO
+            </div>
+          </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#A9DDD3' }}>
             <span
               style={{
@@ -2273,6 +2298,21 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             />
             <span>RIALO TESTNET CONNECTED</span>
           </div>
+        </div>
+
+        {/* Legal Disclaimer Sub-bar */}
+        <div
+          style={{
+            maxWidth: '1240px',
+            margin: '16px auto 0',
+            textAlign: 'center',
+            fontSize: '11px',
+            color: 'rgba(232, 227, 213, 0.45)',
+            lineHeight: '1.6',
+            fontFamily: "'Space Mono', monospace",
+          }}
+        >
+          Disclaimer: RialoTrace is an independent community analytics tool and is not affiliated with, officially endorsed by, or sponsored by rialo.io or Subzero Labs.
         </div>
       </footer>
 

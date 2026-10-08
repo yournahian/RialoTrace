@@ -165,6 +165,33 @@ export const MobileAppRoot: React.FC<MobileAppRootProps> = ({
             onNavigateToBinder={onNavigateToBinder}
           />
         )}
+
+        {/* Mobile Footer Disclaimer */}
+        <footer
+          style={{
+            marginTop: '40px',
+            marginBottom: '70px',
+            padding: '20px 14px',
+            borderTop: '1px solid rgba(169, 221, 211, 0.1)',
+            textAlign: 'center',
+            fontSize: '11px',
+            color: 'rgba(232, 227, 213, 0.45)',
+            fontFamily: "'Space Mono', monospace",
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '6px',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap', justifyContent: 'center' }}>
+            <span>© 2026 RIALOTRACE</span>
+            <span style={{ opacity: 0.3 }}>•</span>
+            <span style={{ color: '#F87171', fontWeight: 700 }}>NOT AFFILIATED WITH RIALO.IO</span>
+          </div>
+          <div style={{ fontSize: '10px', color: 'rgba(232, 227, 213, 0.35)', lineHeight: '1.4' }}>
+            Independent community terminal. Not affiliated with rialo.io or Subzero Labs.
+          </div>
+        </footer>
       </main>
 
 

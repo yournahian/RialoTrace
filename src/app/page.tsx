@@ -601,6 +601,37 @@ export default function HomePage() {
             onNavigateToBinder={() => handleSelectTab('binder')}
           />
         )}
+
+        {/* Global App Footer Disclaimer */}
+        <footer
+          style={{
+            marginTop: '60px',
+            marginBottom: '20px',
+            padding: '24px 16px',
+            borderTop: '1px solid rgba(169, 221, 211, 0.1)',
+            textAlign: 'center',
+            fontSize: '12px',
+            color: 'rgba(232, 227, 213, 0.45)',
+            fontFamily: "'Space Mono', monospace",
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '8px',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', justifyContent: 'center' }}>
+            <span>© 2026 RIALOTRACE</span>
+            <span style={{ opacity: 0.3 }}>•</span>
+            <span style={{ color: '#F87171', fontWeight: 700, letterSpacing: '0.5px' }}>
+              NOT AFFILIATED WITH RIALO.IO
+            </span>
+            <span style={{ opacity: 0.3 }}>•</span>
+            <span>INDEPENDENT COMMUNITY ENGINE</span>
+          </div>
+          <div style={{ fontSize: '11px', color: 'rgba(232, 227, 213, 0.35)', maxWidth: '600px' }}>
+            Disclaimer: RialoTrace is an independent community project and is not affiliated with, endorsed by, or sponsored by rialo.io or Subzero Labs.
+          </div>
+        </footer>
       </main>
       </div>
 
